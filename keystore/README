@@ -1,0 +1,53 @@
+=================
+     Release
+=================
+
+Create key:
+-----------
+keytool -genkey -v -keystore release_key.keystore -storepass skvVhv2GyCN6k4b5yGmLgbRtw2DKh7D8 -alias releasekey -keypass uvfxm4xzZu6bycc95BNhmVh4Jb2nCrA7 -keyalg RSA -keysize 2048 -validity 1000000
+
+Information:
+------------
+keytool -list -v -keystore release_key.keystore -storepass skvVhv2GyCN6k4b5yGmLgbRtw2DKh7D8 -alias releasekey
+
+Creation date: Oct 21, 2016
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=aleksandr mirko, OU=livetyping, O=ltst, L=omsk, ST=55, C=ru
+Issuer: CN=aleksandr mirko, OU=livetyping, O=ltst, L=omsk, ST=55, C=ru
+Serial number: 534772d
+Valid from: Fri Oct 21 23:46:40 OMST 2016 until: Sat Sep 18 23:46:40 OMST 4754
+Certificate fingerprints:
+	 MD5:  43:44:BB:EA:21:E9:21:9C:04:31:9D:0E:77:17:38:E8
+	 SHA1: 26:80:4E:6D:82:25:41:2D:75:51:64:51:74:BD:B0:C1:3A:DA:06:86
+	 SHA256: 7F:96:1F:48:A2:D3:3C:65:69:7B:09:12:B6:A1:4A:CC:F4:0D:5C:49:46:29:4A:91:92:25:14:18:53:21:93:94
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+=================
+     Debug
+=================
+
+Create key:
+-----------
+keytool -genkey -v -keystore debug_key.keystore -storepass 8qTCKH35LdUVPzycFdzqXDms56qsLDQW -alias debugkey -keypass tvMkMFvnnmzjsBvPcxcQZP46AtwkfjV5 -keyalg RSA -keysize 2048 -validity 1000000
+
+Information:
+------------
+keytool -list -v -keystore debug_key.keystore -storepass 8qTCKH35LdUVPzycFdzqXDms56qsLDQW -alias debugkey
+
+Creation date: Oct 21, 2016
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=aleksandr mirko, OU=livetyping, O=ltst, L=omsk, ST=55, C=ru
+Issuer: CN=aleksandr mirko, OU=livetyping, O=ltst, L=omsk, ST=55, C=ru
+Serial number: e608e9f
+Valid from: Fri Oct 21 23:47:20 OMST 2016 until: Sat Sep 18 23:47:20 OMST 4754
+Certificate fingerprints:
+	 MD5:  20:23:F2:62:E3:50:1E:03:CD:9A:3F:84:C8:B3:63:1A
+	 SHA1: E0:C9:FC:4C:9B:C4:91:4D:F0:53:E8:19:81:09:91:67:56:1C:47:C6
+	 SHA256: 5A:48:96:BF:4E:01:0E:2F:03:9A:EA:BA:10:68:A3:A8:CB:11:B5:B8:12:DB:E0:82:07:03:C9:6F:B1:04:4D:AC
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3

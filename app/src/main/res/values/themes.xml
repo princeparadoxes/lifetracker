@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Project" parent="Theme.Project.Base"/>
+
+    <!--<style name="Theme.Splash" parent="Theme.Project.Base">-->
+    <!--<item name="android:windowBackground">@drawable/splash_screen</item>-->
+    <!--</style>-->
+
+    <style name="Theme.Project.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/accent</item>
+        <!--<item name="colorControlActivated">@color/accent</item>-->
+        <item name="colorControlHighlight">@color/primaryItemSelector</item>
+        <!--<item name="colorControlNormal">@color/primaryItemSelector</item>-->
+        <item name="android:textColorPrimary">@color/textPrimary</item>
+        <item name="android:textColorSecondary">@color/textSecondary</item>
+        <!--<item name="navigationBarColor">@color/primary_dark</item>-->
+        <!--<item name="android:colorForeground">@color/icons</item>-->
+        <item name="android:alertDialogTheme">@style/DialogTheme</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@color/contentBackground</item>
+        <!--<item name="android:windowAnimationStyle">@style/SlideActivity</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds" tools:ignore="NewApi">true</item>-->
+        <!--<item name="android:statusBarColor" tools:ignore="NewApi">@color/status_bar</item>-->
+        <!--<item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>-->
+        <!--<item name="android:statusBarColor" tools:ignore="NewApi">@color/primary_dark</item>-->
+    </style>
+
+    <style name="SlideActivity" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/animation_in_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/animation_in_enter</item>
+        <item name="android:activityCloseEnterAnimation">@anim/animation_out_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/animation_out_exit</item>
+    </style>
+
+    <style name="DialogTheme" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+        <!--<item name="colorAccent">@color/text_white</item>-->
+        <!--<item name="android:windowBackground">@color/contentBackground</item>-->
+        <!--<item name="android:textColor">@color/text_hint_color</item>-->
+        <!--<item name="android:textColorPrimary">@color/text_hint_color</item>-->
+    </style>
+
+</resources>

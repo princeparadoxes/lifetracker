@@ -1,0 +1,28 @@
+apply plugin: 'findbugs'
+
+task findbugs(type: FindBugs) {
+    description 'Run findbugs'
+    group 'verification'
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "medium"
+    classes = files("$project.projectDir/build/intermediates/classes")
+    excludeFilter = file("$project.rootDir/config/findbugs/exclude.xml")
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        xml {
+            destination "${project.buildDir}/reports/findbugs/findbugs.xml"
+        }
+        html {
+            destination "${project.buildDir}/reports/findbugs/findbugs.html"
+        }
+    }
+
+    classpath = files()
+}

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.princeparadoxes.watertracker">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!--
+    Official guide https://developer.android.com/guide/practices/screens-distribution.html doesn't work
+    There's better solution on stackoverflow:
+    http://stackoverflow.com/a/34353887/5451527
+    -->
+    <compatible-screens>
+        <screen android:screenSize="small" android:screenDensity="ldpi" />
+        <screen android:screenSize="small" android:screenDensity="mdpi" />
+        <screen android:screenSize="small" android:screenDensity="hdpi" />
+        <screen android:screenSize="small" android:screenDensity="xhdpi" />
+        <screen android:screenSize="small" android:screenDensity="420" />
+        <screen android:screenSize="small" android:screenDensity="480" />
+        <screen android:screenSize="small" android:screenDensity="560" />
+        <screen android:screenSize="small" android:screenDensity="640" />
+        <screen android:screenSize="normal" android:screenDensity="ldpi" />
+        <screen android:screenSize="normal" android:screenDensity="mdpi" />
+        <screen android:screenSize="normal" android:screenDensity="hdpi" />
+        <screen android:screenSize="normal" android:screenDensity="xhdpi" />
+        <screen android:screenSize="normal" android:screenDensity="420" />
+        <screen android:screenSize="normal" android:screenDensity="480" />
+        <screen android:screenSize="normal" android:screenDensity="560" />
+        <screen android:screenSize="normal" android:screenDensity="640" />
+        <screen android:screenSize="large" android:screenDensity="ldpi" />
+        <screen android:screenSize="large" android:screenDensity="mdpi" />
+        <screen android:screenSize="large" android:screenDensity="hdpi" />
+        <screen android:screenSize="large" android:screenDensity="xhdpi" />
+        <screen android:screenSize="large" android:screenDensity="420" />
+        <screen android:screenSize="large" android:screenDensity="480" />
+        <screen android:screenSize="large" android:screenDensity="560" />
+        <screen android:screenSize="large" android:screenDensity="640" />
+    </compatible-screens>
+
+    <application
+        android:name="com.princeparadoxes.watertracker.ProjectApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Project"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name="com.princeparadoxes.watertracker.ui.screen.main.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            </activity>
+
+        <receiver
+            android:name="com.princeparadoxes.watertracker.service.network.InnerNetworkReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
