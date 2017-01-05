@@ -1,5 +1,6 @@
 package com.princeparadoxes.watertracker.ui.screen.main.live;
 
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
@@ -19,6 +20,8 @@ public class WaterFragment extends BaseFragment {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.water_gl_view)
+    GLSurfaceView mGLSurfaceView;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -53,8 +56,8 @@ public class WaterFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         mDisposable = new CompositeDisposable();
-        initButtons();
         initToolbar();
+        initGlSurfaceView();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,11 +68,27 @@ public class WaterFragment extends BaseFragment {
         mToolbar.setTitle(R.string.water_fragment_title);
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////  BUTTONS  /////////////////////////////////////////////
+    ////////////////////////////////////  GL SURFACE VIEW  ////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initButtons() {
+    private void initGlSurfaceView() {
+        mGLSurfaceView.setEGLContextClientVersion(2);
+        mGLSurfaceView.setRenderer(new OpenGLRenderer());
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mGLSurfaceView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mGLSurfaceView.onPause();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
