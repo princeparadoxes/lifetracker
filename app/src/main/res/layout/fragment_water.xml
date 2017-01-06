@@ -11,7 +11,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
 
-    <include layout="@layout/toolbar"/>
+    <!--<include layout="@layout/toolbar"/>-->
 
     <com.princeparadoxes.watertracker.misc.AndroidFastRenderView
         android:id="@+id/water_fast_render_view"

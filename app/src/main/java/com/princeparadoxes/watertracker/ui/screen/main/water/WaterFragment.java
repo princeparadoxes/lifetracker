@@ -28,8 +28,8 @@ public class WaterFragment extends BaseFragment {
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
     @BindView(R.id.water_fast_render_view)
     AndroidFastRenderView mRenderView;
 
@@ -69,7 +69,7 @@ public class WaterFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         mDisposable = new CompositeDisposable();
-        initToolbar();
+//        initToolbar();
         initGlSurfaceView();
     }
 
@@ -77,9 +77,9 @@ public class WaterFragment extends BaseFragment {
     ////////////////////////////////////////  TOOLBAR  ////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initToolbar() {
-        mToolbar.setTitle(R.string.water_fragment_title);
-    }
+//    private void initToolbar() {
+//        mToolbar.setTitle(R.string.water_fragment_title);
+//    }
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
