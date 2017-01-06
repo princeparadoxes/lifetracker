@@ -71,7 +71,7 @@ public class WaterWorld {
         particlePositions = particlePositionsBuffer.array();
 
         particlePaint = new Paint();
-        particlePaint.setARGB(255, 0, 255, 0);
+        particlePaint.setARGB(255, 0, 0, 255);
         particlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         // stored to prevent GC
@@ -131,8 +131,8 @@ public class WaterWorld {
     public synchronized void update() {
         // advance the physics simulation
         world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
-        // clear the screen (with black)
-        canvas.drawARGB(255, 0, 0, 0);
+        // clear the screen (with white)
+        canvas.drawARGB(255, 255, 255, 255);
         for (WorldObject obj : objects)
             obj.draw(buffer);
         drawParticles();
