@@ -45,7 +45,7 @@ public class WaterWorld {
     private ByteBuffer particlePositionsBuffer;
     private static final int BYTESPERPARTICLE = 8;
     private static final int MAXPARTICLECOUNT = 1000;
-    private static final float PARTICLE_RADIUS = 0.3f;
+    private static final float PARTICLE_RADIUS = 0.2f;
 
     // Parameters for world simulation
     private static final float TIME_STEP = 1 / 24f; // 60 fps

@@ -13,8 +13,7 @@ public class AccelerometerListener implements SensorEventListener {
 
     private final WaterWorld gw;
 
-    public AccelerometerListener(WaterWorld gw)
-    {
+    public AccelerometerListener(WaterWorld gw) {
         this.gw = gw;
     }
 

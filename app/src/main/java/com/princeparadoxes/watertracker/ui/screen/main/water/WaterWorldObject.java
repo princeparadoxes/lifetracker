@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import com.google.fpl.liquidfun.ParticleDef;
+import com.google.fpl.liquidfun.ParticleFlag;
 import com.google.fpl.liquidfun.ParticleGroup;
 import com.google.fpl.liquidfun.ParticleGroupDef;
 import com.google.fpl.liquidfun.ParticleSystem;
@@ -18,7 +19,7 @@ import com.princeparadoxes.watertracker.misc.WorldObject;
  *
  * Created by mfaella on 27/02/16.
  */
-public class MarblesWorldObject extends WorldObject
+public class WaterWorldObject extends WorldObject
 {
     private static final float width = 2, height = 2;
     private static float screen_semi_width, screen_semi_height;
@@ -28,7 +29,7 @@ public class MarblesWorldObject extends WorldObject
     private final ParticleSystem psys;
     private final ParticleGroup group;
 
-    public MarblesWorldObject(WaterWorld gw, float x, float y)
+    public WaterWorldObject(WaterWorld gw, float x, float y)
     {
         super(gw);
 
@@ -39,9 +40,10 @@ public class MarblesWorldObject extends WorldObject
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         PolygonShape box = new PolygonShape();
-        box.setAsBox(2, 2);
+        box.setAsBox(5, 5);
         ParticleGroupDef groupDef = new ParticleGroupDef();
-        groupDef.setFlags();
+//        groupDef.setFlags();
+        groupDef.setFlags(ParticleFlag.waterParticle);
         groupDef.setShape(box);
         groupDef.setPosition(x, y);
         group = gw.particleSystem.createParticleGroup(groupDef);

@@ -92,7 +92,7 @@ public class WaterFragment extends BaseFragment {
         Box screenSize = new Box(0, 0, mRenderView.getWidth(), mRenderView.getHeight());
         WaterWorld gw = new WaterWorld(physicalSize, screenSize);
         gw.addGameObject(new EnclosureWorldObject(gw, XMIN, XMAX, YMIN, YMAX));
-        gw.addGameObject(new MarblesWorldObject(gw, 0, 5));
+        gw.addGameObject(new WaterWorldObject(gw, 0, 5));
         mRenderView.setGameworld(gw);
         SensorManager smanager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         if (smanager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty()) {
