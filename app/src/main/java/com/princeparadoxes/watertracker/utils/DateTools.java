@@ -28,7 +28,7 @@ public class DateTools {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         Date date = null;
         try {
-            date = (Date) sdf.parse(string);
+            date = sdf.parse(string);
         } catch (ParseException e) {
             e.printStackTrace();
         }

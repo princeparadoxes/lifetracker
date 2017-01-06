@@ -39,7 +39,7 @@ public abstract class ViewPagerAdapter<T extends Object> extends PagerAdapter {
             throw new IllegalStateException("newView result must not be null.");
         }
         bindView(item, position, view);
-        ((ViewPager) container).addView(view, 0);
+        container.addView(view, 0);
         return view;
     }
 
@@ -54,7 +54,7 @@ public abstract class ViewPagerAdapter<T extends Object> extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((View) object);
+        container.removeView((View) object);
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseActivity;
 import com.princeparadoxes.watertracker.base.FragmentSwitcher;
 import com.princeparadoxes.watertracker.base.HasFragmentContainer;
-import com.princeparadoxes.watertracker.ui.screen.main.live.WaterFragment;
+import com.princeparadoxes.watertracker.ui.screen.main.water.WaterFragment;
 
 public class MainActivity extends BaseActivity implements HasFragmentContainer {
 

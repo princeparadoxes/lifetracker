@@ -1,17 +1,27 @@
-package com.princeparadoxes.watertracker.ui.screen.main.live;
+package com.princeparadoxes.watertracker.ui.screen.main.water;
 
-import android.opengl.GLSurfaceView;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
+import com.princeparadoxes.watertracker.misc.AccelerometerListener;
+import com.princeparadoxes.watertracker.misc.AndroidFastRenderView;
+import com.princeparadoxes.watertracker.misc.Box;
+import com.princeparadoxes.watertracker.misc.EnclosureWorldObject;
 
 import butterknife.BindView;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class WaterFragment extends BaseFragment {
+
+
+    private static final float XMIN = -10, XMAX = 10, YMIN = -15, YMAX = 15;
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,8 +30,8 @@ public class WaterFragment extends BaseFragment {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.water_gl_view)
-    GLSurfaceView mGLSurfaceView;
+    @BindView(R.id.water_fast_render_view)
+    AndroidFastRenderView mRenderView;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -41,6 +51,9 @@ public class WaterFragment extends BaseFragment {
                 .projectComponent(app.component())
                 .build();
         mComponent.inject(this);
+
+        System.loadLibrary("liquidfun");
+        System.loadLibrary("liquidfun_jni");
     }
 
     @Override
@@ -74,21 +87,39 @@ public class WaterFragment extends BaseFragment {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initGlSurfaceView() {
-        mGLSurfaceView.setEGLContextClientVersion(2);
-        mGLSurfaceView.setRenderer(new OpenGLRenderer());
+
+        Box physicalSize = new Box(XMIN, YMIN, XMAX, YMAX);
+        Box screenSize = new Box(0, 0, mRenderView.getWidth(), mRenderView.getHeight());
+        WaterWorld gw = new WaterWorld(physicalSize, screenSize);
+        gw.addGameObject(new EnclosureWorldObject(gw, XMIN, XMAX, YMIN, YMAX));
+        gw.addGameObject(new MarblesWorldObject(gw, 0, 5));
+        mRenderView.setGameworld(gw);
+        SensorManager smanager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        if (smanager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty()) {
+            Log.i(getString(R.string.app_name), "No accelerometer");
+        } else {
+            Sensor accelerometer = smanager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+            if (!smanager.registerListener(new AccelerometerListener(gw), accelerometer, SensorManager.SENSOR_DELAY_NORMAL))
+                Log.i(getString(R.string.app_name), "Could not register accelerometer listener");
+        }
+
+//        mRenderView.setEGLContextClientVersion(2);
+//        mRenderView.setRenderer(new OpenGLRenderer());
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        mGLSurfaceView.onResume();
+//        mRenderView.onResume();
+        mRenderView.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mGLSurfaceView.onPause();
+//        mRenderView.onPause();
+        mRenderView.pause();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

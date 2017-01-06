@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.ui.screen.main.live;
+package com.princeparadoxes.watertracker.ui.screen.main.water;
 
 import com.princeparadoxes.watertracker.ProjectComponent;
 

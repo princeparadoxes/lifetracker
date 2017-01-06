@@ -121,11 +121,7 @@ public class ApplicationSwitcher {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                return true;
-            } else {
-                return false;
-            }
+            return intent.resolveActivity(context.getPackageManager()) != null;
         }
 
         public void openFileManagerForResult() {

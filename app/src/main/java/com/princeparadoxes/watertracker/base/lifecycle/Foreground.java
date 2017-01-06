@@ -49,9 +49,9 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
 
     public interface Listener {
 
-        public void onForeground();
+        void onForeground();
 
-        public void onBackground();
+        void onBackground();
     }
 
     private static Foreground instance;
