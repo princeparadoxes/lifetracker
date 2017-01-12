@@ -1,183 +1,226 @@
 package com.princeparadoxes.watertracker.ui.screen.main.water;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.os.Build;
-import android.util.Log;
+import android.content.Context;
+import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.opengl.GLES20;
 
-import com.google.fpl.liquidfun.ContactListener;
-import com.google.fpl.liquidfun.ParticleSystem;
-import com.google.fpl.liquidfun.ParticleSystemDef;
-import com.google.fpl.liquidfun.World;
-import com.princeparadoxes.watertracker.misc.Box;
-import com.princeparadoxes.watertracker.misc.WorldObject;
-import com.princeparadoxes.watertracker.misc.MyContactListener;
+import com.princeparadoxes.watertracker.R;
+import com.princeparadoxes.watertracker.misc.AccelerometerListener;
+import com.princeparadoxes.watertracker.openGL.Sprite;
+import com.princeparadoxes.watertracker.openGL.Square;
+import com.princeparadoxes.watertracker.openGL.Texture;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.List;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
+import org.jbox2d.particle.ParticleGroup;
+import org.jbox2d.particle.ParticleGroupDef;
+import org.jbox2d.particle.ParticleType;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
-/**
- * The game objects and the viewport.
- * <p>
- * Created by mfaella on 27/02/16.
- */
 public class WaterWorld {
-    // Rendering
-    private final static int bufferWidth = 400, bufferHeight = 600;    // actual pixels
-    private Bitmap buffer;
-    private Canvas canvas;
-    private Paint particlePaint;
-    private final boolean isLittleEndian;
 
-    // Simulation
-    private List<WorldObject> objects;
-    private World world;
-    private final Box physicalSize, screenSize;
-    private ContactListener contactListener; // kept to prevent GC
-    private final int bufferOffset; // an architecture-dependent parameter
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Particles
-    ParticleSystem particleSystem;
-    private byte[] particlePositions;
-    private ByteBuffer particlePositionsBuffer;
-    private static final int BYTESPERPARTICLE = 8;
-    private static final int MAXPARTICLECOUNT = 1000;
-    private static final float PARTICLE_RADIUS = 0.2f;
+    private static final float BASE_UNITS = 13f;
+    private static final int MAX_PARTICLE_COUNT = 1000;
+    private static final float PARTICLE_RADIUS = 0.5f;
 
-    // Parameters for world simulation
-    private static final float TIME_STEP = 1 / 24f; // 60 fps
-    private static final int VELOCITY_ITERATIONS = 8;
-    private static final int POSITION_ITERATIONS = 3;
-    private static final int PARTICLE_ITERATIONS = 3;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Arguments are in physical simulation units.
-    public WaterWorld(Box physicalSize, Box screenSize) {
-        this.physicalSize = physicalSize;
-        this.screenSize = screenSize;
+    private final Resources mResources;
 
-        this.buffer = Bitmap.createBitmap(bufferWidth, bufferHeight, Bitmap.Config.ARGB_8888);
-        this.world = new World(0, 0);  // gravity vector
+    private Matrix4f mView = new Matrix4f();
+    private Sprite ballSprite;
+    private World mWorld;
+    private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-        // The particle system
-        ParticleSystemDef psysdef = new ParticleSystemDef();
-        this.particleSystem = world.createParticleSystem(psysdef);
-        particleSystem.setRadius(PARTICLE_RADIUS);
-        particleSystem.setMaxParticleCount(MAXPARTICLECOUNT);
-        psysdef.delete();
-        particlePositionsBuffer = ByteBuffer.allocateDirect(MAXPARTICLECOUNT * BYTESPERPARTICLE);
-        particlePositions = particlePositionsBuffer.array();
+    private float mVirtualWidth;
+    private float mVirtualHeight;
+    private boolean isObjectCreated = false;
 
-        particlePaint = new Paint();
-        particlePaint.setARGB(255, 0, 0, 255);
-        particlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+    private Boolean mIsSlow = false;
 
-        // stored to prevent GC
-        contactListener = new MyContactListener();
-        world.setContactListener(contactListener);
-
-        this.objects = new ArrayList<>();
-        this.canvas = new Canvas(buffer);
-
-        isLittleEndian = (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN);
-        // An ugly trick, can we do better?
-        Log.d("DEBUG", "Build.FINGERPRINT=" + Build.FINGERPRINT);
-        Log.d("DEBUG", "Build.PRODUCT=" + Build.PRODUCT);
-        if (Build.FINGERPRINT.contains("generic") ||
-                Build.FINGERPRINT.contains("unknown") ||
-                Build.PRODUCT.contains("sdk"))
-            bufferOffset = 0; // emulator
-        else
-            bufferOffset = 4; // real device
+    private enum ObjectType {
+        WATER_PARTICLES,
+        BORDERS,
     }
 
-    public synchronized WorldObject addGameObject(WorldObject obj) {
-        objects.add(obj);
-        return obj;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public WaterWorld(Context context) {
+        mResources = context.getResources();
+        createWorld();
+        registerAccelerometerListener(context);
     }
 
-    public synchronized void addParticleGroup(WorldObject obj) {
-        objects.add(obj);
+    private void createWorld() {
+        mWorld = new World(new Vec2(0.0f, -9.81f));
+        mWorld.setParticleRadius(PARTICLE_RADIUS);
+        mWorld.setParticleMaxCount(MAX_PARTICLE_COUNT);
     }
 
-    private void drawParticles() {
-        final int particleCount = particleSystem.getParticleCount();
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  ACCELEROMETER  //////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Log.d("GameWorld", "about to draw " + particleCount + " particles");
+    private void registerAccelerometerListener(Context context) {
+        SensorManager service = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        if (service.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty()) return;
+        Sensor sensor = service.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+        service.registerListener(getAccelerometerListener(), sensor, SensorManager.SENSOR_DELAY_UI);
+    }
 
-        particleSystem.copyPositionBuffer(0, particleCount, particlePositionsBuffer);
+    private AccelerometerListener getAccelerometerListener() {
+        return new AccelerometerListener((x, y) -> {
+            mWorld.setGravity(new Vec2(-x, -y));
+        });
+    }
 
-        for (int i = 0; i < particleCount; i++) {
-            int xint, yint;
-            if (isLittleEndian) {
-                xint = (particlePositions[i * 8 + bufferOffset] & 0xFF) | (particlePositions[i * 8 + bufferOffset + 1] & 0xFF) << 8 |
-                        (particlePositions[i * 8 + bufferOffset + 2] & 0xFF) << 16 | (particlePositions[i * 8 + bufferOffset + 3] & 0xFF) << 24;
-                yint = (particlePositions[i * 8 + bufferOffset + 4] & 0xFF) | (particlePositions[i * 8 + bufferOffset + 5] & 0xFF) << 8 |
-                        (particlePositions[i * 8 + bufferOffset + 6] & 0xFF) << 16 | (particlePositions[i * 8 + bufferOffset + 7] & 0xFF) << 24;
-            } else {
-                xint = (particlePositions[i * 8] & 0xFF) << 24 | (particlePositions[i * 8 + 1] & 0xFF) << 16 |
-                        (particlePositions[i * 8 + 2] & 0xFF) << 8 | (particlePositions[i * 8 + 3] & 0xFF);
-                yint = (particlePositions[i * 8 + 4] & 0xFF) << 24 | (particlePositions[i * 8 + 5] & 0xFF) << 16 |
-                        (particlePositions[i * 8 + 6] & 0xFF) << 8 | (particlePositions[i * 8 + 7] & 0xFF);
-            }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  CREATE OBJECTS  /////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-            float x = Float.intBitsToFloat(xint), y = Float.intBitsToFloat(yint);
-            canvas.drawCircle(toPixelsX(x), toPixelsY(y), 6, particlePaint);
+    public void createObjects() {
+        if (isObjectCreated) return;
+        createBorders();
+        createWater();
+        isObjectCreated = true;
+    }
+
+    private void createWater() {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(5f, 5f);
+
+        ParticleGroupDef particleGroupDef = new ParticleGroupDef();
+        particleGroupDef.flags = ParticleType.b2_waterParticle;
+        particleGroupDef.shape = shape;
+
+        ParticleGroup particleGroup = mWorld.createParticleGroup(particleGroupDef);
+        particleGroup.setUserData(ObjectType.WATER_PARTICLES);
+    }
+
+    private void createBorders() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.userData = ObjectType.BORDERS;
+        bodyDef.type = BodyType.KINEMATIC;
+        Body body = mWorld.createBody(bodyDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(mVirtualWidth, 0.05f, new Vec2(mVirtualWidth / 2, 0), 0);
+        createBorderFixture(body, shape);
+        shape.setAsBox(mVirtualWidth, 0.05f, new Vec2(mVirtualWidth / 2, mVirtualHeight), 0);
+        createBorderFixture(body, shape);
+        shape.setAsBox(0.05f, mVirtualHeight, new Vec2(0, mVirtualHeight / 2), 0);
+        createBorderFixture(body, shape);
+        shape.setAsBox(0.05f, mVirtualHeight, new Vec2(mVirtualWidth, mVirtualHeight / 2), 0);
+        createBorderFixture(body, shape);
+    }
+
+    private void createBorderFixture(Body body, PolygonShape shape) {
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.userData = null;
+        fixtureDef.friction = 0.5f;
+        fixtureDef.restitution = 0.05f;
+        fixtureDef.density = 1.0f;
+        fixtureDef.isSensor = false;
+        body.createFixture(fixtureDef);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  INIT  ///////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void init() {
+        enable2DTextures();
+        createSprites();
+    }
+
+    private void enable2DTextures() {
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private void createSprites() {
+        Texture waterTexture = new Texture(mResources, R.drawable.ball);
+        ballSprite = new Sprite(waterTexture);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  SET SIZE  ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void setSize(int width, int height) {
+        final float aspectRatio = ((float) height) / ((float) width);
+        mVirtualWidth = BASE_UNITS;
+        mVirtualHeight = mVirtualWidth * aspectRatio;
+
+        mView = new Matrix4f().ortho(0, mVirtualWidth, 0, mVirtualHeight, 1, -1);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  UPDATE  /////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void update(float delta) {
+        if (mIsSlow) mWorld.step(delta * 0.2f, 8, 3);
+        else mWorld.step(delta, 8, 3);
+
+        for (Body b = mWorld.getBodyList(); b != null; b = b.getNext()) {
+            Vec2 position = b.getPosition();
+            if (position.y < -5 || position.x < -5 || position.x > 18) mWorld.destroyBody(b);
         }
     }
 
-    public synchronized void update() {
-        // advance the physics simulation
-        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS, PARTICLE_ITERATIONS);
-        // clear the screen (with white)
-        canvas.drawARGB(255, 255, 255, 255);
-        for (WorldObject obj : objects)
-            obj.draw(buffer);
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  DRAW  ///////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void draw() {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        drawBodies();
         drawParticles();
-        // handle touch events
     }
 
-    public float toPixelsX(float x) {
-        return (x - physicalSize.xmin) / physicalSize.width * bufferWidth;
+    private void drawBodies() {
+        int bodyCount = mWorld.getBodyCount();
+        if (bodyCount <= 0) return;
+        Body body = mWorld.getBodyList();
+        for (int i = 0; i < bodyCount; i++) {
+            Square.color = mDrawWhite;
+//                switch ((ObjectType) body.getUserData()) {
+//                }
+            body = body.getNext();
+        }
     }
 
-    public float toPixelsY(float y) {
-        return (y - physicalSize.ymin) / physicalSize.height * bufferHeight;
-    }
-
-    public float toPixelsXLength(float x) {
-        return x / physicalSize.width * bufferWidth;
-    }
-
-    public float toPixelsYLength(float y) {
-        return y / physicalSize.height * bufferHeight;
-    }
-
-    public synchronized void setGravity(float x, float y) {
-        world.setGravity(x, y);
-    }
-
-    public Box getScreenSize() {
-        return screenSize;
-    }
-
-    public Box getPhysicalSize() {
-        return physicalSize;
-    }
-
-    public Bitmap getBuffer() {
-        return buffer;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    @Override
-    public void finalize() {
-        world.delete();
+    private void drawParticles() {
+        int particleCount = mWorld.getParticleCount();
+        if (particleCount <= 0) return;
+        Vec2[] particlePositions = mWorld.getParticlePositionBuffer();
+//        for (Vec2 position : particlePositions) {
+//            ballSprite.draw(position, 0, 1.05f / 100.0f, mView);
+//        }
+        for (int i = 0; i < particlePositions.length; i++) {
+//            if (i % 3 != 0) continue;
+            Vec2 position = particlePositions[i];
+            ballSprite.draw(position, 0, 1.05f / 100.0f, mView);
+        }
     }
 
 }

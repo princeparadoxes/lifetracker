@@ -1,41 +1,30 @@
 package com.princeparadoxes.watertracker.ui.screen.main.water;
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
-import com.princeparadoxes.watertracker.misc.AccelerometerListener;
-import com.princeparadoxes.watertracker.misc.AndroidFastRenderView;
-import com.princeparadoxes.watertracker.misc.Box;
-import com.princeparadoxes.watertracker.misc.EnclosureWorldObject;
 
 import butterknife.BindView;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class WaterFragment extends BaseFragment {
 
-
-    private static final float XMIN = -10, XMAX = 10, YMIN = -15, YMAX = 15;
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    @BindView(R.id.water_fast_render_view)
-    AndroidFastRenderView mRenderView;
+    @BindView(R.id.water_gl_view)
+    GLSurfaceView mGLSurfaceView;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private WaterScope.Component mComponent;
+
     private CompositeDisposable mDisposable;
+    private boolean mIsGLViewInit = false;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////  INIT SCREEN  /////////////////////////////////////////////
@@ -45,13 +34,10 @@ public class WaterFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProjectApplication app = ProjectApplication.get(getActivity());
-        mComponent = DaggerWaterScope_Component.builder()
+        WaterScope.Component component = DaggerWaterScope_Component.builder()
                 .projectComponent(app.component())
                 .build();
-        mComponent.inject(this);
-
-        System.loadLibrary("liquidfun");
-        System.loadLibrary("liquidfun_jni");
+        component.inject(this);
     }
 
     @Override
@@ -67,47 +53,33 @@ public class WaterFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         mDisposable = new CompositeDisposable();
-        initGlSurfaceView();
+        initGlSurfaceViewIfNeeded();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  GL SURFACE VIEW  ////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void initGlSurfaceView() {
-
-        Box physicalSize = new Box(XMIN, YMIN, XMAX, YMAX);
-        Box screenSize = new Box(0, 0, mRenderView.getWidth(), mRenderView.getHeight());
-        WaterWorld gw = new WaterWorld(physicalSize, screenSize);
-        gw.addGameObject(new EnclosureWorldObject(gw, XMIN, XMAX, YMIN, YMAX));
-        gw.addGameObject(new WaterWorldObject(gw, 0, 5));
-        mRenderView.setGameworld(gw);
-        SensorManager smanager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        if (smanager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty()) {
-            Log.i(getString(R.string.app_name), "No accelerometer");
-        } else {
-            Sensor accelerometer = smanager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-            if (!smanager.registerListener(new AccelerometerListener(gw), accelerometer, SensorManager.SENSOR_DELAY_NORMAL))
-                Log.i(getString(R.string.app_name), "Could not register accelerometer listener");
-        }
-
-//        mRenderView.setEGLContextClientVersion(2);
-//        mRenderView.setRenderer(new OpenGLRenderer());
+    private void initGlSurfaceViewIfNeeded() {
+        if (mIsGLViewInit) return;
+        mIsGLViewInit = true;
+        mGLSurfaceView.setEGLContextClientVersion(2);
+        mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
+        mGLSurfaceView.setRenderer(new WaterRenderer(getActivity()));
+        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-//        mRenderView.onResume();
-        mRenderView.resume();
+        mGLSurfaceView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        mRenderView.onPause();
-        mRenderView.pause();
+        mGLSurfaceView.onPause();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

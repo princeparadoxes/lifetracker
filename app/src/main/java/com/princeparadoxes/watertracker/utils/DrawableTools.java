@@ -142,7 +142,7 @@ public class DrawableTools {
 //    public static @ColorInt
 //    int getRandomDarkColor(Context context) {
 //        String[] colorArray = context.getResources().getStringArray(R.array.default_color_choice_values);
-//        return Color.parseColor(colorArray[new Random().nextInt(colorArray.length)]);
+//        return color.parseColor(colorArray[new Random().nextInt(colorArray.length)]);
 //    }
 
 //    public static @ColorInt
@@ -152,6 +152,6 @@ public class DrawableTools {
 //        while (id % length != 0 && length > 0) {
 //            length--;
 //        }
-//        return Color.parseColor(colorArray[length]);
+//        return color.parseColor(colorArray[length]);
 //    }
 }

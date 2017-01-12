@@ -142,8 +142,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(':liquidfunwrapper')
-
     // Supports
     compile "com.android.support:design:${versions.supportLibrary}"
     compile "com.android.support:recyclerview-v7:${versions.supportLibrary}"
@@ -180,7 +178,6 @@ dependencies {
     compile 'com.livetyping:cannyviewanimator:0.8'
 
     compile "com.jakewharton.timber:timber:4.2.0"
-//    compile "com.jakewharton.rxbinding:rxbinding:0.4.0"
     //rx
     compile "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
     compile "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"

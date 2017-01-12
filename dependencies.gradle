@@ -15,7 +15,7 @@ ext.versions = [
             versionPatch        : 0,
             versionBuild        : 0, // bump for dogfood builds, public betas, etc.
 
-            minSdk              : 21,
+            minSdk              : 15,
             targetSdk           : 24,
             compileSdk          : 24,
             buildTools          : '25.0.0',

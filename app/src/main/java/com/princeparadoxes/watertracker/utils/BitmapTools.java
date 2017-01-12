@@ -260,7 +260,7 @@ public class BitmapTools {
         // text size in pixels
         paint.setTextSize(textSize);
 //        // text shadow
-//        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+//        paint.setShadowLayer(1f, 0f, 1f, color.WHITE);
 
         // draw text to the Canvas center
         Rect bounds = new Rect();
@@ -347,7 +347,7 @@ public class BitmapTools {
         // text size in pixels
         paint.setTextSize((int) (textSize * scale));
 //        // text shadow
-//        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+//        paint.setShadowLayer(1f, 0f, 1f, color.WHITE);
 
         // draw text to the Canvas center
         Rect bounds = new Rect();
@@ -361,7 +361,7 @@ public class BitmapTools {
     }
 
     /**
-     * Draw the badge with number at the top|right corner of drawable.
+     * draw the badge with number at the top|right corner of drawable.
      * Thx for idea: http://www.skoumal.net/en/android-how-draw-text-bitmap/
      * @param context
      * @param drawable origin drawable.

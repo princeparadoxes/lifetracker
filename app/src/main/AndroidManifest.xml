@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.princeparadoxes.watertracker">
+          package="com.princeparadoxes.watertracker"
+          android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -16,30 +17,78 @@
     http://stackoverflow.com/a/34353887/5451527
     -->
     <compatible-screens>
-        <screen android:screenSize="small" android:screenDensity="ldpi" />
-        <screen android:screenSize="small" android:screenDensity="mdpi" />
-        <screen android:screenSize="small" android:screenDensity="hdpi" />
-        <screen android:screenSize="small" android:screenDensity="xhdpi" />
-        <screen android:screenSize="small" android:screenDensity="420" />
-        <screen android:screenSize="small" android:screenDensity="480" />
-        <screen android:screenSize="small" android:screenDensity="560" />
-        <screen android:screenSize="small" android:screenDensity="640" />
-        <screen android:screenSize="normal" android:screenDensity="ldpi" />
-        <screen android:screenSize="normal" android:screenDensity="mdpi" />
-        <screen android:screenSize="normal" android:screenDensity="hdpi" />
-        <screen android:screenSize="normal" android:screenDensity="xhdpi" />
-        <screen android:screenSize="normal" android:screenDensity="420" />
-        <screen android:screenSize="normal" android:screenDensity="480" />
-        <screen android:screenSize="normal" android:screenDensity="560" />
-        <screen android:screenSize="normal" android:screenDensity="640" />
-        <screen android:screenSize="large" android:screenDensity="ldpi" />
-        <screen android:screenSize="large" android:screenDensity="mdpi" />
-        <screen android:screenSize="large" android:screenDensity="hdpi" />
-        <screen android:screenSize="large" android:screenDensity="xhdpi" />
-        <screen android:screenSize="large" android:screenDensity="420" />
-        <screen android:screenSize="large" android:screenDensity="480" />
-        <screen android:screenSize="large" android:screenDensity="560" />
-        <screen android:screenSize="large" android:screenDensity="640" />
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="420"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="480"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="560"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="640"
+            android:screenSize="small"/>
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="420"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="480"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="560"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="640"
+            android:screenSize="normal"/>
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="420"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="480"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="560"
+            android:screenSize="large"/>
+        <screen
+            android:screenDensity="640"
+            android:screenSize="large"/>
     </compatible-screens>
 
     <application
@@ -53,15 +102,15 @@
         <activity
             android:name="com.princeparadoxes.watertracker.ui.screen.main.MainActivity"
             android:configChanges="orientation"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:hardwareAccelerated="true">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            </activity>
+        </activity>
 
         <receiver
             android:name="com.princeparadoxes.watertracker.service.network.InnerNetworkReceiver"
