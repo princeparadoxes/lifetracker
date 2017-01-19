@@ -69,7 +69,6 @@ public class WaterFragment extends BaseFragment {
         mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
-
     @Override
     public void onResume() {
         super.onResume();

@@ -164,4 +164,32 @@ public class Square {
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
+
+    public void draw(float[] floats) {
+        // Add program to OpenGL ES environment
+        GLES20.glUseProgram(mProgram);
+
+        // Enable a handle to the triangle vertices
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+        // Prepare the triangle coordinate data
+        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false,
+                VERTEX_STRIDE, vertexBuffer);
+
+        float color[] = {Square.color.x, Square.color.y, Square.color.z, Square.color.w};
+        // Set color for drawing the triangle
+        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+
+        // Set color for drawing the triangle
+//        float f[] = new float[16];
+//        matrix.get(f, 0);
+        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, floats, 0);
+
+        // draw the triangle
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_COUNT);
+
+        // Disable vertex array
+        GLES20.glDisableVertexAttribArray(mPositionHandle);
+    }
 }

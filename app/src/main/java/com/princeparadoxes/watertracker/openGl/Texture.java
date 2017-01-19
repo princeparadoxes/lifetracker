@@ -11,8 +11,8 @@ public class Texture {
     private int mTextureID[] = {0};
     private int mWidth, mHeight;
 
-    public Texture(Resources resources, int resource_id) {
-        loadTexture(resources, resource_id);
+    public Texture(Resources resources, int resourceId) {
+        loadTexture(resources, resourceId);
     }
 
     public void destroy() {

@@ -36,9 +36,6 @@ public class WaterRenderer implements GLSurfaceView.Renderer {
         mWaterWorld.init();
     }
 
-//    float Accumulator = 0.0f;
-//    long lastTicks = -1;
-
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         gl.glViewport(0, 0, width, height);
@@ -48,17 +45,7 @@ public class WaterRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        mWaterWorld.update(1.0f / 24.0f);
+        mWaterWorld.update(1.0f / 10.0f);
         mWaterWorld.draw();
-//        if(lastTicks == -1) lastTicks = Calendar.getInstance().getTime().getTime();
-//        final float min_timestep = 1.0f / 100.0f;
-//        long nowticks = Calendar.getInstance().getTime().getTime();
-//        Accumulator += (float) (nowticks - lastTicks) / 1000.0f;
-//        lastTicks = nowticks;
-//        while (Accumulator > min_timestep) {
-//            mWaterWorld.update(min_timestep);
-//            Accumulator -= min_timestep;
-//        }
-//        mWaterWorld.draw();
     }
 }

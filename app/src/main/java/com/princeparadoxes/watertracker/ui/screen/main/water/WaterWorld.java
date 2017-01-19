@@ -25,15 +25,18 @@ import org.jbox2d.particle.ParticleType;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WaterWorld {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static final float BASE_UNITS = 13f;
+    private static final float BASE_UNITS = 20f;
     private static final int MAX_PARTICLE_COUNT = 1000;
-    private static final float PARTICLE_RADIUS = 0.5f;
+    private static final float PARTICLE_RADIUS = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -41,7 +44,7 @@ public class WaterWorld {
 
     private final Resources mResources;
 
-    private Matrix4f mView = new Matrix4f();
+    private Matrix4f mView;
     private Sprite ballSprite;
     private World mWorld;
     private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -103,7 +106,7 @@ public class WaterWorld {
 
     private void createWater() {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(5f, 5f);
+        shape.setAsBox(20f, 20f);
 
         ParticleGroupDef particleGroupDef = new ParticleGroupDef();
         particleGroupDef.flags = ParticleType.b2_waterParticle;
@@ -179,7 +182,7 @@ public class WaterWorld {
 
     public void update(float delta) {
         if (mIsSlow) mWorld.step(delta * 0.2f, 8, 3);
-        else mWorld.step(delta, 8, 3);
+        else mWorld.step(delta, 1, 1);
 
         for (Body b = mWorld.getBodyList(); b != null; b = b.getNext()) {
             Vec2 position = b.getPosition();
@@ -212,15 +215,48 @@ public class WaterWorld {
     private void drawParticles() {
         int particleCount = mWorld.getParticleCount();
         if (particleCount <= 0) return;
-        Vec2[] particlePositions = mWorld.getParticlePositionBuffer();
-//        for (Vec2 position : particlePositions) {
-//            ballSprite.draw(position, 0, 1.05f / 100.0f, mView);
-//        }
-        for (int i = 0; i < particlePositions.length; i++) {
-//            if (i % 3 != 0) continue;
-            Vec2 position = particlePositions[i];
+        Vec2[] particlePositions = getParticlePositions();
+        for (Vec2 position : particlePositions) {
             ballSprite.draw(position, 0, 1.05f / 100.0f, mView);
         }
+    }
+
+    private Vec2[] getParticlePositions() {
+        Vec2[] particlePositions = mWorld.getParticlePositionBuffer();
+        List<Vec2> selectedPositions = new ArrayList<>();
+        List<List<Vec2>> lists = new ArrayList<>();
+        int countSectors = (int) (BASE_UNITS / PARTICLE_RADIUS);
+        for (int i = 0; i < countSectors; i++) {
+            lists.add(new ArrayList<>());
+        }
+        for (int i = 0; i < particlePositions.length; i++) {
+            int arrayPos = Math.round(particlePositions[i].x);
+            arrayPos = arrayPos > countSectors - 1 ? countSectors - 1 : arrayPos;
+            arrayPos = arrayPos < 0 ? 0 : arrayPos;
+            lists.get(arrayPos).add(particlePositions[i]);
+//            selectedPositions.add(particlePositions[i]);
+        }
+        for (List<Vec2> vec2List : lists) {
+            if (vec2List.size() == 0) continue;
+            selectedPositions.add(findMaxForY(vec2List));
+        }
+//        for (int i = 0; i < particlePositions.length; i++) {
+//            if (i % 5 != 0) continue;
+//            selectedPositions.add(particlePositions[i]);
+//        }
+        Vec2[] mass = new Vec2[selectedPositions.size()];
+        selectedPositions.toArray(mass);
+        return mass;
+    }
+
+    private Vec2 findMaxForY(List<Vec2> list) {
+        Vec2 max = list.get(0);
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i).y > max.y) {
+                max = list.get(i);
+            }
+        }
+        return max;
     }
 
 }
