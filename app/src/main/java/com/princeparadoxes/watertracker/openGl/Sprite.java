@@ -1,6 +1,5 @@
 package com.princeparadoxes.watertracker.openGL;
 
-import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
 import org.jbox2d.common.Vec2;
@@ -33,7 +32,14 @@ public class Sprite {
 
     public void draw(Vec2 position, float rotation, Vec2 scale, Matrix4f view) {
         mDrawTexture.bindTexture(0);
-        Square.getInstance().draw(transformMatrix(position, rotation, scale, view));
+        TextureDrawer.getInstance().draw(transformMatrix(position, rotation, scale, view));
+    }
+
+    public void draw(Vec2[] positions, float scale, Matrix4f view){
+        mDrawTexture.bindTexture(0);
+        for(Vec2 position : positions){
+            TextureDrawer.getInstance().draw(transformMatrix(position, 0, new Vec2(scale, scale), view));
+        }
     }
 
     @NonNull
@@ -42,7 +48,7 @@ public class Sprite {
         newSprite.mul(view);
         translateMatrix(newSprite, position);
         scaleMatrix(newSprite, scale);
-        rotateMatrix(newSprite, rotation);
+//        rotateMatrix(newSprite, rotation);
         return newSprite;
     }
 

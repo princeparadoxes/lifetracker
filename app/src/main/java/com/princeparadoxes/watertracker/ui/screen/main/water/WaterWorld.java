@@ -8,10 +8,9 @@ import android.opengl.GLES20;
 
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
-import com.princeparadoxes.watertracker.openGL.BlueSquare;
 import com.princeparadoxes.watertracker.openGL.Sprite;
-import com.princeparadoxes.watertracker.openGL.Square;
 import com.princeparadoxes.watertracker.openGL.Texture;
+import com.princeparadoxes.watertracker.openGL.TextureDrawer;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -25,6 +24,8 @@ import org.jbox2d.particle.ParticleGroupDef;
 import org.jbox2d.particle.ParticleType;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+
+import timber.log.Timber;
 
 public class WaterWorld {
 
@@ -193,9 +194,11 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void draw() {
+        long startTime = System.currentTimeMillis();
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 //        drawBodies();
         drawParticles();
+        Timber.d("Draw time %d", System.currentTimeMillis() - startTime);
     }
 
     private void drawBodies() {
@@ -203,7 +206,7 @@ public class WaterWorld {
         if (bodyCount <= 0) return;
         Body body = mWorld.getBodyList();
         for (int i = 0; i < bodyCount; i++) {
-            Square.color = mDrawWhite;
+            TextureDrawer.color = mDrawWhite;
 //                switch ((ObjectType) body.getUserData()) {
 //                }
             body = body.getNext();
@@ -213,9 +216,10 @@ public class WaterWorld {
     private void drawParticles() {
         int particleCount = mWorld.getParticleCount();
         if (particleCount <= 0) return;
-        for (Vec2 position : mWorld.getParticlePositionBuffer()) {
-            ballSprite.draw(position, 0, 0.01f, mView);
-        }
+//        for (Vec2 position : mWorld.getParticlePositionBuffer()) {
+//            ballSprite.draw(position, 0, 0.01f, mView);
+//        }
+        ballSprite.draw(mWorld.getParticlePositionBuffer(), 0.01f, mView);
 //        BlueSquare.getInstance().draw(getPoints(mWorld.getParticlePositionBuffer()));
 
     }

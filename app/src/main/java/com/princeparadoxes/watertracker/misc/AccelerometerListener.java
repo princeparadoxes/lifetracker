@@ -37,11 +37,11 @@ public class AccelerometerListener implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         float x = event.values[0], y = event.values[1], z = event.values[2];
-        Timber.d("AccelerometerListener event x: %f, y %f, z %f", x, y, z);
+//        Timber.d("AccelerometerListener event x: %f, y %f, z %f", x, y, z);
         if (Math.abs(mTempX - x) < DELTA || Math.abs(mTempY - y) < DELTA) return;
         mTempX = x;
         mTempY = y;
-        Timber.d("AccelerometerListener set gravity x: %f, y %f, z %f", x, y, z);
+//        Timber.d("AccelerometerListener set gravity x: %f, y %f, z %f", x, y, z);
         mListener.onSensorChangeWithDeltaListener(x, y);
     }
 

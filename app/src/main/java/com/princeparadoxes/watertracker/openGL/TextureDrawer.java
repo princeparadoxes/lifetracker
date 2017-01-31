@@ -2,32 +2,42 @@ package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
 
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import java.nio.ShortBuffer;
 
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class BlueSquare {
+public class TextureDrawer {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static Vector4f color = new Vector4f();
+    private static float squareCoords[] = {
+            -0.5f, -0.5f,     // bottom left
+            0.5f, -0.5f,      // bottom right
+            0.5f, 0.5f,      // top right
+            -0.5f, 0.5f};    // top left
+
     private static final int COORDS_PER_VERTEX = 2;
-    private static final int VERTEX_STRIDE = 0;
-    private static final int VERTEX_COUNT = 3;
+    private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
+    private static final int VERTEX_COUNT = 4;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private FloatBuffer vertexBuffer;
+    private ShortBuffer drawListBuffer;
+
+    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
 
     private int mProgram;
     private int mPositionHandle;
@@ -39,11 +49,11 @@ public class BlueSquare {
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static BlueSquare instance = null;
+    private static TextureDrawer instance = null;
 
-    public static BlueSquare getInstance() {
+    public static TextureDrawer getInstance() {
         if (instance == null) {
-            instance = new BlueSquare();
+            instance = new TextureDrawer();
         }
         return instance;
     }
@@ -52,10 +62,23 @@ public class BlueSquare {
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public BlueSquare() {
+    public TextureDrawer() {
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
+        bb.order(ByteOrder.nativeOrder());
+        vertexBuffer = bb.asFloatBuffer();
+        vertexBuffer.put(squareCoords);
+        vertexBuffer.position(0);
 
-        int vertexShader = loadShader(GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
+        dlb.order(ByteOrder.nativeOrder());
+        drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(drawOrder);
+        drawListBuffer.position(0);
+
+        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
@@ -66,6 +89,11 @@ public class BlueSquare {
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
+        // get handle to fragment shader's vMatrix member
+        mMatrixHandle = GLES20.glGetUniformLocation(mProgram, "vMatrix");
+        // get handle to fragment shader's vTexture member
+        mTextureHandle = GLES20.glGetUniformLocation(mProgram, "vTexture");
+        GLES20.glUniform1i(mTextureHandle, 0);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,16 +101,23 @@ public class BlueSquare {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private final String vertexShaderCode =
-            "attribute vec4 vPosition;" +
+            "attribute vec2 vPosition;" +
+                    "varying vec2 TexCoord;" +
+                    "uniform mat4 vMatrix;" +
                     "void main() {" +
-                    "  gl_Position = vPosition;" +
+                    "  gl_Position = vMatrix * vec4(vPosition,0,1);" +
+                    "  TexCoord = vPosition.st + 0.5;" +
+                    "  TexCoord.t = 1.0 - TexCoord.t;" +
                     "}";
 
     private final String fragmentShaderCode =
             "precision mediump float;" +
+                    "uniform sampler2D vTexture;" +
+                    "varying vec2 TexCoord;" +
                     "uniform vec4 vColor;" +
                     "void main() {" +
-                    "  gl_FragColor = vColor;" +
+                    "  gl_FragColor = texture2D(vTexture,TexCoord.st).rgba * vColor;" +
+                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
 
     private static int loadShader(int type, String shaderCode) {
@@ -102,22 +137,31 @@ public class BlueSquare {
     ////////////////////////////////////  DRAW  ///////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void draw(float[] points) {
+    public void draw(Matrix4f matrix) {
+        // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 
-        GLES20.glUniform4f(mColorHandle, 0.0f, 0.0f, 1.0f, 1.0f);
-
-        FloatBuffer vertexData = ByteBuffer
-                .allocateDirect(points.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        vertexData.put(points);
-
-        vertexData.position(0);
         // Enable a handle to the triangle vertices
         GLES20.glEnableVertexAttribArray(mPositionHandle);
-        GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, vertexData);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, points.length / COORDS_PER_VERTEX);
+
+        // Prepare the triangle coordinate data
+        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false,
+                VERTEX_STRIDE, vertexBuffer);
+
+        float color[] = {TextureDrawer.color.x, TextureDrawer.color.y, TextureDrawer.color.z, TextureDrawer.color.w};
+        // Set color for drawing the triangle
+        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+
+        // Set color for drawing the triangle
+        float f[] = new float[16];
+        matrix.get(f, 0);
+        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, f, 0);
+
+        // draw the triangle
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_COUNT);
+
+        // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 
