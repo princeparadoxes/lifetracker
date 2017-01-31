@@ -8,6 +8,7 @@ import android.opengl.GLES20;
 
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
+import com.princeparadoxes.watertracker.openGL.BlueSquare;
 import com.princeparadoxes.watertracker.openGL.Sprite;
 import com.princeparadoxes.watertracker.openGL.Square;
 import com.princeparadoxes.watertracker.openGL.Texture;
@@ -24,9 +25,6 @@ import org.jbox2d.particle.ParticleGroupDef;
 import org.jbox2d.particle.ParticleType;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WaterWorld {
 
@@ -196,7 +194,7 @@ public class WaterWorld {
 
     public void draw() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        drawBodies();
+//        drawBodies();
         drawParticles();
     }
 
@@ -215,48 +213,19 @@ public class WaterWorld {
     private void drawParticles() {
         int particleCount = mWorld.getParticleCount();
         if (particleCount <= 0) return;
-        Vec2[] particlePositions = getParticlePositions();
-        for (Vec2 position : particlePositions) {
-            ballSprite.draw(position, 0, 1.05f / 100.0f, mView);
+        for (Vec2 position : mWorld.getParticlePositionBuffer()) {
+            ballSprite.draw(position, 0, 0.01f, mView);
         }
+//        BlueSquare.getInstance().draw(getPoints(mWorld.getParticlePositionBuffer()));
+
     }
 
-    private Vec2[] getParticlePositions() {
-        Vec2[] particlePositions = mWorld.getParticlePositionBuffer();
-        List<Vec2> selectedPositions = new ArrayList<>();
-        List<List<Vec2>> lists = new ArrayList<>();
-        int countSectors = (int) (BASE_UNITS / PARTICLE_RADIUS);
-        for (int i = 0; i < countSectors; i++) {
-            lists.add(new ArrayList<>());
+    private float[] getPoints(Vec2[] particlesPositions) {
+        float[] points = new float[particlesPositions.length * 2];
+        for (int i = 0; i < particlesPositions.length; i++) {
+            points[i] = particlesPositions[i].x / 1000;
+            points[i + 1] = particlesPositions[i].y / 1000;
         }
-        for (int i = 0; i < particlePositions.length; i++) {
-            int arrayPos = Math.round(particlePositions[i].x);
-            arrayPos = arrayPos > countSectors - 1 ? countSectors - 1 : arrayPos;
-            arrayPos = arrayPos < 0 ? 0 : arrayPos;
-            lists.get(arrayPos).add(particlePositions[i]);
-//            selectedPositions.add(particlePositions[i]);
-        }
-        for (List<Vec2> vec2List : lists) {
-            if (vec2List.size() == 0) continue;
-            selectedPositions.add(findMaxForY(vec2List));
-        }
-//        for (int i = 0; i < particlePositions.length; i++) {
-//            if (i % 5 != 0) continue;
-//            selectedPositions.add(particlePositions[i]);
-//        }
-        Vec2[] mass = new Vec2[selectedPositions.size()];
-        selectedPositions.toArray(mass);
-        return mass;
+        return points;
     }
-
-    private Vec2 findMaxForY(List<Vec2> list) {
-        Vec2 max = list.get(0);
-        for (int i = 1; i < list.size(); i++) {
-            if (list.get(i).y > max.y) {
-                max = list.get(i);
-            }
-        }
-        return max;
-    }
-
 }
