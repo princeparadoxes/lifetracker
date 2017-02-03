@@ -1,11 +1,8 @@
 package com.princeparadoxes.watertracker.ui.screen.main.water;
 
-import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-
-import java.util.Calendar;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -40,12 +37,12 @@ public class WaterRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         gl.glViewport(0, 0, width, height);
         mWaterWorld.setSize(width, height);
-        mWaterWorld.createObjects();
+        mWaterWorld.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         mWaterWorld.update(1.0f / 10.0f);
-        mWaterWorld.draw();
+        mWaterWorld.onDraw();
     }
 }

@@ -2,6 +2,7 @@ package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
 
+import org.jbox2d.common.Vec2;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
@@ -10,10 +11,18 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import timber.log.Timber;
+
+import static android.opengl.GLES20.GL_COMPILE_STATUS;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_LINK_STATUS;
+
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
 public class TextureDrawer {
+    public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
+    public static final int POINTS_ON_PARTICLE = 12;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
@@ -37,19 +46,26 @@ public class TextureDrawer {
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
 
-    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
+    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to onDraw vertices
 
     private int mProgram;
     private int mPositionHandle;
+    private int aTexCoord;
     private int mColorHandle;
     private int mMatrixHandle;
     private int mTextureHandle;
+
+    private FloatBuffer mVertexData;
+    private FloatBuffer mTextureData;
+    private float[] mUniformMatrix;
+    private float[] mTextureMatrix;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static TextureDrawer instance = null;
+    public static final int PARTICLE_SIZE = 6;
 
     public static TextureDrawer getInstance() {
         if (instance == null) {
@@ -70,7 +86,7 @@ public class TextureDrawer {
         vertexBuffer.put(squareCoords);
         vertexBuffer.position(0);
 
-        // initialize byte buffer for the draw list
+        // initialize byte buffer for the onDraw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
         dlb.order(ByteOrder.nativeOrder());
         drawListBuffer = dlb.asShortBuffer();
@@ -84,9 +100,15 @@ public class TextureDrawer {
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
         GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
         GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
+        final int[] linkStatus = new int[1];
+        GLES20.glGetProgramiv(mProgram, GL_LINK_STATUS, linkStatus, 0);
+        if (linkStatus[0] == 0) {
+            Timber.e("Program not linked");
+        }
 
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
+        aTexCoord = GLES20.glGetAttribLocation(mProgram, "aTexCoord");
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
         // get handle to fragment shader's vMatrix member
@@ -94,6 +116,9 @@ public class TextureDrawer {
         // get handle to fragment shader's vTexture member
         mTextureHandle = GLES20.glGetUniformLocation(mProgram, "vTexture");
         GLES20.glUniform1i(mTextureHandle, 0);
+
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        GLES20.glEnableVertexAttribArray(aTexCoord);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,25 +127,29 @@ public class TextureDrawer {
 
     private final String vertexShaderCode =
             "attribute vec2 vPosition;" +
+                    "attribute vec2 aTexCoord;" +
                     "varying vec2 TexCoord;" +
                     "uniform mat4 vMatrix;" +
                     "void main() {" +
-                    "  gl_Position = vMatrix * vec4(vPosition,0,1);" +
-                    "  TexCoord = vPosition.st + 0.5;" +
-                    "  TexCoord.t = 1.0 - TexCoord.t;" +
+                    "  gl_Position = vec4(vPosition,0,1) * vMatrix;" +
+                    "  TexCoord = aTexCoord;" +
+//                    "  TexCoord = vPosition.st + 0.5;" +
+//                    "  TexCoord.t = 1.0 - TexCoord.t;" +
                     "}";
 
     private final String fragmentShaderCode =
             "precision mediump float;" +
                     "uniform sampler2D vTexture;" +
                     "varying vec2 TexCoord;" +
-                    "uniform vec4 vColor;" +
+//                    "uniform vec4 vColor;" +
                     "void main() {" +
-                    "  gl_FragColor = texture2D(vTexture,TexCoord.st).rgba * vColor;" +
-                    "  gl_FragColor *= gl_FragColor.a;" +
+//                    "  gl_FragColor = vec4(1,0,0,1);" +
+//                    "  gl_FragColor = texture2D(vTexture,TexCoord.st).rgba * vColor;" +
+                    "  gl_FragColor = texture2D(vTexture, TexCoord).rgba;" +
+//                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
 
-    private static int loadShader(int type, String shaderCode) {
+    private int loadShader(int type, String shaderCode) {
 
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
@@ -129,40 +158,90 @@ public class TextureDrawer {
         // add the source code to the shader and compile it
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
-
+        final int[] compileStatus = new int[1];
+        GLES20.glGetShaderiv(shader, GL_COMPILE_STATUS, compileStatus, 0);
+        if (compileStatus[0] == 0) {
+            Timber.e("Shader not compile");
+            return 0;
+        }
         return shader;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////  DRAW  ///////////////////////////////////////////////////
+    ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void draw(Matrix4f matrix) {
+    public void onSurfaceChanged(int maxParticleCount, int width, int height) {
+        int bufferSize = maxParticleCount * POINTS_ON_PARTICLE * FLOAT_BYTES;
+        mVertexData = ByteBuffer.allocateDirect(bufferSize)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mTextureData = ByteBuffer.allocateDirect(bufferSize)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+
+        final float aspectRatio = ((float) width) / ((float) height);
+        mUniformMatrix = new float[]{
+                .1f, 0, 0, -1,
+                0, .1f * aspectRatio, 0, -1,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+        };
+
+        mTextureMatrix = new float[maxParticleCount * POINTS_ON_PARTICLE];
+        for (int i = 0; i < maxParticleCount; i++) {
+            mTextureMatrix[POINTS_ON_PARTICLE * i] = 0;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 1] = 0;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 2] = 0;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 3] = 1;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 4] = 1;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 5] = 1;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 6] = 0;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 7] = 0;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 8] = 1;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 9] = 0;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 10] = 1;
+            mTextureMatrix[POINTS_ON_PARTICLE * i + 11] = 1;
+        }
+        mTextureData.put(mTextureMatrix);
+        mTextureData.position(0);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  ON DRAW  ////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void draw(Vec2[] positions) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 
-        // Enable a handle to the triangle vertices
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        float[] calculatedPositions = calculateAdditionalPoints(positions);
+        mVertexData.put(calculatedPositions);
+        mVertexData.position(0);
 
-        // Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
-                VERTEX_STRIDE, vertexBuffer);
+        GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
+        GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
+        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
 
-        float color[] = {TextureDrawer.color.x, TextureDrawer.color.y, TextureDrawer.color.z, TextureDrawer.color.w};
-        // Set color for drawing the triangle
-        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
-
-        // Set color for drawing the triangle
-        float f[] = new float[16];
-        matrix.get(f, 0);
-        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, f, 0);
-
-        // draw the triangle
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_COUNT);
-
-        // Disable vertex array
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
     }
 
+    private float[] calculateAdditionalPoints(Vec2[] positions){
+        float[] calculatedPoints = new float[positions.length * POINTS_ON_PARTICLE];
+        for (int i = 0; i < positions.length; i++) {
+            calculatedPoints[POINTS_ON_PARTICLE * i] = positions[i].x - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].y - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].x - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].y + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 4] = positions[i].x + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 5] = positions[i].y + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 6] = positions[i].x - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 7] = positions[i].y - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 8] = positions[i].x + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 9] = positions[i].y - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 10] = positions[i].x + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 11] = positions[i].y + PARTICLE_SIZE / 2;
+        }
+        return calculatedPoints;
+    }
 }

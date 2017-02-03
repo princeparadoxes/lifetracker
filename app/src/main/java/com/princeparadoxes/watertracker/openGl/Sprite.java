@@ -32,14 +32,15 @@ public class Sprite {
 
     public void draw(Vec2 position, float rotation, Vec2 scale, Matrix4f view) {
         mDrawTexture.bindTexture(0);
-        TextureDrawer.getInstance().draw(transformMatrix(position, rotation, scale, view));
+//        TextureDrawer.getInstance().onDraw(transformMatrix(position, rotation, scale, view));
     }
 
-    public void draw(Vec2[] positions, float scale, Matrix4f view){
+    public void draw(Vec2[] positions) {
         mDrawTexture.bindTexture(0);
-        for(Vec2 position : positions){
-            TextureDrawer.getInstance().draw(transformMatrix(position, 0, new Vec2(scale, scale), view));
-        }
+//        for(Vec2 position : positions){
+        Vec2 pos = new Vec2(0, 0);
+        TextureDrawer.getInstance().draw(positions);
+//        }
     }
 
     @NonNull

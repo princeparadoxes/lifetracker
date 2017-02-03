@@ -117,7 +117,7 @@ public class BlueTriangleDrawer {
         // Enable a handle to the triangle vertices
         GLES20.glEnableVertexAttribArray(mPositionHandle);
         GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, vertexData);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, points.length / COORDS_PER_VERTEX);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, points.length / COORDS_PER_VERTEX);
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 

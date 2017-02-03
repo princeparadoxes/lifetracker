@@ -43,7 +43,7 @@ public class WaterWorld {
 
     private final Resources mResources;
 
-    private Matrix4f mView;
+//    private Matrix4f mView;
     private Sprite ballSprite;
     private World mWorld;
     private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -93,10 +93,51 @@ public class WaterWorld {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  INIT  ///////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void init() {
+        enable2DTextures();
+        createSprites();
+    }
+
+    private void enable2DTextures() {
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private void createSprites() {
+        Texture waterTexture = new Texture(mResources, R.drawable.water);
+        ballSprite = new Sprite(waterTexture);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  SET SIZE  ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void setSize(int width, int height) {
+        final float aspectRatio = ((float) height) / ((float) width);
+        mVirtualWidth = BASE_UNITS;
+        mVirtualHeight = mVirtualWidth * aspectRatio;
+
+//        mView = new Matrix4f().ortho(0, mVirtualWidth, 0, mVirtualHeight, 1, -1);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void onSurfaceChanged(int width, int height){
+        TextureDrawer.getInstance().onSurfaceChanged(MAX_PARTICLE_COUNT, width, height);
+        createObjects();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CREATE OBJECTS  /////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void createObjects() {
+    private void createObjects() {
         if (isObjectCreated) return;
         createBorders();
         createWater();
@@ -144,38 +185,6 @@ public class WaterWorld {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////  INIT  ///////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void init() {
-        enable2DTextures();
-        createSprites();
-    }
-
-    private void enable2DTextures() {
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    private void createSprites() {
-        Texture waterTexture = new Texture(mResources, R.drawable.ball);
-        ballSprite = new Sprite(waterTexture);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////  SET SIZE  ///////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void setSize(int width, int height) {
-        final float aspectRatio = ((float) height) / ((float) width);
-        mVirtualWidth = BASE_UNITS;
-        mVirtualHeight = mVirtualWidth * aspectRatio;
-
-        mView = new Matrix4f().ortho(0, mVirtualWidth, 0, mVirtualHeight, 1, -1);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  UPDATE  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -193,7 +202,7 @@ public class WaterWorld {
     ////////////////////////////////////  DRAW  ///////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void draw() {
+    public void onDraw() {
         long startTime = System.currentTimeMillis();
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 //        drawBodies();
@@ -216,20 +225,6 @@ public class WaterWorld {
     private void drawParticles() {
         int particleCount = mWorld.getParticleCount();
         if (particleCount <= 0) return;
-//        for (Vec2 position : mWorld.getParticlePositionBuffer()) {
-//            ballSprite.draw(position, 0, 0.01f, mView);
-//        }
-        ballSprite.draw(mWorld.getParticlePositionBuffer(), 0.01f, mView);
-//        BlueSquare.getInstance().draw(getPoints(mWorld.getParticlePositionBuffer()));
-
-    }
-
-    private float[] getPoints(Vec2[] particlesPositions) {
-        float[] points = new float[particlesPositions.length * 2];
-        for (int i = 0; i < particlesPositions.length; i++) {
-            points[i] = particlesPositions[i].x / 1000;
-            points[i + 1] = particlesPositions[i].y / 1000;
-        }
-        return points;
+        ballSprite.draw(mWorld.getParticlePositionBuffer());
     }
 }
