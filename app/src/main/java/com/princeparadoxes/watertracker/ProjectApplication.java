@@ -2,6 +2,7 @@ package com.princeparadoxes.watertracker;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.princeparadoxes.watertracker.base.lifecycle.Foreground;
 import com.princeparadoxes.watertracker.service.network.NetworkReceiver;
@@ -18,6 +19,7 @@ public class ProjectApplication extends Application implements Foreground.Listen
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

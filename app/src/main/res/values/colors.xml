@@ -23,9 +23,9 @@
     <!--5% — 0D -->
     <!--0% — 00-->
 
-    <color name="primaryDark">#000000</color>
-    <color name="primary">#282b30</color>
-    <color name="primaryLight">#B3E5FC</color>
+    <color name="primaryDark">@android:color/holo_green_dark</color>
+    <color name="primary">@android:color/holo_green_dark</color>
+    <color name="primaryLight">@android:color/holo_green_dark</color>
     <color name="accent">#1a99e3</color>
     <color name="iconPrimary">#FFFFFF</color>
     <color name="iconSecondary">#757575</color>

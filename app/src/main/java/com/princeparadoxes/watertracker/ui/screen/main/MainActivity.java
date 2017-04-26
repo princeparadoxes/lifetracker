@@ -4,16 +4,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseActivity;
-import com.princeparadoxes.watertracker.base.FragmentSwitcher;
+import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
 import com.princeparadoxes.watertracker.base.HasFragmentContainer;
+import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterFragment;
+import com.princeparadoxes.watertracker.utils.StatusBarUtil;
+
+import butterknife.BindView;
 
 public class MainActivity extends BaseActivity implements HasFragmentContainer {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @BindView(R.id.main_start_fragment_container)
+    View mStartFragmentContainer;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    private BottomSheetBehavior mBottomSheetBehavior;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INIT SCREEN  ////////////////////////////////////////////
@@ -34,7 +53,7 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
 
     @Override
     public int fragmentsContainerId() {
-        return R.id.main_fragment_container;
+        return R.id.main_water_fragment_container;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +65,25 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            openWaterScreen();
+            addStartScreen();
+            addWaterScreen();
         }
+        int color = ContextCompat.getColor(this, R.color.accent);
+//        StatusBarUtil.setColor(this, color);
+        getWindow().setStatusBarColor(color);
+        getWindow().setNavigationBarColor(color);
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(mStartFragmentContainer);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        mBottomSheetBehavior.setPeekHeight(0);
+    }
+
+    public void setTranslucentStatus() {
+        StatusBarUtil.setTranslucentStatus(this, true);
+    }
+
+    public void setTranslucentStatusPadding() {
+        StatusBarUtil.setTransparent(this);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +93,7 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
     protected void onStart() {
         super.onStart();
     }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  STOP SCREEN  ////////////////////////////////////////////
@@ -71,11 +108,18 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
     ////////////////////////////////////  NAVIGATION  /////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void openWaterScreen() {
-        FragmentSwitcher.start(getSupportFragmentManager())
+    private void addWaterScreen() {
+        FragmentSwitcherCompat.start(getSupportFragmentManager())
                 .fragment(WaterFragment.newInstance())
-                .containerActivity(this)
-                .replaceWithAddToBackStack();
+                .containerId(R.id.main_water_fragment_container)
+                .add();
+    }
+
+    private void addStartScreen() {
+        FragmentSwitcherCompat.start(getSupportFragmentManager())
+                .fragment(StartFragment.newInstance())
+                .containerId(R.id.main_start_fragment_container)
+                .add();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

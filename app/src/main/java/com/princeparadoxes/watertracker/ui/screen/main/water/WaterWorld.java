@@ -22,7 +22,6 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.particle.ParticleGroup;
 import org.jbox2d.particle.ParticleGroupDef;
 import org.jbox2d.particle.ParticleType;
-import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
 import timber.log.Timber;
@@ -34,8 +33,8 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final float BASE_UNITS = 20f;
-    private static final int MAX_PARTICLE_COUNT = 1000;
-    private static final float PARTICLE_RADIUS = 1f;
+    private static final int MAX_PARTICLE_COUNT = 10000;
+    private static final float PARTICLE_RADIUS = 0.5f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -43,7 +42,6 @@ public class WaterWorld {
 
     private final Resources mResources;
 
-//    private Matrix4f mView;
     private Sprite ballSprite;
     private World mWorld;
     private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -120,15 +118,13 @@ public class WaterWorld {
         final float aspectRatio = ((float) height) / ((float) width);
         mVirtualWidth = BASE_UNITS;
         mVirtualHeight = mVirtualWidth * aspectRatio;
-
-//        mView = new Matrix4f().ortho(0, mVirtualWidth, 0, mVirtualHeight, 1, -1);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void onSurfaceChanged(int width, int height){
+    public void onSurfaceChanged(int width, int height) {
         TextureDrawer.getInstance().onSurfaceChanged(MAX_PARTICLE_COUNT, width, height);
         createObjects();
     }
@@ -146,7 +142,7 @@ public class WaterWorld {
 
     private void createWater() {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(20f, 20f);
+        shape.setAsBox(10f, 10f, new Vec2(10f, 10f), 0);
 
         ParticleGroupDef particleGroupDef = new ParticleGroupDef();
         particleGroupDef.flags = ParticleType.b2_waterParticle;
@@ -163,9 +159,9 @@ public class WaterWorld {
         Body body = mWorld.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(mVirtualWidth, 0.05f, new Vec2(mVirtualWidth / 2, 0), 0);
+        shape.setAsBox(mVirtualWidth + 2 * 0.05f, 0.05f, new Vec2(mVirtualWidth / 2, 0), 0);
         createBorderFixture(body, shape);
-        shape.setAsBox(mVirtualWidth, 0.05f, new Vec2(mVirtualWidth / 2, mVirtualHeight), 0);
+        shape.setAsBox(mVirtualWidth + 2 * 0.05f, 0.05f, new Vec2(mVirtualWidth / 2, mVirtualHeight), 0);
         createBorderFixture(body, shape);
         shape.setAsBox(0.05f, mVirtualHeight, new Vec2(0, mVirtualHeight / 2), 0);
         createBorderFixture(body, shape);
@@ -205,7 +201,6 @@ public class WaterWorld {
     public void onDraw() {
         long startTime = System.currentTimeMillis();
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-//        drawBodies();
         drawParticles();
         Timber.d("Draw time %d", System.currentTimeMillis() - startTime);
     }

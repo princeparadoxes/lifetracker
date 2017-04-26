@@ -1,9 +1,9 @@
 package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
+import android.transition.Fade;
 
 import org.jbox2d.common.Vec2;
-import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
 import java.nio.ByteBuffer;
@@ -65,7 +65,7 @@ public class TextureDrawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static TextureDrawer instance = null;
-    public static final int PARTICLE_SIZE = 6;
+    public static final float PARTICLE_SIZE = 2;
 
     public static TextureDrawer getInstance() {
         if (instance == null) {
@@ -226,10 +226,10 @@ public class TextureDrawer {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
     }
 
-    private float[] calculateAdditionalPoints(Vec2[] positions){
+    private float[] calculateAdditionalPoints(Vec2[] positions) {
         float[] calculatedPoints = new float[positions.length * POINTS_ON_PARTICLE];
         for (int i = 0; i < positions.length; i++) {
-            calculatedPoints[POINTS_ON_PARTICLE * i] = positions[i].x - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 0] = positions[i].x - PARTICLE_SIZE / 2;
             calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].y - PARTICLE_SIZE / 2;
             calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].x - PARTICLE_SIZE / 2;
             calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].y + PARTICLE_SIZE / 2;

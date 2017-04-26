@@ -5,6 +5,11 @@ import android.support.annotation.NonNull;
 import org.jbox2d.common.Vec2;
 import org.joml.Matrix4f;
 
+import java.util.Arrays;
+import java.util.List;
+
+import io.reactivex.Flowable;
+
 public class Sprite {
     public static final float ONE_RADIAN = (float) (180.0 / Math.PI);
 
@@ -37,10 +42,7 @@ public class Sprite {
 
     public void draw(Vec2[] positions) {
         mDrawTexture.bindTexture(0);
-//        for(Vec2 position : positions){
-        Vec2 pos = new Vec2(0, 0);
         TextureDrawer.getInstance().draw(positions);
-//        }
     }
 
     @NonNull

@@ -1,13 +1,14 @@
 package com.princeparadoxes.watertracker.base;
 
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.princeparadoxes.watertracker.BuildConfig;
 import com.princeparadoxes.watertracker.DebugDrawerInitializer;
 
 import javax.inject.Inject;
 
-public class DebugBaseActivity extends FragmentActivity {
+public class DebugBaseActivity extends AppCompatActivity {
 
     @Inject
     DebugDrawerInitializer mDebugDrawerInitializer;
