@@ -2,6 +2,10 @@ package com.princeparadoxes.watertracker.ui.screen.main.water;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
@@ -16,7 +20,7 @@ public class WaterFragment extends BaseFragment {
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    @BindView(R.id.water_gl_view)
+//    @BindView(R.id.water_gl_view)
     GLSurfaceView mGLSurfaceView;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +28,7 @@ public class WaterFragment extends BaseFragment {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private CompositeDisposable mDisposable;
-    private boolean mIsGLViewInit = false;
+    private WaterRenderer mWaterRenderer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////  INIT SCREEN  /////////////////////////////////////////////
@@ -40,6 +44,15 @@ public class WaterFragment extends BaseFragment {
         component.inject(this);
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ViewGroup view = (ViewGroup) super.onCreateView(inflater, container, savedInstanceState);
+        mGLSurfaceView = new GLSurfaceView(getContext());
+        view.addView(mGLSurfaceView);
+        return view;
+    }
+
     @Override
     protected int layoutId() {
         return R.layout.fragment_water;
@@ -53,6 +66,8 @@ public class WaterFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         mDisposable = new CompositeDisposable();
+//        if (mWaterRenderer == null) mWaterRenderer = new WaterRenderer(getActivity());
+        mWaterRenderer = new WaterRenderer(getActivity());
         initGlSurfaceViewIfNeeded();
     }
 
@@ -61,11 +76,9 @@ public class WaterFragment extends BaseFragment {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initGlSurfaceViewIfNeeded() {
-        if (mIsGLViewInit) return;
-        mIsGLViewInit = true;
         mGLSurfaceView.setEGLContextClientVersion(2);
         mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
-        mGLSurfaceView.setRenderer(new WaterRenderer(getActivity()));
+        mGLSurfaceView.setRenderer(mWaterRenderer);
         mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
