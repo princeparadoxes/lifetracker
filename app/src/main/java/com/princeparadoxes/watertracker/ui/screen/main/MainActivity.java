@@ -14,7 +14,9 @@ import com.princeparadoxes.watertracker.base.BaseActivity;
 import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
 import com.princeparadoxes.watertracker.base.HasFragmentContainer;
 import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
+import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterFragment;
+import com.princeparadoxes.watertracker.utils.DimenTools;
 import com.princeparadoxes.watertracker.utils.StatusBarUtil;
 
 import butterknife.BindView;
@@ -27,12 +29,15 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
 
     @BindView(R.id.main_start_fragment_container)
     View mStartFragmentContainer;
+    @BindView(R.id.main_statistic_fragment_container)
+    View mStatisticFragmentContainer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private BottomSheetBehavior mBottomSheetBehavior;
+    private BottomSheetBehavior mStartBottomSheetBehavior;
+    private BottomSheetBehavior mStatisticBottomSheetBehavior;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INIT SCREEN  ////////////////////////////////////////////
@@ -67,15 +72,21 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         if (savedInstanceState == null) {
             addStartScreen();
             addWaterScreen();
+            addStatisticScreen();
         }
         int color = ContextCompat.getColor(this, R.color.accent);
 //        StatusBarUtil.setColor(this, color);
         getWindow().setStatusBarColor(color);
         getWindow().setNavigationBarColor(color);
 
-        mBottomSheetBehavior = BottomSheetBehavior.from(mStartFragmentContainer);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        mBottomSheetBehavior.setPeekHeight(0);
+        mStartBottomSheetBehavior = BottomSheetBehavior.from(mStartFragmentContainer);
+        mStartBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        mStartBottomSheetBehavior.setPeekHeight(0);
+
+        mStatisticBottomSheetBehavior = BottomSheetBehavior.from(mStatisticFragmentContainer);
+        mStatisticBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mStatisticBottomSheetBehavior.setHideable(false);
+        mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(this, 64));
     }
 
     public void setTranslucentStatus() {
@@ -119,6 +130,13 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         FragmentSwitcherCompat.start(getSupportFragmentManager())
                 .fragment(StartFragment.newInstance())
                 .containerId(R.id.main_start_fragment_container)
+                .add();
+    }
+
+    private void addStatisticScreen() {
+        FragmentSwitcherCompat.start(getSupportFragmentManager())
+                .fragment(StatisticFragment.newInstance())
+                .containerId(R.id.main_statistic_fragment_container)
                 .add();
     }
 

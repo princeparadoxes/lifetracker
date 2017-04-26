@@ -17,9 +17,14 @@
     <!--android:id="@+id/water_fast_render_view"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"/>-->
-    <!--<android.opengl.GLSurfaceView-->
-        <!--android:id="@+id/water_gl_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
+    <android.opengl.GLSurfaceView
+        android:id="@+id/water_gl_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="65dp"
+        />
+
+    <View style="@style/HorizontalDivider.White"
+        android:layout_marginBottom="64dp"/>
 
 </LinearLayout>

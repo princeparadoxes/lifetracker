@@ -176,6 +176,7 @@ dependencies {
     apt "com.jakewharton:butterknife-compiler:8.4.0"
     compile 'com.github.princeparadoxes:recyclerbindableadapter:1.3'
     compile 'com.livetyping:cannyviewanimator:0.8'
+    compile 'com.yarolegovich:discrete-scrollview:1.1.4'
 
     compile "com.jakewharton.timber:timber:4.2.0"
     //rx

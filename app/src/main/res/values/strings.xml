@@ -15,5 +15,17 @@
     <string name="start_teach_you">Now we\'ll teach you how to use our app</string>
     <string name="start_close">Slide down to skip</string>
 
+    <!--========================================================================================-->
+    <!--===============================  STATISTICS  ===========================================-->
+    <!--========================================================================================-->
+
+    <string name="statistic_header_open">Slide top to open statistic</string>
+    <string name="statistic_header_closed">Slide down to close statistic</string>
+
+    <string name="statistic_type_day">Day</string>
+    <string name="statistic_type_week">Week</string>
+    <string name="statistic_type_month">Month</string>
+    <string name="statistic_type_year">Year</string>
+
 
 </resources>

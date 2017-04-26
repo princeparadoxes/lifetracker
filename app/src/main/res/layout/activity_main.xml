@@ -15,13 +15,13 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"/>
 
-    <!--<fragment-->
-    <!--android:id="@+id/main_start_fragment_container"-->
-    <!--android:name="com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:tag="start_fragment"-->
-    <!--app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>-->
+
+    <FrameLayout
+        android:id="@+id/main_statistic_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
 
     <FrameLayout
         android:id="@+id/main_start_fragment_container"

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_statistic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/accent"
+    android:orientation="vertical"
+    tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
+
+    <TextView
+        android:id="@+id/fragment_start_close"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:text="@string/start_close"
+        android:textColor="@android:color/white"
+        android:drawableStart="@drawable/ic_start_close"
+        android:textSize="20sp"/>
+
+    <com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticTypeView
+        android:id="@+id/statistic_forecast_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerInside" />
+
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/statistic_type_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp" />
+
+</FrameLayout>
