@@ -106,7 +106,7 @@ public class WaterWorld {
     }
 
     private void createSprites() {
-        Texture waterTexture = new Texture(mResources, R.drawable.water);
+        Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle);
         ballSprite = new Sprite(waterTexture);
     }
 

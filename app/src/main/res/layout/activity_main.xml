@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
 
@@ -15,20 +15,20 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"/>
 
-    <fragment
-        android:id="@+id/main_start_fragment_container"
-        android:name="com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="start_fragment"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
-
-    <!--<FrameLayout-->
+    <!--<fragment-->
     <!--android:id="@+id/main_start_fragment_container"-->
+    <!--android:name="com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"-->
-    <!--android:fitsSystemWindows="true"-->
+    <!--android:tag="start_fragment"-->
     <!--app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>-->
+
+    <FrameLayout
+        android:id="@+id/main_start_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
