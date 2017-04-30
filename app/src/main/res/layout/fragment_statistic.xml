@@ -10,18 +10,18 @@
     tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
 
     <TextView
-        android:id="@+id/fragment_start_close"
+        android:id="@+id/statistic_header"
         android:layout_width="wrap_content"
         android:layout_height="64dp"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginBottom="24dp"
         android:gravity="center"
-        android:text="@string/start_close"
+        android:text="@string/statistic_header_open"
         android:textColor="@android:color/white"
-        android:drawableStart="@drawable/ic_start_close"
+        android:drawableStart="@drawable/ic_chevron_up"
         android:textSize="20sp"/>
 
-    <com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticTypeView
+    <com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticChartView
         android:id="@+id/statistic_forecast_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

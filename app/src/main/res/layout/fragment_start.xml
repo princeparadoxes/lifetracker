@@ -28,6 +28,6 @@
         android:layout_marginBottom="24dp"
         android:text="@string/start_close"
         android:textColor="@android:color/white"
-        android:drawableBottom="@drawable/ic_start_close"
+        android:drawableBottom="@drawable/ic_chevron_down"
         android:textSize="20sp"/>
 </FrameLayout>

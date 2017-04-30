@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.princeparadoxes.watertracker.R;
 
-public class StatisticTypeView extends LinearLayout {
+public class StatisticChartView extends LinearLayout {
 
     private Paint gradientPaint;
     private int[] currentGradient;
@@ -30,20 +30,20 @@ public class StatisticTypeView extends LinearLayout {
 
     private ArgbEvaluator evaluator;
 
-    public StatisticTypeView(Context context) {
+    public StatisticChartView(Context context) {
         super(context);
     }
 
-    public StatisticTypeView(Context context, AttributeSet attrs) {
+    public StatisticChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public StatisticTypeView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatisticChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public StatisticTypeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public StatisticChartView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -55,7 +55,7 @@ public class StatisticTypeView extends LinearLayout {
 
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL);
-        inflate(getContext(), R.layout.view_forecast, this);
+        inflate(getContext(), R.layout.statistic_chart_view, this);
 
         weatherDescription = (TextView) findViewById(R.id.weather_description);
         weatherImage = (ImageView) findViewById(R.id.weather_image);

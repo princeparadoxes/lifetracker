@@ -83,10 +83,6 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         mStartBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         mStartBottomSheetBehavior.setPeekHeight(0);
 
-        mStatisticBottomSheetBehavior = BottomSheetBehavior.from(mStatisticFragmentContainer);
-        mStatisticBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        mStatisticBottomSheetBehavior.setHideable(false);
-        mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(this, 64));
     }
 
     public void setTranslucentStatus() {

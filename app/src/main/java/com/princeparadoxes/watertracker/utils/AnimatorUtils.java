@@ -2,17 +2,22 @@ package com.princeparadoxes.watertracker.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.annotation.StringRes;
 import android.util.Property;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.CycleInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 /**
@@ -23,6 +28,38 @@ public class AnimatorUtils {
     private static float preveous;
 
     private AnimatorUtils() {
+    }
+
+    public static Animator createChangeTextAnimatorSet(TextView textView,
+                                                       boolean withDelay,
+                                                       @StringRes int... texts) {
+        AnimatorSet set = new AnimatorSet();
+        Animator[] animators = new Animator[texts.length];
+        for (int i = 0; i < texts.length; i++) {
+            animators[i] = createChangeTextAnimator(textView, withDelay, texts[i]);
+        }
+        set.playSequentially(animators);
+        return set;
+    }
+
+    public static Animator createChangeTextAnimator(TextView textView,
+                                                    boolean withDelay,
+                                                    @StringRes int text) {
+        AnimatorSet set = new AnimatorSet();
+        Animator out = AnimatorUtils.alphaAnimator(1, 0, textView, 1000, new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                textView.setText(text);
+            }
+        });
+        if (withDelay) {
+            out.setStartDelay(1000);
+        }
+        out.setInterpolator(new AccelerateInterpolator());
+        Animator in = AnimatorUtils.alphaAnimator(0, 1, textView, 1000);
+        in.setInterpolator(new DecelerateInterpolator());
+        set.playSequentially(out, in);
+        return set;
     }
 
     public static Animator translationYAnimator(int end, final View view) {

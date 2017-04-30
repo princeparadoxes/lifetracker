@@ -1,33 +1,50 @@
 package com.princeparadoxes.watertracker.ui.screen.main.statistic;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
+import com.princeparadoxes.watertracker.utils.AnimatorUtils;
+import com.princeparadoxes.watertracker.utils.DimenTools;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class StatisticFragment extends BaseFragment
         implements
-        DiscreteScrollView.OnItemChangedListener<StatisticTypeAdapter.ViewHolder>,
-        DiscreteScrollView.ScrollStateChangeListener<StatisticTypeAdapter.ViewHolder> {
+        DiscreteScrollView.OnItemChangedListener<StatisticTypeViewHolder>,
+        DiscreteScrollView.ScrollStateChangeListener<StatisticTypeViewHolder> {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    @BindView(R.id.statistic_header)
+    TextView mStatisticHeader;
     @BindView(R.id.statistic_type_view)
     DiscreteScrollView mTypePicker;
     @BindView(R.id.statistic_forecast_view)
-    StatisticTypeView mStatisticTypeView;
+    StatisticChartView mStatisticChartView;
+
+    @BindDrawable(R.drawable.ic_chevron_down)
+    Drawable mChevronDownDrawable;
+    @BindDrawable(R.drawable.ic_chevron_up)
+    Drawable mChevronUpDrawable;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -35,6 +52,7 @@ public class StatisticFragment extends BaseFragment
 
     private CompositeDisposable mDisposable;
     private List<StatisticType> mStatisticTypes;
+    private BottomSheetBehavior mStatisticBottomSheetBehavior;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////  INIT SCREEN  /////////////////////////////////////////////
@@ -48,6 +66,49 @@ public class StatisticFragment extends BaseFragment
                 .projectComponent(app.component())
                 .build();
         component.inject(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        mStatisticBottomSheetBehavior = BottomSheetBehavior.from(container);
+        mStatisticBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+//                        mStatisticHeader.setText(R.string.statistic_header_open);
+                        mStatisticHeader
+                                .setCompoundDrawablesWithIntrinsicBounds(mChevronUpDrawable, null, null, null);
+                        AnimatorUtils.createChangeTextAnimatorSet(
+                                mStatisticHeader,
+                                false,
+                                R.string.statistic_header_open)
+                                .start();
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+//                        mStatisticHeader.setText(R.string.statistic_header_closed);
+                        mStatisticHeader
+                                .setCompoundDrawablesWithIntrinsicBounds(mChevronDownDrawable, null, null, null);
+                        AnimatorUtils.createChangeTextAnimatorSet(
+                                mStatisticHeader,
+                                false,
+                                R.string.statistic_header_closed)
+                                .start();
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+        mStatisticBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mStatisticBottomSheetBehavior.setHideable(false);
+        mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(getContext(), 64));
+        return view;
     }
 
     @Override
@@ -73,35 +134,35 @@ public class StatisticFragment extends BaseFragment
                 .setMinScale(0.8f)
                 .build());
 
-        mStatisticTypeView.setForecast(mStatisticTypes.get(0));
+        mStatisticChartView.setForecast(mStatisticTypes.get(0));
     }
 
 
     @Override
-    public void onCurrentItemChanged(@NonNull StatisticTypeAdapter.ViewHolder viewHolder, int adapterPosition) {
-        mStatisticTypeView.setForecast(mStatisticTypes.get(adapterPosition));
+    public void onCurrentItemChanged(@NonNull StatisticTypeViewHolder viewHolder, int adapterPosition) {
+        mStatisticChartView.setForecast(mStatisticTypes.get(adapterPosition));
         viewHolder.showText();
     }
 
     @Override
-    public void onScrollStart(@NonNull StatisticTypeAdapter.ViewHolder currentItemHolder, int adapterPosition) {
+    public void onScrollStart(@NonNull StatisticTypeViewHolder currentItemHolder, int adapterPosition) {
         currentItemHolder.hideText();
     }
 
     @Override
-    public void onScrollEnd(@NonNull StatisticTypeAdapter.ViewHolder currentItemHolder, int adapterPosition) {
+    public void onScrollEnd(@NonNull StatisticTypeViewHolder currentItemHolder, int adapterPosition) {
 
     }
 
     @Override
     public void onScroll(float scrollPosition,
-                         @NonNull StatisticTypeAdapter.ViewHolder currentHolder,
-                         @NonNull StatisticTypeAdapter.ViewHolder newCurrent) {
+                         @NonNull StatisticTypeViewHolder currentHolder,
+                         @NonNull StatisticTypeViewHolder newCurrent) {
         StatisticType current = mStatisticTypes.get(mTypePicker.getCurrentItem());
         int nextPosition = mTypePicker.getCurrentItem() + (scrollPosition > 0 ? -1 : 1);
         if (nextPosition >= 0 && nextPosition < mTypePicker.getAdapter().getItemCount()) {
             StatisticType next = mStatisticTypes.get(nextPosition);
-            mStatisticTypeView.onScroll(1f - Math.abs(scrollPosition), current, next);
+            mStatisticChartView.onScroll(1f - Math.abs(scrollPosition), current, next);
         }
     }
 
@@ -119,6 +180,12 @@ public class StatisticFragment extends BaseFragment
     public void onStop() {
         mDisposable.dispose();
         super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mStatisticBottomSheetBehavior.setBottomSheetCallback(null);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
