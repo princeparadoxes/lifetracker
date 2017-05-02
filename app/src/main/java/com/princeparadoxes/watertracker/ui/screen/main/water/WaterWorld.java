@@ -23,6 +23,11 @@ import org.jbox2d.particle.ParticleGroupDef;
 import org.jbox2d.particle.ParticleType;
 import org.joml.Vector4f;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import timber.log.Timber;
 
 public class WaterWorld {
@@ -219,6 +224,15 @@ public class WaterWorld {
     private void drawParticles() {
         int particleCount = mWorld.getParticleCount();
         if (particleCount <= 0) return;
-        mWaterTextureDrawer.draw(mWorld.getParticlePositionBuffer());
+        List<Vec2> list = new ArrayList<>(Arrays.asList(mWorld.getParticlePositionBuffer()));
+        Iterator<Vec2> iterator;
+        for (iterator = list.iterator(); iterator.hasNext();) {
+            Vec2 vec2 = iterator.next();
+            if(vec2.x <= 0 || vec2.y <= 0){
+                iterator.remove();
+            }
+        }
+        Vec2[] vec2s = new Vec2[list.size()];
+        mWaterTextureDrawer.draw(list.toArray(vec2s));
     }
 }
