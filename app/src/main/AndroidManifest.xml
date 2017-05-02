@@ -99,7 +99,9 @@
         android:theme="@style/Theme.Project"
         tools:replace="android:allowBackup">
         <activity
-            android:name="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
+            android:name="com.princeparadoxes.watertracker.ui.screen.main.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
