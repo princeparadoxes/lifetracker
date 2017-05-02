@@ -41,10 +41,8 @@ public class WaterWorld {
 
     private final Resources mResources;
 
-    //    private Sprite ballSprite;
     private World mWorld;
     private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
-    private Texture mWaterTexture;
     private TextureDrawer mWaterTextureDrawer;
 
     private float mVirtualWidth;
@@ -107,7 +105,7 @@ public class WaterWorld {
     }
 
     private void createSprites() {
-        mWaterTexture = new Texture(mResources, R.drawable.ic_water_particle_8dp);
+        Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_8dp);
         mWaterTextureDrawer = new TextureDrawer();
     }
 

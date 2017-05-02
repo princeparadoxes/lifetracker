@@ -1,5 +1,8 @@
 package com.princeparadoxes.watertracker.ui.screen.main.statistic;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +11,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.princeparadoxes.watertracker.ProjectApplication;
@@ -76,28 +81,7 @@ public class StatisticFragment extends BaseFragment
         mStatisticBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-//                        mStatisticHeader.setText(R.string.statistic_header_open);
-                        mStatisticHeader
-                                .setCompoundDrawablesWithIntrinsicBounds(mChevronUpDrawable, null, null, null);
-                        AnimatorUtils.createChangeTextAnimatorSet(
-                                mStatisticHeader,
-                                false,
-                                R.string.statistic_header_open)
-                                .start();
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-//                        mStatisticHeader.setText(R.string.statistic_header_closed);
-                        mStatisticHeader
-                                .setCompoundDrawablesWithIntrinsicBounds(mChevronDownDrawable, null, null, null);
-                        AnimatorUtils.createChangeTextAnimatorSet(
-                                mStatisticHeader,
-                                false,
-                                R.string.statistic_header_closed)
-                                .start();
-                        break;
-                }
+                changeHeaderState(newState);
             }
 
             @Override
@@ -109,6 +93,34 @@ public class StatisticFragment extends BaseFragment
         mStatisticBottomSheetBehavior.setHideable(false);
         mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(getContext(), 64));
         return view;
+    }
+
+    private void changeHeaderState(int newState) {
+        switch (newState) {
+            case BottomSheetBehavior.STATE_COLLAPSED:
+                createHeaderAnimator(R.string.statistic_header_open, mChevronUpDrawable).start();
+                break;
+            case BottomSheetBehavior.STATE_EXPANDED:
+                createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
+                break;
+        }
+    }
+
+    @NonNull
+    private AnimatorSet createHeaderAnimator(int text, Drawable drawable) {
+        AnimatorSet set = new AnimatorSet();
+        Animator out = AnimatorUtils.alphaAnimator(1, 0, mStatisticHeader, 200, new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mStatisticHeader.setText(text);
+                mStatisticHeader.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+            }
+        });
+        out.setInterpolator(new AccelerateInterpolator());
+        Animator in = AnimatorUtils.alphaAnimator(0, 1, mStatisticHeader, 200);
+        in.setInterpolator(new DecelerateInterpolator());
+        set.playSequentially(out, in);
+        return set;
     }
 
     @Override
