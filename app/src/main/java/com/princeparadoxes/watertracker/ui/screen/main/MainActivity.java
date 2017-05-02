@@ -2,6 +2,7 @@ package com.princeparadoxes.watertracker.ui.screen.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -15,13 +16,11 @@ import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
 import com.princeparadoxes.watertracker.base.HasFragmentContainer;
 import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
-import com.princeparadoxes.watertracker.ui.screen.main.water.WaterFragment;
-import com.princeparadoxes.watertracker.utils.DimenTools;
-import com.princeparadoxes.watertracker.utils.StatusBarUtil;
+import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements HasFragmentContainer {
+public class MainActivity extends BaseActivity {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -31,13 +30,15 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
     View mStartFragmentContainer;
     @BindView(R.id.main_statistic_fragment_container)
     View mStatisticFragmentContainer;
+    @BindView(R.id.water_gl_view)
+    GLSurfaceView mGLSurfaceView;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private BottomSheetBehavior mStartBottomSheetBehavior;
-    private BottomSheetBehavior mStatisticBottomSheetBehavior;
+    private WaterRenderer mWaterRenderer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INIT SCREEN  ////////////////////////////////////////////
@@ -56,11 +57,6 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         component.inject(this);
     }
 
-    @Override
-    public int fragmentsContainerId() {
-        return R.id.main_water_fragment_container;
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CREATE SCREEN  //////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +67,6 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             addStartScreen();
-            addWaterScreen();
             addStatisticScreen();
         }
         int color = ContextCompat.getColor(this, R.color.accent);
@@ -83,14 +78,15 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         mStartBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         mStartBottomSheetBehavior.setPeekHeight(0);
 
+        mWaterRenderer = new WaterRenderer(this);
+        initGlSurfaceViewIfNeeded();
     }
 
-    public void setTranslucentStatus() {
-        StatusBarUtil.setTranslucentStatus(this, true);
-    }
-
-    public void setTranslucentStatusPadding() {
-        StatusBarUtil.setTransparent(this);
+    private void initGlSurfaceViewIfNeeded() {
+        mGLSurfaceView.setEGLContextClientVersion(2);
+//        mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
+        mGLSurfaceView.setRenderer(mWaterRenderer);
+        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,6 +97,21 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
         super.onStart();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  PAUSE/RESUME  ///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mGLSurfaceView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mGLSurfaceView.onPause();
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  STOP SCREEN  ////////////////////////////////////////////
@@ -114,13 +125,6 @@ public class MainActivity extends BaseActivity implements HasFragmentContainer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  NAVIGATION  /////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void addWaterScreen() {
-        FragmentSwitcherCompat.start(getSupportFragmentManager())
-                .fragment(WaterFragment.newInstance())
-                .containerId(R.id.main_water_fragment_container)
-                .add();
-    }
 
     private void addStartScreen() {
         FragmentSwitcherCompat.start(getSupportFragmentManager())

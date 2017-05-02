@@ -67,12 +67,12 @@ public class TextureDrawer {
     private static TextureDrawer instance = null;
     public static final float PARTICLE_SIZE = 2;
 
-    public static TextureDrawer getInstance() {
-        if (instance == null) {
-            instance = new TextureDrawer();
-        }
-        return instance;
-    }
+//    public static TextureDrawer getInstance() {
+//        if (instance == null) {
+//            instance = new TextureDrawer();
+//        }
+//        return instance;
+//    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
