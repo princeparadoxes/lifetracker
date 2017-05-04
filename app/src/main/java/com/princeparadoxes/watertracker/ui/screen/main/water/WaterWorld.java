@@ -8,6 +8,8 @@ import android.opengl.GLES20;
 
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
+import com.princeparadoxes.watertracker.openGL.Drawer;
+import com.princeparadoxes.watertracker.openGL.GrahamDrawer;
 import com.princeparadoxes.watertracker.openGL.Texture;
 import com.princeparadoxes.watertracker.openGL.TextureDrawer;
 
@@ -48,7 +50,7 @@ public class WaterWorld {
 
     private World mWorld;
     private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
-    private TextureDrawer mWaterTextureDrawer;
+    private Drawer mDrawer;
 
     private float mVirtualWidth;
     private float mVirtualHeight;
@@ -111,7 +113,8 @@ public class WaterWorld {
 
     private void createSprites() {
         Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_8dp);
-        mWaterTextureDrawer = new TextureDrawer();
+//        mDrawer = new TextureDrawer();
+        mDrawer = new TextureDrawer();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +132,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onSurfaceChanged(int width, int height) {
-        mWaterTextureDrawer.onSurfaceChanged(MAX_PARTICLE_COUNT, width, height);
+        mDrawer.onSurfaceChanged(MAX_PARTICLE_COUNT, width, height);
         createObjects();
     }
 
@@ -233,6 +236,6 @@ public class WaterWorld {
             }
         }
         Vec2[] vec2s = new Vec2[list.size()];
-        mWaterTextureDrawer.draw(list.toArray(vec2s));
+        mDrawer.draw(list.toArray(vec2s));
     }
 }

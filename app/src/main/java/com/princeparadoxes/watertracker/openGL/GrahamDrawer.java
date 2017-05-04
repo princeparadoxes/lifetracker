@@ -1,7 +1,8 @@
 package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
-import android.transition.Fade;
+
+import com.princeparadoxes.watertracker.utils.ConvexHull;
 
 import org.jbox2d.common.Vec2;
 import org.joml.Vector4f;
@@ -20,7 +21,7 @@ import static android.opengl.GLES20.GL_LINK_STATUS;
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class TextureDrawer implements Drawer{
+public class GrahamDrawer implements Drawer{
     public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
     public static final int POINTS_ON_PARTICLE = 12;
 
@@ -70,7 +71,7 @@ public class TextureDrawer implements Drawer{
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public TextureDrawer() {
+    public GrahamDrawer() {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
         bb.order(ByteOrder.nativeOrder());
@@ -207,6 +208,7 @@ public class TextureDrawer implements Drawer{
     @Override
     public void draw(Vec2[] positions) {
         // Add program to OpenGL ES environment
+        positions = new ConvexHull().convexHabr(positions);
         GLES20.glUseProgram(mProgram);
 
         float[] calculatedPositions = calculateAdditionalPoints(positions);
