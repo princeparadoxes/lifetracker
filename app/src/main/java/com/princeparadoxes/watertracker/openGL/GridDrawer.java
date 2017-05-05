@@ -30,22 +30,16 @@ public class GridDrawer implements Drawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public static Vector4f color = new Vector4f();
-    private static float squareCoords[] = {
-            -0.5f, -0.5f,     // bottom left
-            0.5f, -0.5f,      // bottom right
-            0.5f, 0.5f,      // top right
-            -0.5f, 0.5f};    // top left
 
     private static final int COORDS_PER_VERTEX = 2;
     private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
     private static final int VERTEX_COUNT = 4;
+    private static final float PARTICLE_SIZE = 1;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private FloatBuffer mVertexBuffer;
-    private ShortBuffer mDrawListBuffer;
     private float mHeight;
     private float mWidth;
     private float mAspectRatio;
@@ -69,26 +63,12 @@ public class GridDrawer implements Drawer {
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final float PARTICLE_SIZE = 1;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public GridDrawer() {
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
-        bb.order(ByteOrder.nativeOrder());
-        mVertexBuffer = bb.asFloatBuffer();
-        mVertexBuffer.put(squareCoords);
-        mVertexBuffer.position(0);
-
-        // initialize byte buffer for the onDraw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
-        dlb.order(ByteOrder.nativeOrder());
-        mDrawListBuffer = dlb.asShortBuffer();
-        mDrawListBuffer.put(drawOrder);
-        mDrawListBuffer.position(0);
 
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
@@ -97,12 +77,19 @@ public class GridDrawer implements Drawer {
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
         GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
         GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
+        checkLinkStatus();
+        initAttributes();
+    }
+
+    private void checkLinkStatus() {
         final int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(mProgram, GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] == 0) {
             Timber.e("Program not linked");
         }
+    }
 
+    private void initAttributes() {
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         aTexCoord = GLES20.glGetAttribLocation(mProgram, "aTexCoord");
@@ -170,27 +157,27 @@ public class GridDrawer implements Drawer {
 
     @Override
     public void onSurfaceChanged(int particleCount, int width, int height, float virtualWidth, float virtualHeight) {
-        int bufferSize = width * POINTS_ON_PARTICLE * FLOAT_BYTES;
         mWidth = virtualWidth;
         mHeight = virtualHeight;
         mGridSize = width / virtualWidth;
-        mVertexData = ByteBuffer.allocateDirect(bufferSize)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
+        mAspectRatio = (float) (virtualWidth / Math.ceil(virtualHeight));
+
+        int countPoints = (int) (virtualWidth * virtualHeight * POINTS_ON_PARTICLE);
+        int bufferSize = countPoints * FLOAT_BYTES;
+
+        createVertexBuffer(bufferSize);
+        createUniformMatrix();
+        createTextureBuffer(countPoints, bufferSize);
+    }
+
+    private void createTextureBuffer(int countPoints, int bufferSize) {
+
         mTextureData = ByteBuffer.allocateDirect(bufferSize)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
 
-        mAspectRatio = (float) (virtualWidth / Math.ceil(virtualHeight));
-        mUniformMatrix = new float[]{
-                .1f, 0, 0, -1,
-                0, .1f * mAspectRatio, 0, -1,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
-        };
-
-        mTextureMatrix = new float[width * POINTS_ON_PARTICLE];
-        for (int i = 0; i < width; i++) {
+        mTextureMatrix = new float[countPoints];
+        for (int i = 0, end = countPoints / POINTS_ON_PARTICLE; i < end; i++) {
             mTextureMatrix[POINTS_ON_PARTICLE * i] = 0;
             mTextureMatrix[POINTS_ON_PARTICLE * i + 1] = 0;
             mTextureMatrix[POINTS_ON_PARTICLE * i + 2] = 0;
@@ -205,7 +192,21 @@ public class GridDrawer implements Drawer {
             mTextureMatrix[POINTS_ON_PARTICLE * i + 11] = 1;
         }
         mTextureData.put(mTextureMatrix);
-        mTextureData.position(0);
+    }
+
+    private void createVertexBuffer(int bufferSize) {
+        mVertexData = ByteBuffer.allocateDirect(bufferSize)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+    }
+
+    private void createUniformMatrix() {
+        mUniformMatrix = new float[]{
+                .1f, 0, 0, -1,
+                0, .1f * mAspectRatio, 0, -1,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+        };
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +221,8 @@ public class GridDrawer implements Drawer {
         float[] calculatedPositions = convertGridToPoints(fillGrid(positions, mWidth, mHeight));
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
+        mTextureData.position(0);
+
 
         GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
         GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
@@ -268,22 +271,4 @@ public class GridDrawer implements Drawer {
         return calculatedPoints;
     }
 
-    private float[] calculateAdditionalPoints(Vec2[] positions) {
-        float[] calculatedPoints = new float[positions.length * POINTS_ON_PARTICLE];
-        for (int i = 0; i < positions.length; i++) {
-            calculatedPoints[POINTS_ON_PARTICLE * i + 0] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 4] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 5] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 6] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 7] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 8] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 9] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 10] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 11] = positions[i].y + PARTICLE_SIZE / 2;
-        }
-        return calculatedPoints;
-    }
 }

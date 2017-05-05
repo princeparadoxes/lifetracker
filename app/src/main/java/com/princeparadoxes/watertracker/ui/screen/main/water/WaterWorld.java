@@ -50,14 +50,11 @@ public class WaterWorld {
     private final Resources mResources;
 
     private World mWorld;
-    private Vector4f mDrawWhite = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
     private Drawer mDrawer;
 
     private float mVirtualWidth;
     private float mVirtualHeight;
     private boolean isObjectCreated = false;
-
-    private Boolean mIsSlow = false;
 
     private enum ObjectType {
         WATER_PARTICLES,
@@ -217,7 +214,6 @@ public class WaterWorld {
         if (bodyCount <= 0) return;
         Body body = mWorld.getBodyList();
         for (int i = 0; i < bodyCount; i++) {
-            TextureDrawer.color = mDrawWhite;
 //                switch ((ObjectType) body.getUserData()) {
 //                }
             body = body.getNext();
