@@ -10,6 +10,7 @@ import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
 import com.princeparadoxes.watertracker.openGL.Drawer;
 import com.princeparadoxes.watertracker.openGL.GrahamDrawer;
+import com.princeparadoxes.watertracker.openGL.GridDrawer;
 import com.princeparadoxes.watertracker.openGL.Texture;
 import com.princeparadoxes.watertracker.openGL.TextureDrawer;
 
@@ -40,7 +41,7 @@ public class WaterWorld {
 
     private static final float BASE_UNITS = 20f;
     private static final int MAX_PARTICLE_COUNT = 10000;
-    private static final float PARTICLE_RADIUS = 0.5f;
+    private static final float PARTICLE_RADIUS = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -114,7 +115,7 @@ public class WaterWorld {
     private void createSprites() {
         Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_8dp);
 //        mDrawer = new TextureDrawer();
-        mDrawer = new TextureDrawer();
+        mDrawer = new GridDrawer();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +133,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onSurfaceChanged(int width, int height) {
-        mDrawer.onSurfaceChanged(MAX_PARTICLE_COUNT, width, height);
+        mDrawer.onSurfaceChanged(MAX_PARTICLE_COUNT, width, height,mVirtualWidth, mVirtualHeight);
         createObjects();
     }
 

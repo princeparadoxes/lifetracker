@@ -19,6 +19,7 @@ import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragme
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
 
 public class MainActivity extends BaseActivity {
 

@@ -42,7 +42,7 @@ public class WaterRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        mWaterWorld.update(1.0f / 10.0f);
+        mWaterWorld.update(1.0f / 5.0f);
         mWaterWorld.onDraw();
     }
 }

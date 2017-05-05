@@ -2,8 +2,6 @@ package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
 
-import com.princeparadoxes.watertracker.utils.ConvexHull;
-
 import org.jbox2d.common.Vec2;
 import org.joml.Vector4f;
 
@@ -11,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -21,7 +21,7 @@ import static android.opengl.GLES20.GL_LINK_STATUS;
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class GrahamDrawer implements Drawer{
+public class GridDrawer implements Drawer {
     public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
     public static final int POINTS_ON_PARTICLE = 12;
 
@@ -44,8 +44,12 @@ public class GrahamDrawer implements Drawer{
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
+    private FloatBuffer mVertexBuffer;
+    private ShortBuffer mDrawListBuffer;
+    private float mHeight;
+    private float mWidth;
+    private float mAspectRatio;
+    private float mGridSize;
 
     private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to onDraw vertices
 
@@ -65,26 +69,26 @@ public class GrahamDrawer implements Drawer{
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final float PARTICLE_SIZE = 2;
+    public static final float PARTICLE_SIZE = 1;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public GrahamDrawer() {
+    public GridDrawer() {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
         bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
+        mVertexBuffer = bb.asFloatBuffer();
+        mVertexBuffer.put(squareCoords);
+        mVertexBuffer.position(0);
 
         // initialize byte buffer for the onDraw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
         dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
+        mDrawListBuffer = dlb.asShortBuffer();
+        mDrawListBuffer.put(drawOrder);
+        mDrawListBuffer.position(0);
 
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
@@ -167,6 +171,9 @@ public class GrahamDrawer implements Drawer{
     @Override
     public void onSurfaceChanged(int particleCount, int width, int height, float virtualWidth, float virtualHeight) {
         int bufferSize = width * POINTS_ON_PARTICLE * FLOAT_BYTES;
+        mWidth = virtualWidth;
+        mHeight = virtualHeight;
+        mGridSize = width / virtualWidth;
         mVertexData = ByteBuffer.allocateDirect(bufferSize)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
@@ -174,10 +181,10 @@ public class GrahamDrawer implements Drawer{
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
 
-        final float aspectRatio = ((float) width) / ((float) height);
+        mAspectRatio = (float) (virtualWidth / Math.ceil(virtualHeight));
         mUniformMatrix = new float[]{
                 .1f, 0, 0, -1,
-                0, .1f * aspectRatio, 0, -1,
+                0, .1f * mAspectRatio, 0, -1,
                 0, 0, 1, 0,
                 0, 0, 0, 1,
         };
@@ -208,10 +215,9 @@ public class GrahamDrawer implements Drawer{
     @Override
     public void draw(Vec2[] positions) {
         // Add program to OpenGL ES environment
-        positions = new ConvexHull().convexHabr(positions);
         GLES20.glUseProgram(mProgram);
 
-        float[] calculatedPositions = calculateAdditionalPoints(positions);
+        float[] calculatedPositions = convertGridToPoints(fillGrid(positions));
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
 
@@ -220,6 +226,50 @@ public class GrahamDrawer implements Drawer{
         GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
+    }
+
+    private int[] fillGrid(Vec2[] positions) {
+        int[] grid = new int[(int) (mWidth * (Math.ceil(mHeight)))];
+//        Vec2[] test = new Vec2[4];
+//        test[0] = new Vec2(0.5f, 0.7f);
+//        test[1] = new Vec2(0.9f, 1.2f);
+//        test[2] = new Vec2(19.2f, 0.1f);
+//        test[3] = new Vec2(19.2f, 29.6f);
+
+        for (int i = 0; i < positions.length; i++) {
+            Vec2 vec = positions[i];
+            int pos = (int) ((Math.floor(vec.y)) * mWidth + Math.floor(vec.x));
+            grid[pos] = 1;
+        }
+        return grid;
+    }
+
+    private float[] convertGridToPoints(int[] grid) {
+        List<Float> floats = new ArrayList<>();
+        for (int i = 0; i < grid.length; i++) {
+            int pixel = grid[i];
+            if (pixel == 0) continue;
+            int x = (int) Math.floor(i % mWidth);
+            int y = (int) Math.floor(i / mWidth);
+            Vec2 pos = new Vec2(x + 0.5f, y + 0.5f);
+            floats.add(pos.x - PARTICLE_SIZE / 2);
+            floats.add(pos.y - PARTICLE_SIZE / 2);
+            floats.add(pos.x - PARTICLE_SIZE / 2);
+            floats.add(pos.y + PARTICLE_SIZE / 2);
+            floats.add(pos.x + PARTICLE_SIZE / 2);
+            floats.add(pos.y + PARTICLE_SIZE / 2);
+            floats.add(pos.x - PARTICLE_SIZE / 2);
+            floats.add(pos.y - PARTICLE_SIZE / 2);
+            floats.add(pos.x + PARTICLE_SIZE / 2);
+            floats.add(pos.y - PARTICLE_SIZE / 2);
+            floats.add(pos.x + PARTICLE_SIZE / 2);
+            floats.add(pos.y + PARTICLE_SIZE / 2);
+        }
+        float[] calculatedPoints = new float[floats.size()];
+        for (int i = 0; i < floats.size(); i++) {
+            calculatedPoints[i] = floats.get(i);
+        }
+        return calculatedPoints;
     }
 
     private float[] calculateAdditionalPoints(Vec2[] positions) {

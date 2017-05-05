@@ -1,7 +1,6 @@
 package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
-import android.transition.Fade;
 
 import org.jbox2d.common.Vec2;
 import org.joml.Vector4f;
@@ -164,8 +163,8 @@ public class TextureDrawer implements Drawer{
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onSurfaceChanged(int maxParticleCount, int width, int height) {
-        int bufferSize = maxParticleCount * POINTS_ON_PARTICLE * FLOAT_BYTES;
+    public void onSurfaceChanged(int particleCount, int width, int height, float virtualWidth, float virtualHeight) {
+        int bufferSize = width * POINTS_ON_PARTICLE * FLOAT_BYTES;
         mVertexData = ByteBuffer.allocateDirect(bufferSize)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
@@ -181,8 +180,8 @@ public class TextureDrawer implements Drawer{
                 0, 0, 0, 1,
         };
 
-        mTextureMatrix = new float[maxParticleCount * POINTS_ON_PARTICLE];
-        for (int i = 0; i < maxParticleCount; i++) {
+        mTextureMatrix = new float[width * POINTS_ON_PARTICLE];
+        for (int i = 0; i < width; i++) {
             mTextureMatrix[POINTS_ON_PARTICLE * i] = 0;
             mTextureMatrix[POINTS_ON_PARTICLE * i + 1] = 0;
             mTextureMatrix[POINTS_ON_PARTICLE * i + 2] = 0;
