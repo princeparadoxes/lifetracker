@@ -41,7 +41,7 @@ public class WaterWorld {
 
     private static final float BASE_UNITS = 20f;
     private static final int MAX_PARTICLE_COUNT = 10000;
-    private static final float PARTICLE_RADIUS = 1f;
+    private static final float PARTICLE_RADIUS = 0.5f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -193,8 +193,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(float delta) {
-        if (mIsSlow) mWorld.step(delta * 0.2f, 8, 3);
-        else mWorld.step(delta, 1, 1);
+        mWorld.step(delta, 1, 1);
 
         for (Body b = mWorld.getBodyList(); b != null; b = b.getNext()) {
             Vec2 position = b.getPosition();

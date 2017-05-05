@@ -217,7 +217,7 @@ public class GridDrawer implements Drawer {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 
-        float[] calculatedPositions = convertGridToPoints(fillGrid(positions));
+        float[] calculatedPositions = convertGridToPoints(fillGrid(positions, mWidth, mHeight));
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
 
@@ -228,19 +228,15 @@ public class GridDrawer implements Drawer {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
     }
 
-    private int[] fillGrid(Vec2[] positions) {
-        int[] grid = new int[(int) (mWidth * (Math.ceil(mHeight)))];
-//        Vec2[] test = new Vec2[4];
-//        test[0] = new Vec2(0.5f, 0.7f);
-//        test[1] = new Vec2(0.9f, 1.2f);
-//        test[2] = new Vec2(19.2f, 0.1f);
-//        test[3] = new Vec2(19.2f, 29.6f);
+    private int[] fillGrid(Vec2[] positions, float width, float height) {
+        int[] grid = new int[(int) (width * (Math.ceil(height)))];
 
-        for (int i = 0; i < positions.length; i++) {
-            Vec2 vec = positions[i];
-            int pos = (int) ((Math.floor(vec.y)) * mWidth + Math.floor(vec.x));
-            grid[pos] = 1;
+        for (Vec2 vec : positions) {
+            int x = vec.x > (width - 1) ? (int) Math.floor(vec.x) : Math.round(vec.x);
+            int y = vec.y > (height - 1) ? (int) Math.floor(vec.y) : Math.round(vec.y);
+            grid[(int) (y * width + x)] += 1;
         }
+
         return grid;
     }
 
