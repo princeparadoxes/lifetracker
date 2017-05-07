@@ -8,11 +8,9 @@ import android.opengl.GLES20;
 
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
-import com.princeparadoxes.watertracker.openGL.Drawer;
-import com.princeparadoxes.watertracker.openGL.GrahamDrawer;
-import com.princeparadoxes.watertracker.openGL.GridDrawer;
+import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
+import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
 import com.princeparadoxes.watertracker.openGL.Texture;
-import com.princeparadoxes.watertracker.openGL.TextureDrawer;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -24,7 +22,6 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.particle.ParticleGroup;
 import org.jbox2d.particle.ParticleGroupDef;
 import org.jbox2d.particle.ParticleType;
-import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,8 +37,8 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final float BASE_UNITS = 20f;
-    private static final int MAX_PARTICLE_COUNT = 10000;
-    private static final float PARTICLE_RADIUS = 0.5f;
+    private static final int MAX_PARTICLE_COUNT = 1000;
+    private static final float PARTICLE_RADIUS = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////

@@ -1,5 +1,7 @@
 package com.princeparadoxes.watertracker.openGL;
 
+import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
+
 import org.jbox2d.common.Vec2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +13,6 @@ import java.lang.reflect.Method;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GridDrawerTest {

@@ -1,7 +1,8 @@
-package com.princeparadoxes.watertracker.openGL;
+package com.princeparadoxes.watertracker.openGL.drawer.graham;
 
 import android.opengl.GLES20;
 
+import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
 import com.princeparadoxes.watertracker.utils.ConvexHull;
 
 import org.jbox2d.common.Vec2;
@@ -21,7 +22,7 @@ import static android.opengl.GLES20.GL_LINK_STATUS;
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class GrahamDrawer implements Drawer{
+public class GrahamDrawer implements Drawer {
     public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
     public static final int POINTS_ON_PARTICLE = 12;
 

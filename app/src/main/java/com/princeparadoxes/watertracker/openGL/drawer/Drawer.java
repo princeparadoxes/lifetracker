@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.openGL;
+package com.princeparadoxes.watertracker.openGL.drawer;
 
 import org.jbox2d.common.Vec2;
 
