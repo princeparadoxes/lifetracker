@@ -18,6 +18,9 @@ import android.widget.TextView;
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
+import com.princeparadoxes.watertracker.data.model.Drink;
+import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
+import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.utils.AnimatorUtils;
 import com.princeparadoxes.watertracker.utils.DimenTools;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
@@ -25,6 +28,8 @@ import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
@@ -34,6 +39,13 @@ public class StatisticFragment extends BaseFragment
         implements
         DiscreteScrollView.OnItemChangedListener<StatisticTypeViewHolder>,
         DiscreteScrollView.ScrollStateChangeListener<StatisticTypeViewHolder> {
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  INJECTS  ////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Inject
+    DrinkRepository mDrinkRepository;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -147,6 +159,18 @@ public class StatisticFragment extends BaseFragment
                 .build());
 
         mStatisticChartView.setForecast(mStatisticTypes.get(0));
+
+        mDisposable.add(mDrinkRepository.add(new Drink(100, System.currentTimeMillis()))
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe(this::handleAddDrink, this::handleAddDrinkError));
+    }
+
+    private void handleAddDrink(Drink drink) {
+
+    }
+
+    private void handleAddDrinkError(Throwable throwable) {
+
     }
 
 

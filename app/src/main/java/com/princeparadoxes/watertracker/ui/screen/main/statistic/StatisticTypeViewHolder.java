@@ -24,6 +24,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.princeparadoxes.watertracker.R;
+import com.princeparadoxes.watertracker.data.db.repository.DBDrinkRepository;
 
 import java.util.ArrayList;
 
@@ -123,11 +124,22 @@ public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
+
+        /*
         for (int i = 0; i < 2; i++) {
             entries.add(new PieEntry((float) ((Math.random() * mult) + mult / 5),
                     mParties[i % mParties.length],null));
-//                    ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_chevron_down)));
         }
+         */
+
+        float a = 1000;
+        float b = DBDrinkRepository.getDayStatistic().floatValue();
+
+        entries.add(new PieEntry((float) a,
+                mParties[0 % mParties.length],null));
+
+        entries.add(new PieEntry((float) b,
+                mParties[1 % mParties.length],null));
 
         PieDataSet dataSet = new PieDataSet(entries, "");
 
