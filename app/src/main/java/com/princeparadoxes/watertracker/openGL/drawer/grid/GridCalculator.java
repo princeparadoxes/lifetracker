@@ -15,7 +15,7 @@ public class GridCalculator {
     private final int mGridWidth;
     private final int mGridHeight;
     private final float mHalfParticleSize;
-    private final int[][] mGrid;
+    private int[][] mGrid;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTOR  ////////////////////////////////////////////
@@ -29,13 +29,13 @@ public class GridCalculator {
         mGridWidth = (int) Math.ceil(virtualWidth * multiplier);
         mGridHeight = (int) Math.ceil(virtualHeight * multiplier);
         mHalfParticleSize = particleSize / 2;
-        mGrid = new int[mGridHeight][mGridWidth];
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FILL GRID  //////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public GridCalculator fillGrid(Vec2[] positions) {
+        mGrid = new int[mGridHeight][mGridWidth];
         for (Vec2 vec : positions) {
             int x = (int) (vec.x * mMultiplier);
             x = x > (mGridWidth - 1) ? (int) Math.floor(x) : Math.round(x);
@@ -57,37 +57,7 @@ public class GridCalculator {
             for (int i = 0; i < mGrid.length; i++) {
                 for (int j = 0; j < mGrid[i].length; j++) {
                     if (mGrid[i][j] != 0) continue;
-                    boolean bottom = false, top = false, left = false, right = false;
-                    int filled = 0;
-                    for (int k = 1; k <= mMultiplier; k++) {
-                        if (i - k >= 0 && mGrid[i - k][j] != 0) {
-                            bottom = true;
-                            filled++;
-                            break;
-                        }
-                    }
-                    for (int k = 1; k <= mMultiplier; k++) {
-                        if (i + k < mGridHeight - 1 && mGrid[i + k][j] != 0) {
-                            top = true;
-                            filled++;
-                            break;
-                        }
-                    }
-                    for (int k = 1; k <= mMultiplier; k++) {
-                        if (j - k > 0 && mGrid[i][j - k] != 0) {
-                            left = true;
-                            filled++;
-                            break;
-                        }
-                    }
-                    for (int k = 1; k <= mMultiplier; k++) {
-                        if (j + k < mGridWidth - 1 && mGrid[i][j + k] != 0) {
-                            right = true;
-                            filled++;
-                            break;
-                        }
-                    }
-                    if (filled > 2 || (left && right) || (top && bottom)) {
+                    if ((isFillLeft(i, j) && isFillRight(i, j)) || (isFillTop(i, j) && isFillBottom(i, j))) {
                         mGrid[i][j]++;
                         countFilled++;
                     }
@@ -95,6 +65,42 @@ public class GridCalculator {
             }
         } while (countFilled != 0);
         return this;
+    }
+
+    private boolean isFillLeft(int y, int x) {
+        for (int k = 1; k <= mMultiplier; k++) {
+            if (x - k >= 0 && mGrid[y][x - k] != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFillTop(int y, int x) {
+        for (int k = 1; k <= mMultiplier; k++) {
+            if (y + k < mGridHeight - 1 && mGrid[y + k][x] != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFillRight(int y, int x) {
+        for (int k = 1; k <= mMultiplier; k++) {
+            if (x + k < mGridWidth - 1 && mGrid[y][x + k] != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFillBottom(int y, int x) {
+        for (int k = 1; k <= mMultiplier; k++) {
+            if (y - k >= 0 && mGrid[y - k][x] != 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

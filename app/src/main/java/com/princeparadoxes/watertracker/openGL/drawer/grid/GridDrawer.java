@@ -32,16 +32,13 @@ public class GridDrawer implements Drawer {
     private static final int VERTEX_COUNT = 4;
     private static final float PARTICLE_SIZE = 1f;
     private static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2f;
-    private static final float MULTIPLIER = 2f;
+    private static final float MULTIPLIER = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private float mGridHeight;
-    private float mGridWidth;
     private float mAspectRatio;
-    private float mGridSize;
     private GridCalculator mGridCalculator;
 
     private int mProgram;
@@ -157,7 +154,7 @@ public class GridDrawer implements Drawer {
         mGridCalculator = new GridCalculator(MULTIPLIER, virtualWidth, virtualHeight, PARTICLE_SIZE);
         mAspectRatio = (float) (virtualWidth / Math.ceil(virtualHeight));
 
-        int countPoints = (int) (mGridWidth * mGridHeight * POINTS_ON_PARTICLE * MULTIPLIER);
+        int countPoints = (int) (virtualWidth * MULTIPLIER * virtualHeight * MULTIPLIER * POINTS_ON_PARTICLE);
         int bufferSize = countPoints * FLOAT_BYTES;
 
         createVertexBuffer(bufferSize);
