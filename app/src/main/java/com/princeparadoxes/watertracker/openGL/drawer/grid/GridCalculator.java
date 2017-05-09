@@ -57,9 +57,20 @@ public class GridCalculator {
             for (int i = 0; i < mGrid.length; i++) {
                 for (int j = 0; j < mGrid[i].length; j++) {
                     if (mGrid[i][j] != 0) continue;
-                    if ((isFillLeft(i, j) && isFillRight(i, j)) || (isFillTop(i, j) && isFillBottom(i, j))) {
+                    boolean left = isFillLeft(i, j);
+                    boolean top = isFillTop(i, j);
+                    boolean right = isFillRight(i, j);
+                    boolean bottom = isFillBottom(i, j);
+
+                    if ((left && right) || (top && bottom)) {
                         mGrid[i][j]++;
                         countFilled++;
+                        for (int k = 1; k < mMultiplier; k++) {
+                            if (left && j - k >= 0) mGrid[i][j - k]++;
+                            if (top && i + k < mGridHeight) mGrid[i + k][j]++;
+                            if (right && j + k < mGridWidth) mGrid[i][j + k]++;
+                            if (bottom && i - k >= 0) mGrid[i - k][j]++;
+                        }
                     }
                 }
             }
@@ -78,7 +89,7 @@ public class GridCalculator {
 
     private boolean isFillTop(int y, int x) {
         for (int k = 1; k <= mMultiplier; k++) {
-            if (y + k < mGridHeight - 1 && mGrid[y + k][x] != 0) {
+            if (y + k < mGridHeight && mGrid[y + k][x] != 0) {
                 return true;
             }
         }
@@ -87,7 +98,7 @@ public class GridCalculator {
 
     private boolean isFillRight(int y, int x) {
         for (int k = 1; k <= mMultiplier; k++) {
-            if (x + k < mGridWidth - 1 && mGrid[y][x + k] != 0) {
+            if (x + k < mGridWidth && mGrid[y][x + k] != 0) {
                 return true;
             }
         }
