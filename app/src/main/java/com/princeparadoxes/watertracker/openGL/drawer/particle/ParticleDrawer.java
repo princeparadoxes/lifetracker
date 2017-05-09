@@ -44,11 +44,6 @@ public class ParticleDrawer implements Drawer {
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
-
-    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to onDraw vertices
-
     private int mProgram;
     private int mPositionHandle;
     private int aTexCoord;
@@ -65,27 +60,13 @@ public class ParticleDrawer implements Drawer {
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final float PARTICLE_SIZE = 2;
+    public static final float PARTICLE_SIZE = 3;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public ParticleDrawer() {
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
-        bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
-
-        // initialize byte buffer for the onDraw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
-        dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
-
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 

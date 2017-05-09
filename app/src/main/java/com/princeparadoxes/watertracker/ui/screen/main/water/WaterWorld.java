@@ -8,9 +8,9 @@ import android.opengl.GLES20;
 
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
-import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
 import com.princeparadoxes.watertracker.openGL.Texture;
+import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
+import com.princeparadoxes.watertracker.openGL.drawer.particle.ParticleDrawer;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -37,7 +37,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final float BASE_UNITS = 20f;
-    private static final int MAX_PARTICLE_COUNT = 1000;
+    private static final int MAX_PARTICLE_COUNT = 10000;
     private static final float PARTICLE_RADIUS = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,8 +108,8 @@ public class WaterWorld {
 
     private void createSprites() {
         Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_8dp);
-//        mDrawer = new TextureDrawer();
-        mDrawer = new GridDrawer();
+        mDrawer = new ParticleDrawer();
+//        mDrawer = new GridDrawer();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onSurfaceChanged(int width, int height) {
-        mDrawer.onSurfaceChanged(MAX_PARTICLE_COUNT, width, height,mVirtualWidth, mVirtualHeight);
+        mDrawer.onSurfaceChanged(MAX_PARTICLE_COUNT, width, height, mVirtualWidth, mVirtualHeight);
         createObjects();
     }
 
@@ -187,12 +187,15 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(float delta) {
-        mWorld.step(delta, 1, 1);
-
-        for (Body b = mWorld.getBodyList(); b != null; b = b.getNext()) {
-            Vec2 position = b.getPosition();
-            if (position.y < -5 || position.x < -5 || position.x > 18) mWorld.destroyBody(b);
+        if (!mWorld.isLocked()) {
+            mWorld.step(1f / 10f, 1, 1);
         }
+
+
+//        for (Body b = mWorld.getBodyList(); b != null; b = b.getNext()) {
+//            Vec2 position = b.getPosition();
+//            if (position.y < -5 || position.x < -5 || position.x > 18) mWorld.destroyBody(b);
+//        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,9 +225,9 @@ public class WaterWorld {
         if (particleCount <= 0) return;
         List<Vec2> list = new ArrayList<>(Arrays.asList(mWorld.getParticlePositionBuffer()));
         Iterator<Vec2> iterator;
-        for (iterator = list.iterator(); iterator.hasNext();) {
+        for (iterator = list.iterator(); iterator.hasNext(); ) {
             Vec2 vec2 = iterator.next();
-            if(vec2.x <= 0 || vec2.y <= 0){
+            if (vec2.x <= 0 || vec2.y <= 0) {
                 iterator.remove();
             }
         }

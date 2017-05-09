@@ -32,7 +32,7 @@ public class GridDrawer implements Drawer {
     private static final int VERTEX_COUNT = 4;
     private static final float PARTICLE_SIZE = 1f;
     private static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2f;
-    private static final float MULTIPLIER = 2f;
+    private static final float MULTIPLIER = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
