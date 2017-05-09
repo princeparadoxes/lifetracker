@@ -6,37 +6,24 @@ import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
 import com.princeparadoxes.watertracker.utils.ConvexHull;
 
 import org.jbox2d.common.Vec2;
-import org.joml.Vector4f;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
-import timber.log.Timber;
-
-import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_LINK_STATUS;
 
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class GrahamDrawer implements Drawer {
-    public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
-    public static final int POINTS_ON_PARTICLE = 12;
+public class GrahamDrawer extends Drawer {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static Vector4f color = new Vector4f();
-    private static float squareCoords[] = {
-            -0.5f, -0.5f,     // bottom left
-            0.5f, -0.5f,      // bottom right
-            0.5f, 0.5f,      // top right
-            -0.5f, 0.5f};    // top left
-
+    public static final float PARTICLE_SIZE = 2;
+    public static final int POINTS_ON_PARTICLE = 12;
     private static final int COORDS_PER_VERTEX = 2;
     private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
     private static final int VERTEX_COUNT = 4;
@@ -44,11 +31,6 @@ public class GrahamDrawer implements Drawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
-
-    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to onDraw vertices
 
     private int mProgram;
     private int mPositionHandle;
@@ -66,41 +48,17 @@ public class GrahamDrawer implements Drawer {
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final float PARTICLE_SIZE = 2;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public GrahamDrawer() {
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
-        bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
+        super(vertexShaderCode, fragmentShaderCode);
+        initAttributes();
+    }
 
-        // initialize byte buffer for the onDraw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
-        dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
-
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-        mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
-        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
-        final int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(mProgram, GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] == 0) {
-            Timber.e("Program not linked");
-        }
-
-        // get handle to vertex shader's vPosition member
+    private void initAttributes() {
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         aTexCoord = GLES20.glGetAttribLocation(mProgram, "aTexCoord");
         // get handle to fragment shader's vColor member
@@ -119,7 +77,7 @@ public class GrahamDrawer implements Drawer {
     ////////////////////////////////////  SHADERS  ////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final String vertexShaderCode =
+    private static final String vertexShaderCode =
             "attribute vec2 vPosition;" +
                     "attribute vec2 aTexCoord;" +
                     "varying vec2 TexCoord;" +
@@ -131,7 +89,7 @@ public class GrahamDrawer implements Drawer {
 //                    "  TexCoord.t = 1.0 - TexCoord.t;" +
                     "}";
 
-    private final String fragmentShaderCode =
+    private static final String fragmentShaderCode =
             "precision mediump float;" +
                     "uniform sampler2D vTexture;" +
                     "varying vec2 TexCoord;" +
@@ -142,24 +100,6 @@ public class GrahamDrawer implements Drawer {
                     "  gl_FragColor = texture2D(vTexture, TexCoord).rgba;" +
 //                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
-
-    private int loadShader(int type, String shaderCode) {
-
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0) {
-            Timber.e("Shader not compile");
-            return 0;
-        }
-        return shader;
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////

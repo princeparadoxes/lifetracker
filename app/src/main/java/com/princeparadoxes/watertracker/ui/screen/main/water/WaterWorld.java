@@ -10,7 +10,7 @@ import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
 import com.princeparadoxes.watertracker.openGL.Texture;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-import com.princeparadoxes.watertracker.openGL.drawer.particle.ParticleDrawer;
+import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -107,9 +107,8 @@ public class WaterWorld {
     }
 
     private void createSprites() {
-        Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_8dp);
-        mDrawer = new ParticleDrawer();
-//        mDrawer = new GridDrawer();
+        Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_32dp);
+        mDrawer = new GridDrawer();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

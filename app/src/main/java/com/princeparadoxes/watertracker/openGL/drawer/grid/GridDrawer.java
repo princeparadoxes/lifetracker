@@ -14,13 +14,12 @@ import timber.log.Timber;
 
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_LINK_STATUS;
 
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class GridDrawer implements Drawer {
-    public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
+public class GridDrawer extends Drawer {
+
     public static final int POINTS_ON_PARTICLE = 12;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +40,6 @@ public class GridDrawer implements Drawer {
     private float mAspectRatio;
     private GridCalculator mGridCalculator;
 
-    private int mProgram;
     private int mPositionHandle;
     private int aTexCoord;
     private int mColorHandle;
@@ -63,24 +61,8 @@ public class GridDrawer implements Drawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public GridDrawer() {
-
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-        mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
-        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
-        checkLinkStatus();
+        super(VERTEX_SHADER_CODE, FRAGMENT_SHADER_CODE);
         initAttributes();
-    }
-
-    private void checkLinkStatus() {
-        final int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(mProgram, GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] == 0) {
-            Timber.e("Program not linked");
-        }
     }
 
     private void initAttributes() {
@@ -103,7 +85,7 @@ public class GridDrawer implements Drawer {
     ////////////////////////////////////  SHADERS  ////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final String vertexShaderCode =
+    private final static String VERTEX_SHADER_CODE =
             "attribute vec2 vPosition;" +
                     "attribute vec2 aTexCoord;" +
                     "varying vec2 TexCoord;" +
@@ -115,7 +97,7 @@ public class GridDrawer implements Drawer {
 //                    "  TexCoord.t = 1.0 - TexCoord.t;" +
                     "}";
 
-    private final String fragmentShaderCode =
+    private final static String FRAGMENT_SHADER_CODE =
             "precision mediump float;" +
                     "uniform sampler2D vTexture;" +
                     "varying vec2 TexCoord;" +
@@ -127,23 +109,6 @@ public class GridDrawer implements Drawer {
 //                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
 
-    private int loadShader(int type, String shaderCode) {
-
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0) {
-            Timber.e("Shader not compile");
-            return 0;
-        }
-        return shader;
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
