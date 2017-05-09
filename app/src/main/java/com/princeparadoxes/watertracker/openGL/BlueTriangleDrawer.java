@@ -2,18 +2,20 @@ package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
 
+import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
+
+import org.jbox2d.common.Vec2;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
 
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class BlueTriangleDrawer {
+public class BlueTriangleDrawer extends Drawer{
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
@@ -53,15 +55,7 @@ public class BlueTriangleDrawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public BlueTriangleDrawer() {
-
-        int vertexShader = loadShader(GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-        mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
-        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
-
+        super(VERTEX_SHADER_CODE, FRAGMENT_SHADER_CODE);
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         // get handle to fragment shader's vColor member
@@ -72,53 +66,48 @@ public class BlueTriangleDrawer {
     ////////////////////////////////////  SHADERS  ////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final String vertexShaderCode =
+    private static final String VERTEX_SHADER_CODE =
             "attribute vec4 vPosition;" +
                     "void main() {" +
                     "  gl_Position = vPosition;" +
                     "}";
 
-    private final String fragmentShaderCode =
+    private static final String FRAGMENT_SHADER_CODE =
             "precision mediump float;" +
                     "uniform vec4 vColor;" +
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}";
 
-    private static int loadShader(int type, String shaderCode) {
-
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-
-        return shader;
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  DRAW  ///////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void draw(float[] points) {
+
+    @Override
+    public void onSurfaceChanged(int particleCount, int width, int height, float virtualWidth, float virtualHeight) {
+
+    }
+
+    @Override
+    public void draw(Vec2[] positions) {
         GLES20.glUseProgram(mProgram);
 
         GLES20.glUniform4f(mColorHandle, 0.0f, 0.0f, 1.0f, 1.0f);
-
-        FloatBuffer vertexData = ByteBuffer
-                .allocateDirect(points.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        vertexData.put(points);
-
-        vertexData.position(0);
-        // Enable a handle to the triangle vertices
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-        GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, vertexData);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, points.length / COORDS_PER_VERTEX);
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
+//
+//        FloatBuffer vertexData = ByteBuffer
+//                .allocateDirect(positions.length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
+//        vertexData.put(points);
+//
+//        vertexData.position(0);
+//        // Enable a handle to the triangle vertices
+//        GLES20.glEnableVertexAttribArray(mPositionHandle);
+//        GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, vertexData);
+//        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, points.length / COORDS_PER_VERTEX);
+//        GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
+
 
 }

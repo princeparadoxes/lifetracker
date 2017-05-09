@@ -12,7 +12,6 @@ import java.nio.FloatBuffer;
 
 import timber.log.Timber;
 
-import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FLOAT;
 
 /**
@@ -31,7 +30,7 @@ public class GridDrawer extends Drawer {
     private static final int VERTEX_COUNT = 4;
     private static final float PARTICLE_SIZE = 1f;
     private static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2f;
-    private static final float MULTIPLIER = 1f;
+    private static final float MULTIPLIER = 2f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -109,6 +108,23 @@ public class GridDrawer extends Drawer {
 //                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
 
+//    private static final String VERTEX_SHADER_CODE =
+//            "attribute vec2 vPosition;" +
+//                    "uniform mat4 vMatrix;" +
+//                    "void main() {" +
+//                    "  gl_Position = vec4(vPosition,0,1) * vMatrix;" +
+////                    "  gl_Position = vPosition;" +
+//                    "}";
+//
+//    private static final String FRAGMENT_SHADER_CODE =
+//            "precision mediump float;" +
+//                    "uniform vec4 vColor;" +
+//                    "void main() {" +
+//                                        "  gl_FragColor = vec4(1,0,0,1);" +
+//
+////                    "  gl_FragColor = vColor;" +
+//                    "}";
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
@@ -125,6 +141,7 @@ public class GridDrawer extends Drawer {
         createVertexBuffer(bufferSize);
         createUniformMatrix();
         createTextureBuffer(countPoints, bufferSize);
+        GLES20.glUniform4f(mColorHandle, 0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     private void createTextureBuffer(int countPoints, int bufferSize) {
@@ -176,18 +193,27 @@ public class GridDrawer extends Drawer {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 
-        float[] calculatedPositions = mGridCalculator
-                .fillGrid(positions)
-                .fillEmptySectors()
-                .convertGridToPoints();
+        long startTime = System.currentTimeMillis();
+        mGridCalculator.fillGrid(positions);
+        Timber.d("fillGrid %d", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
+        mGridCalculator.fillEmptySectors();
+        Timber.d("fillEmptySectors %d", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
+        float[] calculatedPositions = mGridCalculator.convertGridToPoints();
+        Timber.d("convertGridToPoints %d", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
-
         GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
         GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
         GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
-
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
+        Timber.d("glDrawArrays %d", System.currentTimeMillis() - startTime);
+
     }
 
 

@@ -8,6 +8,7 @@ import android.opengl.GLES20;
 
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
+import com.princeparadoxes.watertracker.openGL.BlueTriangleDrawer;
 import com.princeparadoxes.watertracker.openGL.Texture;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
 import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
@@ -37,7 +38,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final float BASE_UNITS = 20f;
-    private static final int MAX_PARTICLE_COUNT = 10000;
+    private static final int MAX_PARTICLE_COUNT = 1000;
     private static final float PARTICLE_RADIUS = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,17 +221,18 @@ public class WaterWorld {
     }
 
     private void drawParticles() {
-        int particleCount = mWorld.getParticleCount();
-        if (particleCount <= 0) return;
-        List<Vec2> list = new ArrayList<>(Arrays.asList(mWorld.getParticlePositionBuffer()));
-        Iterator<Vec2> iterator;
-        for (iterator = list.iterator(); iterator.hasNext(); ) {
-            Vec2 vec2 = iterator.next();
-            if (vec2.x <= 0 || vec2.y <= 0) {
-                iterator.remove();
-            }
-        }
-        Vec2[] vec2s = new Vec2[list.size()];
-        mDrawer.draw(list.toArray(vec2s));
+//        int particleCount = mWorld.getParticleCount();
+//        if (particleCount <= 0) return;
+//        List<Vec2> list = new ArrayList<>(Arrays.asList(mWorld.getParticlePositionBuffer()));
+//        Iterator<Vec2> iterator;
+//        for (iterator = list.iterator(); iterator.hasNext(); ) {
+//            Vec2 vec2 = iterator.next();
+//            if (vec2.x <= 0 || vec2.y <= 0) {
+//                iterator.remove();
+//            }
+//        }
+//        Vec2[] vec2s = new Vec2[list.size()];
+//        mDrawer.draw(list.toArray(vec2s));
+        mDrawer.draw(mWorld.getParticlePositionBuffer());
     }
 }
