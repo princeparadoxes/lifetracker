@@ -2,10 +2,10 @@ package com.princeparadoxes.watertracker.openGL.drawer.graham;
 
 import android.opengl.GLES20;
 
+import com.google.fpl.liquidfun.Vec2;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
 import com.princeparadoxes.watertracker.utils.ConvexHull;
 
-import org.jbox2d.common.Vec2;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -166,18 +166,18 @@ public class GrahamDrawer extends Drawer {
     private float[] calculateAdditionalPoints(Vec2[] positions) {
         float[] calculatedPoints = new float[positions.length * POINTS_ON_PARTICLE];
         for (int i = 0; i < positions.length; i++) {
-            calculatedPoints[POINTS_ON_PARTICLE * i + 0] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 4] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 5] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 6] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 7] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 8] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 9] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 10] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 11] = positions[i].y + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 0] = positions[i].getX() - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].getY() - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].getX() - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].getY() + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 4] = positions[i].getX() + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 5] = positions[i].getY() + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 6] = positions[i].getX() - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 7] = positions[i].getY() - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 8] = positions[i].getX() + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 9] = positions[i].getY() - PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 10] = positions[i].getX() + PARTICLE_SIZE / 2;
+            calculatedPoints[POINTS_ON_PARTICLE * i + 11] = positions[i].getY() + PARTICLE_SIZE / 2;
         }
         return calculatedPoints;
     }

@@ -2,9 +2,8 @@ package com.princeparadoxes.watertracker.openGL.drawer.particle;
 
 import android.opengl.GLES20;
 
+import com.google.fpl.liquidfun.Vec2;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-
-import org.jbox2d.common.Vec2;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,7 +11,6 @@ import java.nio.FloatBuffer;
 
 import timber.log.Timber;
 
-import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FLOAT;
 
 /**
@@ -50,6 +48,7 @@ public class ParticleDrawer extends Drawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final float PARTICLE_SIZE = 3;
+    public static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
@@ -112,7 +111,7 @@ public class ParticleDrawer extends Drawer {
 
     @Override
     public void onSurfaceChanged(int particleCount, int width, int height, float virtualWidth, float virtualHeight) {
-        int bufferSize = width * POINTS_ON_PARTICLE * FLOAT_BYTES;
+        int bufferSize = particleCount * POINTS_ON_PARTICLE * FLOAT_BYTES;
         mVertexData = ByteBuffer.allocateDirect(bufferSize)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
@@ -154,34 +153,50 @@ public class ParticleDrawer extends Drawer {
     @Override
     public void draw(Vec2[] positions) {
         // Add program to OpenGL ES environment
+        long startTime = System.currentTimeMillis();
         GLES20.glUseProgram(mProgram);
+        Timber.d("glUseProgram %d ms", System.currentTimeMillis() - startTime);
 
+        startTime = System.currentTimeMillis();
         float[] calculatedPositions = calculateAdditionalPoints(positions);
+        Timber.d("calculatedPositions %d ms", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
-
         GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
         GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
         GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
-
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
+        Timber.d("glDrawArrays %d ms", System.currentTimeMillis() - startTime);
     }
 
     private float[] calculateAdditionalPoints(Vec2[] positions) {
         float[] calculatedPoints = new float[positions.length * POINTS_ON_PARTICLE];
+        int pos = 0;
         for (int i = 0; i < positions.length; i++) {
-            calculatedPoints[POINTS_ON_PARTICLE * i + 0] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 4] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 5] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 6] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 7] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 8] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 9] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 10] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 11] = positions[i].y + PARTICLE_SIZE / 2;
+            float left = positions[i].getX() - HALF_PARTICLE_SIZE;
+            float top = positions[i].getY() + HALF_PARTICLE_SIZE;
+            float right = positions[i].getX() + HALF_PARTICLE_SIZE;
+            float bottom = positions[i].getY() - HALF_PARTICLE_SIZE;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = top;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = top;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = top;
         }
         return calculatedPoints;
     }

@@ -2,7 +2,8 @@ package com.princeparadoxes.watertracker.openGL.drawer;
 
 import android.opengl.GLES20;
 
-import org.jbox2d.common.Vec2;
+
+import com.google.fpl.liquidfun.Vec2;
 
 import timber.log.Timber;
 

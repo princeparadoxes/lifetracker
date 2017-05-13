@@ -2,9 +2,9 @@ package com.princeparadoxes.watertracker.openGL;
 
 import android.opengl.GLES20;
 
+import com.google.fpl.liquidfun.Vec2;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
 
-import org.jbox2d.common.Vec2;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

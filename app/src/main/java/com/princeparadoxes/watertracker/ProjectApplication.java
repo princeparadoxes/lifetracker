@@ -20,6 +20,8 @@ public class ProjectApplication extends Application implements Foreground.Listen
     public void onCreate() {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        System.loadLibrary("liquidfun");
+        System.loadLibrary("liquidfun_jni");
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

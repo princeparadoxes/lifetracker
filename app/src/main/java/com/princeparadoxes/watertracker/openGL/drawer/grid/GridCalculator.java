@@ -1,6 +1,7 @@
 package com.princeparadoxes.watertracker.openGL.drawer.grid;
 
-import org.jbox2d.common.Vec2;
+
+import com.google.fpl.liquidfun.Vec2;
 
 import java.util.Arrays;
 
@@ -38,31 +39,35 @@ public class GridCalculator {
     public GridCalculator fillGrid(Vec2[] positions) {
         mGrid = new int[mGridHeight][mGridWidth];
         for (Vec2 vec : positions) {
-            int x = (int) (vec.x * mMultiplier);
+            int x = (int) (vec.getX() * mMultiplier);
             x = x < 0 ? 0 : x;
             x = x < mGridWidth - 1 ? x : mGridWidth - 1;
-            int y = (int) (vec.y * mMultiplier);
+            int y = (int) (vec.getY() * mMultiplier);
             y = y < 0 ? 0 : y;
             y = y < mGridHeight - 1 ? y : mGridHeight - 1;
             if (mGrid[y][x] > 0) continue;
-            mGrid[y][x]++;
-            for (int k = 1; k < mMultiplier; k++) {
-                boolean left = false, top = false, right = false, bottom = false;
-                if (x - k >= 0) left = true;
-                if (y + k < mGridHeight) top = true;
-                if (x + k < mGridWidth) right = true;
-                if (y - k >= 0) bottom = true;
-                if (left) mGrid[y][x - k]++;
-                if (top) mGrid[y + k][x]++;
-                if (right) mGrid[y][x + k]++;
-                if (bottom) mGrid[y - k][x]++;
-                if (left && top) mGrid[y + k][x - k]++;
-                if (top && right) mGrid[y + k][x + k]++;
-                if (right && bottom) mGrid[y - k][x + k]++;
-                if (bottom && left) mGrid[y - k][x - k]++;
-            }
+            fillSector(x, y);
         }
         return this;
+    }
+
+    private void fillSector(int x, int y) {
+        mGrid[y][x]++;
+//        for (int k = 1; k < mMultiplier; k++) {
+//            boolean left = false, top = false, right = false, bottom = false;
+//            if (x - k >= 0) left = true;
+//            if (y + k < mGridHeight) top = true;
+//            if (x + k < mGridWidth) right = true;
+//            if (y - k >= 0) bottom = true;
+//            if (left) mGrid[y][x - k]++;
+//            if (top) mGrid[y + k][x]++;
+//            if (right) mGrid[y][x + k]++;
+//            if (bottom) mGrid[y - k][x]++;
+//            if (left && top) mGrid[y + k][x - k]++;
+//            if (top && right) mGrid[y + k][x + k]++;
+//            if (right && bottom) mGrid[y - k][x + k]++;
+//            if (bottom && left) mGrid[y - k][x - k]++;
+//        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +171,7 @@ public class GridCalculator {
         Timber.d("convertGridToPoints fill %d", System.currentTimeMillis() - startTime);
 
         startTime = System.currentTimeMillis();
-        float[] calculatedPoints = Arrays.copyOf(floats2,count);
+        float[] calculatedPoints = Arrays.copyOf(floats2, count);
         Timber.d("convertGridToPoints convert %d", System.currentTimeMillis() - startTime);
 
         return calculatedPoints;

@@ -2,9 +2,8 @@ package com.princeparadoxes.watertracker.openGL.drawer.grid;
 
 import android.opengl.GLES20;
 
+import com.google.fpl.liquidfun.Vec2;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-
-import org.jbox2d.common.Vec2;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,7 +29,7 @@ public class GridDrawer extends Drawer {
     private static final int VERTEX_COUNT = 4;
     private static final float PARTICLE_SIZE = 1f;
     private static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2f;
-    private static final float MULTIPLIER = 2f;
+    private static final float MULTIPLIER = 3f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////

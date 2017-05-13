@@ -141,8 +141,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':liquidfunwrapper')
     // Supports
     compile "com.android.support:design:${versions.supportLibrary}"
     compile "com.android.support:recyclerview-v7:${versions.supportLibrary}"
