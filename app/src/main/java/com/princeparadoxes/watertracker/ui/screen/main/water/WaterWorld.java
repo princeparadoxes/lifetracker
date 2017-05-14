@@ -22,6 +22,7 @@ import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
 import com.princeparadoxes.watertracker.openGL.Texture;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
+import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
 import com.princeparadoxes.watertracker.openGL.drawer.particle.ParticleDrawer;
 
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final float BASE_UNITS = 20f;
-    private static final int MAX_PARTICLE_COUNT = 1000;
+    private static final int MAX_PARTICLE_COUNT = 10000;
     private static final float PARTICLE_RADIUS = 0.5f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,9 +71,6 @@ public class WaterWorld {
 
     private void createWorld() {
         mWorld = new World(0.0f, -9.81f);
-
-//        mWorld.(PARTICLE_RADIUS);
-//        mWorld.setParticleMaxCount(MAX_PARTICLE_COUNT);
         ParticleSystemDef def = new ParticleSystemDef();
         def.setRadius(PARTICLE_RADIUS);
         def.setMaxCount(MAX_PARTICLE_COUNT);
@@ -112,7 +110,7 @@ public class WaterWorld {
     }
 
     private void createSprites() {
-        Texture waterTexture = new Texture(mResources, R.drawable.ic_water_particle_32dp);
+        Texture waterTexture = new Texture(mResources, R.drawable.par_3x);
         mDrawer = new ParticleDrawer();
     }
 
@@ -194,15 +192,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(float delta) {
-//        if (!mWorld.isLocked()) {
         mWorld.step(1f / 8f, 1, 1, 1);
-//        }
-
-
-//        for (Body b = mWorld.getBodyList(); b != null; b = b.getNext()) {
-//            Vec2 position = b.getPosition();
-//            if (position.y < -5 || position.x < -5 || position.x > 18) mWorld.destroyBody(b);
-//        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
