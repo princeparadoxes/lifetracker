@@ -2,39 +2,27 @@ package com.princeparadoxes.watertracker.openGL.drawer.particle;
 
 import android.opengl.GLES20;
 
+import com.google.fpl.liquidfun.Vec2;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-
-import org.jbox2d.common.Vec2;
-import org.joml.Vector4f;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import timber.log.Timber;
 
-import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_LINK_STATUS;
 
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class ParticleDrawer implements Drawer {
-    public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
+public class ParticleDrawer extends Drawer {
+
     public static final int POINTS_ON_PARTICLE = 12;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTANTS  //////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static Vector4f color = new Vector4f();
-    private static float squareCoords[] = {
-            -0.5f, -0.5f,     // bottom left
-            0.5f, -0.5f,      // bottom right
-            0.5f, 0.5f,      // top right
-            -0.5f, 0.5f};    // top left
 
     private static final int COORDS_PER_VERTEX = 2;
     private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
@@ -44,12 +32,6 @@ public class ParticleDrawer implements Drawer {
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
-
-    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to onDraw vertices
-
-    private int mProgram;
     private int mPositionHandle;
     private int aTexCoord;
     private int mColorHandle;
@@ -66,39 +48,20 @@ public class ParticleDrawer implements Drawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final float PARTICLE_SIZE = 2;
+    public static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CONSTRUCTORS  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public ParticleDrawer() {
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4); // (# of coordinate values * 4 bytes per float)
-        bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
+        super(VERTEX_SHADER_CODE, FRAGMENT_SHADER_CODE);
+        initAttributes();
 
-        // initialize byte buffer for the onDraw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2); // (# of coordinate values * 2 bytes per short)
-        dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
 
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+    }
 
-        mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
-        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
-        final int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(mProgram, GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] == 0) {
-            Timber.e("Program not linked");
-        }
-
+    private void initAttributes() {
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         aTexCoord = GLES20.glGetAttribLocation(mProgram, "aTexCoord");
@@ -118,7 +81,7 @@ public class ParticleDrawer implements Drawer {
     ////////////////////////////////////  SHADERS  ////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final String vertexShaderCode =
+    private static final String VERTEX_SHADER_CODE =
             "attribute vec2 vPosition;" +
                     "attribute vec2 aTexCoord;" +
                     "varying vec2 TexCoord;" +
@@ -130,7 +93,7 @@ public class ParticleDrawer implements Drawer {
 //                    "  TexCoord.t = 1.0 - TexCoord.t;" +
                     "}";
 
-    private final String fragmentShaderCode =
+    private static final String FRAGMENT_SHADER_CODE =
             "precision mediump float;" +
                     "uniform sampler2D vTexture;" +
                     "varying vec2 TexCoord;" +
@@ -142,31 +105,13 @@ public class ParticleDrawer implements Drawer {
 //                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
 
-    private int loadShader(int type, String shaderCode) {
-
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0) {
-            Timber.e("Shader not compile");
-            return 0;
-        }
-        return shader;
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onSurfaceChanged(int particleCount, int width, int height, float virtualWidth, float virtualHeight) {
-        int bufferSize = width * POINTS_ON_PARTICLE * FLOAT_BYTES;
+        int bufferSize = particleCount * POINTS_ON_PARTICLE * FLOAT_BYTES;
         mVertexData = ByteBuffer.allocateDirect(bufferSize)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
@@ -208,34 +153,50 @@ public class ParticleDrawer implements Drawer {
     @Override
     public void draw(Vec2[] positions) {
         // Add program to OpenGL ES environment
+        long startTime = System.currentTimeMillis();
         GLES20.glUseProgram(mProgram);
+        Timber.d("glUseProgram %d ms", System.currentTimeMillis() - startTime);
 
+        startTime = System.currentTimeMillis();
         float[] calculatedPositions = calculateAdditionalPoints(positions);
+        Timber.d("calculatedPositions %d ms", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
-
         GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
         GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
         GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
-
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
+        Timber.d("glDrawArrays %d ms", System.currentTimeMillis() - startTime);
     }
 
     private float[] calculateAdditionalPoints(Vec2[] positions) {
         float[] calculatedPoints = new float[positions.length * POINTS_ON_PARTICLE];
+        int pos = 0;
         for (int i = 0; i < positions.length; i++) {
-            calculatedPoints[POINTS_ON_PARTICLE * i + 0] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 1] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 2] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 3] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 4] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 5] = positions[i].y + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 6] = positions[i].x - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 7] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 8] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 9] = positions[i].y - PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 10] = positions[i].x + PARTICLE_SIZE / 2;
-            calculatedPoints[POINTS_ON_PARTICLE * i + 11] = positions[i].y + PARTICLE_SIZE / 2;
+            float left = positions[i].getX() - HALF_PARTICLE_SIZE;
+            float top = positions[i].getY() + HALF_PARTICLE_SIZE;
+            float right = positions[i].getX() + HALF_PARTICLE_SIZE;
+            float bottom = positions[i].getY() - HALF_PARTICLE_SIZE;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = top;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = top;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = top;
         }
         return calculatedPoints;
     }

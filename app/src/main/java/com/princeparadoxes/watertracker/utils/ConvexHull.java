@@ -1,12 +1,11 @@
 package com.princeparadoxes.watertracker.utils;
 
-import org.jbox2d.common.Vec2;
+
+import com.google.fpl.liquidfun.Vec2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class ConvexHull {
     public Vec2[] convexHabr(Vec2[] a) {
@@ -22,7 +21,7 @@ public class ConvexHull {
 
     private void firstStep(Vec2[] a, int[] p) {
         for (int i = 0; i < a.length; i++) {
-            if (a[p[i]].x < a[p[0]].x) {
+            if (a[p[i]].getX() < a[p[0]].getX()) {
                 int tmp = p[i];
                 p[i] = p[0];
                 p[0] = tmp;
@@ -125,7 +124,7 @@ public class ConvexHull {
 //    }
 //
     public static Float rotate(Vec2 a, Vec2 b, Vec2 c) {
-        return (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
+        return (b.getX() - a.getX()) * (c.getY() - b.getY()) - (b.getY() - a.getY()) * (c.getX() - b.getX());
     }
 
     public static void swap(Object[] data, int a, int b) {

@@ -7,6 +7,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GridCalculatorMultiplier1Test {
@@ -22,7 +23,7 @@ public class GridCalculatorMultiplier1Test {
         Vec2[] test = new Vec2[1];
         test[0] = new Vec2(0.5f, 0.7f);
         mCalculator.fillGrid(test);
-        assertThat(mCalculator.getGrid()[0][0], is(1));
+        assertThat(mCalculator.getGrid()[0][0], is(not(0)));
     }
 
     @Test
@@ -30,7 +31,7 @@ public class GridCalculatorMultiplier1Test {
         Vec2[] test = new Vec2[1];
         test[0] = new Vec2(19f, 1.2f);
         mCalculator.fillGrid(test);
-        assertThat(mCalculator.getGrid()[1][19], is(1));
+        assertThat(mCalculator.getGrid()[1][19], is(not(0)));
     }
 
     @Test
@@ -38,7 +39,7 @@ public class GridCalculatorMultiplier1Test {
         Vec2[] test = new Vec2[1];
         test[0] = new Vec2(19.2f, 0.1f);
         mCalculator.fillGrid(test);
-        assertThat(mCalculator.getGrid()[0][19], is(1));
+        assertThat(mCalculator.getGrid()[0][19], is(not(0)));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class GridCalculatorMultiplier1Test {
         Vec2[] test = new Vec2[1];
         test[0] = new Vec2(19.2f, 29.6f);
         mCalculator.fillGrid(test);
-        assertThat(mCalculator.getGrid()[29][19], is(1));
+        assertThat(mCalculator.getGrid()[29][19], is(not(0)));
     }
 
     @Test
@@ -57,7 +58,7 @@ public class GridCalculatorMultiplier1Test {
         test[2] = new Vec2(1, 2);
         test[3] = new Vec2(2, 1);
         mCalculator.fillGrid(test).fillEmptySectors();
-        assertThat(mCalculator.getGrid()[1][1], is(1));
+        assertThat(mCalculator.getGrid()[1][1], is(not(0)));
     }
 
     @Test
@@ -67,7 +68,7 @@ public class GridCalculatorMultiplier1Test {
         test[1] = new Vec2(1, 2);
         test[2] = new Vec2(2, 1);
         mCalculator.fillGrid(test).fillEmptySectors();
-        assertThat(mCalculator.getGrid()[1][1], is(1));
+        assertThat(mCalculator.getGrid()[1][1], is(not(0)));
     }
 
     @Test
@@ -77,7 +78,7 @@ public class GridCalculatorMultiplier1Test {
         test[1] = new Vec2(1, 2);
         test[2] = new Vec2(2, 1);
         mCalculator.fillGrid(test).fillEmptySectors();
-        assertThat(mCalculator.getGrid()[1][1], is(1));
+        assertThat(mCalculator.getGrid()[1][1], is(not(0)));
     }
 
     @Test
@@ -87,7 +88,7 @@ public class GridCalculatorMultiplier1Test {
         test[1] = new Vec2(1, 0);
         test[2] = new Vec2(2, 1);
         mCalculator.fillGrid(test).fillEmptySectors();
-        assertThat(mCalculator.getGrid()[1][1], is(1));
+        assertThat(mCalculator.getGrid()[1][1], is(not(0)));
     }
 
     @Test
@@ -96,7 +97,7 @@ public class GridCalculatorMultiplier1Test {
         test[0] = new Vec2(1, 0);
         test[1] = new Vec2(1, 2);
         mCalculator.fillGrid(test).fillEmptySectors();
-        assertThat(mCalculator.getGrid()[1][1], is(1));
+        assertThat(mCalculator.getGrid()[1][1], is(not(0)));
     }
 
     @Test
@@ -105,7 +106,7 @@ public class GridCalculatorMultiplier1Test {
         test[0] = new Vec2(0, 1);
         test[1] = new Vec2(2, 1);
         mCalculator.fillGrid(test).fillEmptySectors();
-        assertThat(mCalculator.getGrid()[1][1], is(1));
+        assertThat(mCalculator.getGrid()[1][1], is(not(0)));
     }
 
 }

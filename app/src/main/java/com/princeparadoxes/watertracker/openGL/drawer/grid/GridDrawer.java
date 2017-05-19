@@ -2,9 +2,8 @@ package com.princeparadoxes.watertracker.openGL.drawer.grid;
 
 import android.opengl.GLES20;
 
+import com.google.fpl.liquidfun.Vec2;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-
-import org.jbox2d.common.Vec2;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,15 +11,13 @@ import java.nio.FloatBuffer;
 
 import timber.log.Timber;
 
-import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_LINK_STATUS;
 
 /**
  * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
-public class GridDrawer implements Drawer {
-    public static final int FLOAT_BYTES = Float.SIZE / Byte.SIZE;
+public class GridDrawer extends Drawer {
+
     public static final int POINTS_ON_PARTICLE = 12;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +29,7 @@ public class GridDrawer implements Drawer {
     private static final int VERTEX_COUNT = 4;
     private static final float PARTICLE_SIZE = 1f;
     private static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2f;
-    private static final float MULTIPLIER = 1f;
+    private static final float MULTIPLIER = 4f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -41,7 +38,6 @@ public class GridDrawer implements Drawer {
     private float mAspectRatio;
     private GridCalculator mGridCalculator;
 
-    private int mProgram;
     private int mPositionHandle;
     private int aTexCoord;
     private int mColorHandle;
@@ -63,24 +59,8 @@ public class GridDrawer implements Drawer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public GridDrawer() {
-
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-        mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
-        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
-        checkLinkStatus();
+        super(VERTEX_SHADER_CODE, FRAGMENT_SHADER_CODE);
         initAttributes();
-    }
-
-    private void checkLinkStatus() {
-        final int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(mProgram, GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] == 0) {
-            Timber.e("Program not linked");
-        }
     }
 
     private void initAttributes() {
@@ -103,7 +83,7 @@ public class GridDrawer implements Drawer {
     ////////////////////////////////////  SHADERS  ////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private final String vertexShaderCode =
+    private final static String VERTEX_SHADER_CODE =
             "attribute vec2 vPosition;" +
                     "attribute vec2 aTexCoord;" +
                     "varying vec2 TexCoord;" +
@@ -115,7 +95,7 @@ public class GridDrawer implements Drawer {
 //                    "  TexCoord.t = 1.0 - TexCoord.t;" +
                     "}";
 
-    private final String fragmentShaderCode =
+    private final static String FRAGMENT_SHADER_CODE =
             "precision mediump float;" +
                     "uniform sampler2D vTexture;" +
                     "varying vec2 TexCoord;" +
@@ -127,23 +107,23 @@ public class GridDrawer implements Drawer {
 //                    "  gl_FragColor *= gl_FragColor.a;" +
                     "}";
 
-    private int loadShader(int type, String shaderCode) {
+//    private static final String VERTEX_SHADER_CODE =
+//            "attribute vec2 vPosition;" +
+//                    "uniform mat4 vMatrix;" +
+//                    "void main() {" +
+//                    "  gl_Position = vec4(vPosition,0,1) * vMatrix;" +
+////                    "  gl_Position = vPosition;" +
+//                    "}";
+//
+//    private static final String FRAGMENT_SHADER_CODE =
+//            "precision mediump float;" +
+//                    "uniform vec4 vColor;" +
+//                    "void main() {" +
+//                                        "  gl_FragColor = vec4(1,0,0,1);" +
+//
+////                    "  gl_FragColor = vColor;" +
+//                    "}";
 
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0) {
-            Timber.e("Shader not compile");
-            return 0;
-        }
-        return shader;
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  ON SURFACE CHANGED  /////////////////////////////////////
@@ -160,6 +140,7 @@ public class GridDrawer implements Drawer {
         createVertexBuffer(bufferSize);
         createUniformMatrix();
         createTextureBuffer(countPoints, bufferSize);
+        GLES20.glUniform4f(mColorHandle, 0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     private void createTextureBuffer(int countPoints, int bufferSize) {
@@ -211,18 +192,27 @@ public class GridDrawer implements Drawer {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 
-        float[] calculatedPositions = mGridCalculator
-                .fillGrid(positions)
-                .fillEmptySectors()
-                .convertGridToPoints();
+        long startTime = System.currentTimeMillis();
+        mGridCalculator.fillGrid(positions);
+        Timber.d("fillGrid %d", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
+        mGridCalculator.fillEmptySectors();
+        Timber.d("fillEmptySectors %d", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
+        float[] calculatedPositions = mGridCalculator.convertGridToPoints();
+        Timber.d("convertGridToPoints %d", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
         mVertexData.put(calculatedPositions);
         mVertexData.position(0);
-
         GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
         GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
         GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
-
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, calculatedPositions.length / 2);
+        Timber.d("glDrawArrays %d", System.currentTimeMillis() - startTime);
+
     }
 
 
