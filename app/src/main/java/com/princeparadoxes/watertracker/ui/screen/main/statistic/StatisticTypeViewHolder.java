@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
+public class StatisticTypeViewHolder extends BindableViewHolder<StatisticModel,
         StatisticTypeViewHolder.StatisticTypeItemListener> implements OnChartValueSelectedListener {
 
     @BindView(R.id.statistic_type_item_chart)
@@ -74,8 +74,6 @@ public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
         // add a selection listener
         mPieChart.setOnChartValueSelectedListener(this);
 
-        setData(100);
-
         mPieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         // mPieChart.spin(2000, 0, 360);
 
@@ -85,14 +83,16 @@ public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
     }
 
     @Override
-    public void bindView(int position, StatisticType item, StatisticTypeItemListener actionListener) {
+    public void bindView(int position, StatisticModel item, StatisticTypeItemListener actionListener) {
         super.bindView(position, item, actionListener);
 //        int iconTint = ContextCompat.getColor(itemView.getContext(), android.R.color.darker_gray);
 //        Glide.with(itemView.getContext())
 //                .load(item.getIcon())
 //                .listener(new StatisticTypeAdapter.TintOnLoad(imageView, iconTint))
 //                .into(imageView);
-        mTextView.setText(item.getName());
+        mTextView.setText(item.getmStatisticType().getName());
+
+        setData( item);
     }
 
 
@@ -116,9 +116,7 @@ public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
                 .start();
     }
 
-    private void setData(float range) {
-
-        float mult = range;
+    private void setData(StatisticModel statisticModel) {
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
@@ -132,8 +130,8 @@ public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
         }
          */
 
-        float a = 1000;
-        float b = DBDrinkRepository.getDayStatistic().floatValue();
+        float a = 100;
+        float b = statisticModel.getmValue();
 
         entries.add(new PieEntry((float) a,
                 mParties[0 % mParties.length],null));
@@ -208,6 +206,6 @@ public class StatisticTypeViewHolder extends BindableViewHolder<StatisticType,
 
     }
 
-    public interface StatisticTypeItemListener extends BindableViewHolder.ActionListener<StatisticType> {
+    public interface StatisticTypeItemListener extends BindableViewHolder.ActionListener<StatisticModel> {
     }
 }

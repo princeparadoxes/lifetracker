@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.princeparadoxes.watertracker.R;
+import com.princeparadoxes.watertracker.data.model.StatisticType;
 
 public class StatisticChartView extends LinearLayout {
 

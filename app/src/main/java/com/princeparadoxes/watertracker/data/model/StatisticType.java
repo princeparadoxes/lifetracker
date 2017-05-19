@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.ui.screen.main.statistic;
+package com.princeparadoxes.watertracker.data.model;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
