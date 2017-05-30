@@ -39,8 +39,8 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class StatisticFragment extends BaseFragment
         implements
-        DiscreteScrollView.OnItemChangedListener<StatisticTypeViewHolder>,
-        DiscreteScrollView.ScrollStateChangeListener<StatisticTypeViewHolder> {
+        DiscreteScrollView.OnItemChangedListener<StatisticItemViewHolder>,
+        DiscreteScrollView.ScrollStateChangeListener<StatisticItemViewHolder> {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INJECTS  ////////////////////////////////////////////////
@@ -72,6 +72,7 @@ public class StatisticFragment extends BaseFragment
     private CompositeDisposable mDisposable;
     private List<StatisticType> mStatisticTypes;
     private BottomSheetBehavior mStatisticBottomSheetBehavior;
+    private StatisticAdapter mStatisticAdapter;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////  INIT SCREEN  /////////////////////////////////////////////
@@ -91,6 +92,7 @@ public class StatisticFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        mStatisticAdapter = new StatisticAdapter();
         mStatisticBottomSheetBehavior = BottomSheetBehavior.from(container);
         mStatisticBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -160,10 +162,11 @@ public class StatisticFragment extends BaseFragment
         statisticModelList.add(new StatisticModel(StatisticType.WEEK, a2));
         statisticModelList.add(new StatisticModel(StatisticType.MONTH, a3));
         statisticModelList.add(new StatisticModel(StatisticType.YEAR, a4));
+        mStatisticAdapter.setData(statisticModelList);
 
         mDisposable = new CompositeDisposable();
         mStatisticTypes = Arrays.asList(StatisticType.values());
-        mTypePicker.setAdapter(new StatisticTypeAdapter(statisticModelList));
+        mTypePicker.setAdapter(mStatisticAdapter);
         mTypePicker.setOnItemChangedListener(this);
         mTypePicker.setScrollStateChangeListener(this);
         mTypePicker.scrollToPosition(0);
@@ -189,25 +192,25 @@ public class StatisticFragment extends BaseFragment
 
 
     @Override
-    public void onCurrentItemChanged(@NonNull StatisticTypeViewHolder viewHolder, int adapterPosition) {
+    public void onCurrentItemChanged(@NonNull StatisticItemViewHolder viewHolder, int adapterPosition) {
         mStatisticChartView.setForecast(mStatisticTypes.get(adapterPosition));
         viewHolder.showText();
     }
 
     @Override
-    public void onScrollStart(@NonNull StatisticTypeViewHolder currentItemHolder, int adapterPosition) {
+    public void onScrollStart(@NonNull StatisticItemViewHolder currentItemHolder, int adapterPosition) {
         currentItemHolder.hideText();
     }
 
     @Override
-    public void onScrollEnd(@NonNull StatisticTypeViewHolder currentItemHolder, int adapterPosition) {
+    public void onScrollEnd(@NonNull StatisticItemViewHolder currentItemHolder, int adapterPosition) {
 
     }
 
     @Override
     public void onScroll(float scrollPosition,
-                         @NonNull StatisticTypeViewHolder currentHolder,
-                         @NonNull StatisticTypeViewHolder newCurrent) {
+                         @NonNull StatisticItemViewHolder currentHolder,
+                         @NonNull StatisticItemViewHolder newCurrent) {
         StatisticType current = mStatisticTypes.get(mTypePicker.getCurrentItem());
         int nextPosition = mTypePicker.getCurrentItem() + (scrollPosition > 0 ? -1 : 1);
         if (nextPosition >= 0 && nextPosition < mTypePicker.getAdapter().getItemCount()) {

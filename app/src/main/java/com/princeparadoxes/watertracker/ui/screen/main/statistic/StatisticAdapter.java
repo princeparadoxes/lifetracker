@@ -1,0 +1,44 @@
+package com.princeparadoxes.watertracker.ui.screen.main.statistic;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.princeparadoxes.watertracker.R;
+
+import java.util.List;
+
+public class StatisticAdapter extends RecyclerView.Adapter<StatisticItemViewHolder> {
+
+    private List<StatisticModel> data;
+
+    public StatisticAdapter() {
+    }
+
+    @Override
+    public StatisticItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View v = inflater.inflate(R.layout.statistic_type_view, parent, false);
+        return new StatisticItemViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(StatisticItemViewHolder holder, int position) {
+        holder.bindView(position, data.get(position), null);
+    }
+
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    public StatisticAdapter setData(List<StatisticModel> data) {
+        this.data = data;
+        return this;
+    }
+}

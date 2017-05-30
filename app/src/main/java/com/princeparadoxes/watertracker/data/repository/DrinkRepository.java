@@ -23,7 +23,6 @@ public class DrinkRepository {
 
     }
 
-
     public Observable <Drink> add(Drink drink) {
         return Observable.just(DBDrink.mapFromDrink(drink))
                 .map(mDBDrinkRepository::add)

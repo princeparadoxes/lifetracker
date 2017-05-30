@@ -19,7 +19,7 @@ public class StatisticModel {
         return mStatisticType;
     }
 
-    public float getmValue() {
+    public float getValue() {
         return mValue;
     }
 }

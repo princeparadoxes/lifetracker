@@ -36,6 +36,8 @@
     <color name="contentBackgroundSecond">#495059</color>
     <color name="primaryItemSelector">#40ffffff</color>
 
+    <color name="accent_alpha">#661a99e3</color>
+
     <!--Toolbar-->
     <color name="toolbar_text_color">@color/iconPrimary</color>
     <color name="toolbar_icon_color">@color/iconPrimary</color>

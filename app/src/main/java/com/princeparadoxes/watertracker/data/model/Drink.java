@@ -3,10 +3,6 @@ package com.princeparadoxes.watertracker.data.model;
 import com.princeparadoxes.watertracker.data.db.model.DBDrink;
 
 
-/**
- * Created by as3co on 06.05.2017.
- */
-
 public class Drink {
 
     private final int mSize;
