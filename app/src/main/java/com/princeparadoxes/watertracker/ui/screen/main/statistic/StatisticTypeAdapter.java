@@ -16,9 +16,9 @@ import java.util.List;
 public class StatisticTypeAdapter extends RecyclerView.Adapter<StatisticTypeViewHolder> {
 
     private RecyclerView parentRecycler;
-    private List<StatisticType> data;
+    private List<StatisticModel> data;
 
-    public StatisticTypeAdapter(List<StatisticType> data) {
+    public StatisticTypeAdapter(List<StatisticModel> data) {
         this.data = data;
     }
 

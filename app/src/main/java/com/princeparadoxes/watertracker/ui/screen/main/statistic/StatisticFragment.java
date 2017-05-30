@@ -19,6 +19,7 @@ import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
 import com.princeparadoxes.watertracker.data.model.Drink;
+import com.princeparadoxes.watertracker.data.model.StatisticType;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.utils.AnimatorUtils;
@@ -26,6 +27,7 @@ import com.princeparadoxes.watertracker.utils.DimenTools;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -147,9 +149,21 @@ public class StatisticFragment extends BaseFragment
     @Override
     public void onStart() {
         super.onStart();
+
+        float a1 = 50;
+        float a2 = 50*7;
+        float a3 = 50*30;
+        float a4 = 50*365;
+
+        List<StatisticModel> statisticModelList = new ArrayList<>();
+        statisticModelList.add(new StatisticModel(StatisticType.DAY, a1));
+        statisticModelList.add(new StatisticModel(StatisticType.WEEK, a2));
+        statisticModelList.add(new StatisticModel(StatisticType.MONTH, a3));
+        statisticModelList.add(new StatisticModel(StatisticType.YEAR, a4));
+
         mDisposable = new CompositeDisposable();
         mStatisticTypes = Arrays.asList(StatisticType.values());
-        mTypePicker.setAdapter(new StatisticTypeAdapter(mStatisticTypes));
+        mTypePicker.setAdapter(new StatisticTypeAdapter(statisticModelList));
         mTypePicker.setOnItemChangedListener(this);
         mTypePicker.setScrollStateChangeListener(this);
         mTypePicker.scrollToPosition(0);
