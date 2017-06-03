@@ -70,7 +70,6 @@ public class StatisticFragment extends BaseFragment
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private CompositeDisposable mDisposable;
-    private List<StatisticType> mStatisticTypes;
     private BottomSheetBehavior mStatisticBottomSheetBehavior;
     private StatisticAdapter mStatisticAdapter;
 
@@ -153,9 +152,9 @@ public class StatisticFragment extends BaseFragment
         super.onStart();
 
         float a1 = 50;
-        float a2 = 50*7;
-        float a3 = 50*30;
-        float a4 = 50*365;
+        float a2 = 50 * 7;
+        float a3 = 50 * 30;
+        float a4 = 50 * 365;
 
         List<StatisticModel> statisticModelList = new ArrayList<>();
         statisticModelList.add(new StatisticModel(StatisticType.DAY, a1));
@@ -165,7 +164,14 @@ public class StatisticFragment extends BaseFragment
         mStatisticAdapter.setData(statisticModelList);
 
         mDisposable = new CompositeDisposable();
-        mStatisticTypes = Arrays.asList(StatisticType.values());
+        initTypePicker();
+
+        mDisposable.add(mDrinkRepository.add(new Drink(100, System.currentTimeMillis()))
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe(this::handleAddDrink, this::handleAddDrinkError));
+    }
+
+    private void initTypePicker() {
         mTypePicker.setAdapter(mStatisticAdapter);
         mTypePicker.setOnItemChangedListener(this);
         mTypePicker.setScrollStateChangeListener(this);
@@ -174,12 +180,6 @@ public class StatisticFragment extends BaseFragment
         mTypePicker.setItemTransformer(new ScaleTransformer.Builder()
                 .setMinScale(0.8f)
                 .build());
-
-        mStatisticChartView.setForecast(mStatisticTypes.get(0));
-
-        mDisposable.add(mDrinkRepository.add(new Drink(100, System.currentTimeMillis()))
-                .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleAddDrink, this::handleAddDrinkError));
     }
 
     private void handleAddDrink(Drink drink) {
@@ -193,7 +193,9 @@ public class StatisticFragment extends BaseFragment
 
     @Override
     public void onCurrentItemChanged(@NonNull StatisticItemViewHolder viewHolder, int adapterPosition) {
-        mStatisticChartView.setForecast(mStatisticTypes.get(adapterPosition));
+        mStatisticChartView.bindView(
+                new float[]{0f, 2f, 1.4f, 4.f, 3.5f, 4.3f, 2f, 4f, 6.f},
+                new float[]{0f, 2f, 1.4f, 4.f, 3.5f, 4.3f, 2f, 4f, 6.f});
         viewHolder.showText();
     }
 
@@ -211,12 +213,12 @@ public class StatisticFragment extends BaseFragment
     public void onScroll(float scrollPosition,
                          @NonNull StatisticItemViewHolder currentHolder,
                          @NonNull StatisticItemViewHolder newCurrent) {
-        StatisticType current = mStatisticTypes.get(mTypePicker.getCurrentItem());
-        int nextPosition = mTypePicker.getCurrentItem() + (scrollPosition > 0 ? -1 : 1);
-        if (nextPosition >= 0 && nextPosition < mTypePicker.getAdapter().getItemCount()) {
-            StatisticType next = mStatisticTypes.get(nextPosition);
-            mStatisticChartView.onScroll(1f - Math.abs(scrollPosition), current, next);
-        }
+//        StatisticType current = mStatisticTypes.get(mTypePicker.getCurrentItem());
+//        int nextPosition = mTypePicker.getCurrentItem() + (scrollPosition > 0 ? -1 : 1);
+//        if (nextPosition >= 0 && nextPosition < mTypePicker.getAdapter().getItemCount()) {
+//            StatisticType next = mStatisticTypes.get(nextPosition);
+//            mStatisticChartView.onScroll(1f - Math.abs(scrollPosition), current, next);
+//        }
     }
 
     @Override
