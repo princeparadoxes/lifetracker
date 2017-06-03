@@ -7,19 +7,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 
 import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseActivity;
 import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
-import com.princeparadoxes.watertracker.base.HasFragmentContainer;
 import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 
 import butterknife.BindView;
-import io.reactivex.Observable;
 
 public class MainActivity extends BaseActivity {
 
@@ -32,7 +33,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.main_statistic_fragment_container)
     View mStatisticFragmentContainer;
     @BindView(R.id.water_gl_view)
-    GLSurfaceView mGLSurfaceView;
+    GLSurfaceView mWaterView;
+    @BindView(R.id.main_water_touch_frame)
+    View mTouchFrame;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -71,7 +74,6 @@ public class MainActivity extends BaseActivity {
             addStatisticScreen();
         }
         int color = ContextCompat.getColor(this, R.color.accent);
-//        StatusBarUtil.setColor(this, color);
         getWindow().setStatusBarColor(color);
         getWindow().setNavigationBarColor(color);
 
@@ -84,18 +86,42 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initGlSurfaceViewIfNeeded() {
-        mGLSurfaceView.setEGLContextClientVersion(2);
-//        mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
-        mGLSurfaceView.setRenderer(mWaterRenderer);
-        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        mWaterView.setEGLContextClientVersion(2);
+        mWaterView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
+        mWaterView.setRenderer(mWaterRenderer);
+        mWaterView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  START SCREEN  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    private float mDownY;
+
     @Override
     protected void onStart() {
         super.onStart();
+        mTouchFrame.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mDownY = event.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float newTranslationY = mWaterView.getTranslationY() + event.getY() - mDownY;
+                    newTranslationY = newTranslationY < 0 ? 0 : newTranslationY;
+                    mWaterView.setTranslationY(newTranslationY);
+                    mDownY = event.getY();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ViewCompat.animate(mWaterView)
+                            .translationY(0)
+                            .setInterpolator(new BounceInterpolator())
+                            .start();
+                    break;
+
+            }
+            return true;
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,13 +131,13 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mGLSurfaceView.onResume();
+        mWaterView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mGLSurfaceView.onPause();
+        mWaterView.onPause();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,23 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_red_dark"
     android:fitsSystemWindows="true"
     tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
 
-
-    <!--<FrameLayout-->
-        <!--android:id="@+id/main_water_fragment_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:fitsSystemWindows="true"/>-->
 
     <android.opengl.GLSurfaceView
         android:id="@+id/water_gl_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="65dp"
-        />
+        android:layout_marginBottom="65dp"/>
 
+    <FrameLayout
+        android:id="@+id/main_water_touch_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"/>
 
     <FrameLayout
         android:id="@+id/main_statistic_fragment_container"
