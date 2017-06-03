@@ -10,9 +10,8 @@ import com.google.fpl.liquidfun.Body;
 import com.google.fpl.liquidfun.BodyDef;
 import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.FixtureDef;
+import com.google.fpl.liquidfun.ParticleDef;
 import com.google.fpl.liquidfun.ParticleFlag;
-import com.google.fpl.liquidfun.ParticleGroup;
-import com.google.fpl.liquidfun.ParticleGroupDef;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.ParticleSystemDef;
 import com.google.fpl.liquidfun.PolygonShape;
@@ -150,28 +149,45 @@ public class WaterWorld {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  WATER ///////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void addWater(int ml) {
+        createWater(BASE_UNITS, 1.0f, BASE_UNITS / 2, 1.0f / 2);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  CREATE OBJECTS  /////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void createObjects() {
         if (isObjectCreated) return;
         createBorders();
-        createWater();
-        isObjectCreated = true;
-    }
-
-    private void createWater() {
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(10f, 10f, 10f, 10f, 0);
-
-        ParticleGroupDef particleGroupDef = new ParticleGroupDef();
-        particleGroupDef.setFlags(ParticleFlag.waterParticle);
-        particleGroupDef.setShape(shape);
-
-        ParticleGroup particleGroup = mParticleSystem.createParticleGroup(particleGroupDef);
         for (int i = 0; i < mParticlePositions.length; i++) {
             mParticlePositions[i] = new Vec2(-1, -1);
         }
+        isObjectCreated = true;
+    }
+
+    private void createWater(float hx, float hy, float centerX, float centerY) {
+        for (int i = 4; i < 16; i++) {
+            ParticleDef particleDef = new ParticleDef();
+            particleDef.setPosition(i, i);
+            particleDef.setFlags(ParticleFlag.waterParticle);
+
+            mParticleSystem.createParticle(particleDef);
+        }
+
+
+//        PolygonShape shape = new PolygonShape();
+//        shape.setAsBox(hx, hy, centerX, centerY, 0);
+//
+//        ParticleGroupDef particleGroupDef = new ParticleGroupDef();
+//        particleGroupDef.setFlags(ParticleFlag.waterParticle);
+//        particleGroupDef.setShape(shape);
+//
+//        ParticleGroup particleGroup = mParticleSystem.createParticleGroup(particleGroupDef);
+
 //        particleGroup.d(ObjectType.WATER_PARTICLES);
     }
 

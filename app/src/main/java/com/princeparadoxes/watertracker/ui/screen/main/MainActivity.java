@@ -43,6 +43,7 @@ public class MainActivity extends BaseActivity {
 
     private BottomSheetBehavior mStartBottomSheetBehavior;
     private WaterRenderer mWaterRenderer;
+    private float mDownY;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INIT SCREEN  ////////////////////////////////////////////
@@ -96,8 +97,6 @@ public class MainActivity extends BaseActivity {
     ////////////////////////////////////  START SCREEN  ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private float mDownY;
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -114,6 +113,7 @@ public class MainActivity extends BaseActivity {
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
+                    mWaterRenderer.addWater(100);
                     mWaterRenderer.setGravityWithLock(0.0f, mWaterView.getTranslationY() / 100);
                     ViewCompat.animate(mWaterView)
                             .translationY(0)
