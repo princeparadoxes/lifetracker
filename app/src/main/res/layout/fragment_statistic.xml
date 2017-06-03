@@ -9,6 +9,12 @@
     android:orientation="vertical"
     tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
 
+    <View
+        android:id="@+id/statistic_top_border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white"/>
+
     <TextView
         android:id="@+id/statistic_header"
         android:layout_width="wrap_content"

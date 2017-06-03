@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,8 @@ public class StatisticFragment extends BaseFragment
     DiscreteScrollView mTypePicker;
     @BindView(R.id.statistic_forecast_view)
     StatisticChartView mStatisticChartView;
+    @BindView(R.id.statistic_top_border)
+    View mTopBorderView;
 
     @BindDrawable(R.drawable.ic_chevron_down)
     Drawable mChevronDownDrawable;
@@ -113,9 +116,12 @@ public class StatisticFragment extends BaseFragment
     private void changeHeaderState(int newState) {
         switch (newState) {
             case BottomSheetBehavior.STATE_COLLAPSED:
+                mTopBorderView.setVisibility(View.VISIBLE);
+                TransitionManager.beginDelayedTransition((ViewGroup) getView());
                 createHeaderAnimator(R.string.statistic_header_open, mChevronUpDrawable).start();
                 break;
             case BottomSheetBehavior.STATE_EXPANDED:
+                mTopBorderView.setVisibility(View.INVISIBLE);
                 createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
                 break;
         }
