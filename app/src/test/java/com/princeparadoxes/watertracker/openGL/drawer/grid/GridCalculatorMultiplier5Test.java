@@ -1,6 +1,7 @@
 package com.princeparadoxes.watertracker.openGL.drawer.grid;
 
-import org.jbox2d.common.Vec2;
+import com.google.fpl.liquidfun.Vec2;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

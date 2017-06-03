@@ -11,11 +11,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.princeparadoxes.watertracker.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticAdapter extends RecyclerView.Adapter<StatisticItemViewHolder> {
 
-    private List<StatisticModel> data;
+    private List<StatisticModel> data = new ArrayList<>();
 
     public StatisticAdapter() {
     }
@@ -38,7 +39,7 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticItemViewHold
     }
 
     public StatisticAdapter setData(List<StatisticModel> data) {
-        this.data = data;
+        this.data.addAll(data);
         return this;
     }
 }

@@ -1,6 +1,6 @@
 package com.princeparadoxes.watertracker.data.model;
 
-import com.princeparadoxes.watertracker.data.db.model.DBDrink;
+import com.princeparadoxes.watertracker.data.db.model.DbDrink;
 
 
 public class Drink {
@@ -13,7 +13,7 @@ public class Drink {
         this.mTimestamp = mTimestamp;
     }
 
-    public static Drink mapFromDBDrink(DBDrink dbDrink) {
+    public static Drink mapFromDBDrink(DbDrink dbDrink) {
 
         return new Drink(dbDrink.getSize(), dbDrink.getTimestamp());
     }

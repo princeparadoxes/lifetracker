@@ -2,8 +2,7 @@ package com.princeparadoxes.watertracker.data.db.repository;
 
 import com.princeparadoxes.watertracker.ApplicationScope;
 import com.princeparadoxes.watertracker.data.db.DBService;
-import com.princeparadoxes.watertracker.data.db.model.DBDrink;
-import com.princeparadoxes.watertracker.data.model.Drink;
+import com.princeparadoxes.watertracker.data.db.model.DbDrink;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -13,32 +12,26 @@ import javax.inject.Inject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-/**
- * Created by as3co on 06.05.2017.
- */
-
 @ApplicationScope
 public class DBDrinkRepository {
+
+    public static final long DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
     @Inject
     public DBDrinkRepository(DBService dbService) {
 
     }
 
-    public DBDrink add(DBDrink dbDrink) {
-
+    public DbDrink add(DbDrink dbDrink) {
         Realm.getDefaultInstance().executeTransaction(realm -> realm.copyToRealm(dbDrink));
-
         return dbDrink;
     }
 
-    public static float getDayStatistic() {
+    public Float getDayStatistic() {
         return getByPeriod(0);
     }
 
-    public static float getByPeriod(int typeQuery) {
-
-
+    public Float getByPeriod(int typeQuery) {
         Calendar currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         currentTime.setTimeZone(TimeZone.getDefault());
 
@@ -65,31 +58,31 @@ public class DBDrinkRepository {
         long timeInMillis = currentTime.getTimeInMillis();
 
         float result = Realm.getDefaultInstance().
-                        where(DBDrink.class).
-                        greaterThan("mTimestamp", timeInMillis).
-                        findAll()
-                        .sum("mSize").floatValue();
-
-        long minTimestamp = Realm.getDefaultInstance().
-                where(DBDrink.class).
+                where(DbDrink.class).
                 greaterThan("mTimestamp", timeInMillis).
-                findAll().min("").longValue();
+                findAll()
+                .sum("mSize").floatValue();
 
-        long dayInMilliseconds = 86400000;
+        Number number = Realm.getDefaultInstance().
+                where(DbDrink.class).
+                greaterThan("mTimestamp", timeInMillis).
+                findAll().min("mSize");
+        long minTimestamp = 0;
+        if(number != null) minTimestamp = number.longValue();
 
-        float DeltaDey = (System.currentTimeMillis()-minTimestamp)/dayInMilliseconds;
+        float deltaDay = (System.currentTimeMillis() - minTimestamp) / DAY_IN_MILLISECONDS;
 
-        return result/DeltaDey;
+        return result / deltaDay;
     }
 
-    public static void del(final long Timestamp) {
+    public Boolean deleteAllWithTimestamp(final long timestamp) {
+        Realm.getDefaultInstance().beginTransaction();
+        RealmResults<DbDrink> dbDrinks = Realm.getDefaultInstance().where(DbDrink.class)
+                .equalTo("mTimestamp", timestamp)
+                .findAll();
 
-        Realm.getDefaultInstance().executeTransaction(realm -> {
-            RealmResults<DBDrink> result = realm.where(DBDrink.class)
-                    .equalTo("mTimestamp", Timestamp)
-                    .findAll();
-
-            result.deleteAllFromRealm();
-        });
+        boolean result = dbDrinks.deleteAllFromRealm();
+        Realm.getDefaultInstance().commitTransaction();
+        return result;
     }
 }

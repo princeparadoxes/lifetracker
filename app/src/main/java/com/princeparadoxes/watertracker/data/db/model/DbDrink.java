@@ -8,25 +8,25 @@ import io.realm.RealmObject;
  * Created by as3co on 06.05.2017.
  */
 
-public class DBDrink extends RealmObject {
+public class DbDrink extends RealmObject {
 
     private long mTimestamp;
     private int mSize;
 
-    public DBDrink() {
+    public DbDrink() {
 
     }
 
-    public DBDrink(int mSize, long mTimestamp) {
+    public DbDrink(int mSize, long mTimestamp) {
 
         this.mSize = mSize;
         this.mTimestamp = mTimestamp;
     }
 
 
-    public static DBDrink mapFromDrink(Drink drink) {
+    public static DbDrink mapFromDrink(Drink drink) {
 
-        return new DBDrink(drink.getSize(),drink.getTimestamp());
+        return new DbDrink(drink.getSize(),drink.getTimestamp());
 
     }
 

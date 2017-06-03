@@ -29,13 +29,13 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class StatisticFragment extends BaseFragment
@@ -88,6 +88,7 @@ public class StatisticFragment extends BaseFragment
                 .projectComponent(app.component())
                 .build();
         component.inject(this);
+        mDisposable = new CompositeDisposable();
     }
 
     @Nullable
@@ -156,25 +157,8 @@ public class StatisticFragment extends BaseFragment
     @Override
     public void onStart() {
         super.onStart();
-
-        float a1 = 50;
-        float a2 = 50 * 7;
-        float a3 = 50 * 30;
-        float a4 = 50 * 365;
-
-        List<StatisticModel> statisticModelList = new ArrayList<>();
-        statisticModelList.add(new StatisticModel(StatisticType.DAY, a1));
-        statisticModelList.add(new StatisticModel(StatisticType.WEEK, a2));
-        statisticModelList.add(new StatisticModel(StatisticType.MONTH, a3));
-        statisticModelList.add(new StatisticModel(StatisticType.YEAR, a4));
-        mStatisticAdapter.setData(statisticModelList);
-
-        mDisposable = new CompositeDisposable();
+        loadStatistic();
         initTypePicker();
-
-        mDisposable.add(mDrinkRepository.add(new Drink(100, System.currentTimeMillis()))
-                .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleAddDrink, this::handleAddDrinkError));
     }
 
     private void initTypePicker() {
@@ -188,11 +172,34 @@ public class StatisticFragment extends BaseFragment
                 .build());
     }
 
-    private void handleAddDrink(Drink drink) {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  LOAD STATISTIC  /////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    private void loadStatistic() {
+        mDisposable.add(Observable.range(0, StatisticType.values().length)
+                .concatMap(integer -> mDrinkRepository.getByPeriod(integer))
+                .buffer(4)
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe(this::handleLoadStatisticDrink));
     }
 
-    private void handleAddDrinkError(Throwable throwable) {
+    private void handleLoadStatisticDrink(List<StatisticModel> statisticModels) {
+//        float a1 = 50;
+//        float a2 = 50 * 7;
+//        float a3 = 50 * 30;
+//        float a4 = 50 * 365;
+//
+//        List<StatisticModel> statisticModelList = new ArrayList<>();
+//        statisticModelList.add(new StatisticModel(StatisticType.DAY, a1));
+//        statisticModelList.add(new StatisticModel(StatisticType.WEEK, a2));
+//        statisticModelList.add(new StatisticModel(StatisticType.MONTH, a3));
+//        statisticModelList.add(new StatisticModel(StatisticType.YEAR, a4));
+//        mStatisticAdapter.setData(statisticModelList);
+        mStatisticAdapter.setData(statisticModels);
+    }
+
+    private void handleLoadStatisticError(Throwable throwable) {
 
     }
 
