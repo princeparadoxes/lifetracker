@@ -45,4 +45,16 @@ public class WaterRenderer implements GLSurfaceView.Renderer {
         mWaterWorld.update(1.0f / 10.0f);
         mWaterWorld.onDraw();
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  DELEGATES  //////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void setGravityWithLock(float gravityX, float gravityY) {
+        mWaterWorld.setGravityWithLock(gravityX, gravityY);
+    }
+
+    public void restoreLastAccelerometerGravity() {
+        mWaterWorld.restoreLastAccelerometerGravity();
+    }
 }

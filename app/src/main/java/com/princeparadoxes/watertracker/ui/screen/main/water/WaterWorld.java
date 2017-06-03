@@ -22,7 +22,6 @@ import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.misc.AccelerometerListener;
 import com.princeparadoxes.watertracker.openGL.Texture;
 import com.princeparadoxes.watertracker.openGL.drawer.Drawer;
-import com.princeparadoxes.watertracker.openGL.drawer.grid.GridDrawer;
 import com.princeparadoxes.watertracker.openGL.drawer.particle.ParticleDrawer;
 
 import java.util.Arrays;
@@ -53,6 +52,10 @@ public class WaterWorld {
     private float mVirtualWidth;
     private float mVirtualHeight;
     private boolean isObjectCreated = false;
+
+    private float mLastAccelerometerGravityX = 0;
+    private float mLastAccelerometerGravityY = 0;
+    private boolean mIsAccelerometerGravityLock = false;
 
     private enum ObjectType {
         WATER_PARTICLES,
@@ -90,8 +93,21 @@ public class WaterWorld {
 
     private AccelerometerListener getAccelerometerListener() {
         return new AccelerometerListener((x, y) -> {
+            if (mIsAccelerometerGravityLock) return;
+            mLastAccelerometerGravityX = -x;
+            mLastAccelerometerGravityY = -y;
             mWorld.setGravity(-x, -y);
         });
+    }
+
+    public void restoreLastAccelerometerGravity() {
+        mIsAccelerometerGravityLock = false;
+        mWorld.setGravity(mLastAccelerometerGravityX, mLastAccelerometerGravityY);
+    }
+
+    public void setGravityWithLock(float gravityX, float gravityY) {
+        mIsAccelerometerGravityLock = true;
+        mWorld.setGravity(gravityX, gravityY);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +170,7 @@ public class WaterWorld {
 
         ParticleGroup particleGroup = mParticleSystem.createParticleGroup(particleGroupDef);
         for (int i = 0; i < mParticlePositions.length; i++) {
-            mParticlePositions[i] = new Vec2(-1,-1);
+            mParticlePositions[i] = new Vec2(-1, -1);
         }
 //        particleGroup.d(ObjectType.WATER_PARTICLES);
     }
@@ -229,4 +245,10 @@ public class WaterWorld {
         Timber.d("create array %d ms", System.currentTimeMillis() - startTime);
         mDrawer.draw(vec2s);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  DELEGATES  //////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
 }

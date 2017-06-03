@@ -113,9 +113,11 @@ public class MainActivity extends BaseActivity {
                     mDownY = event.getY();
                     break;
                 case MotionEvent.ACTION_UP:
+                    mWaterRenderer.setGravityWithLock(0.0f, mWaterView.getTranslationY() / 100);
                     ViewCompat.animate(mWaterView)
                             .translationY(0)
                             .setInterpolator(new BounceInterpolator())
+                            .withEndAction(() -> mWaterRenderer.restoreLastAccelerometerGravity())
                             .start();
                     break;
 
