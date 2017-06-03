@@ -16,13 +16,24 @@ import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseActivity;
 import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
+import com.princeparadoxes.watertracker.data.model.Drink;
+import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////  INJECTS  ////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Inject
+    DrinkRepository mDrinkRepository;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -113,7 +124,7 @@ public class MainActivity extends BaseActivity {
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    mWaterRenderer.addWater(100);
+                    addWater();
                     mWaterRenderer.setGravityWithLock(0.0f, mWaterView.getTranslationY() / 100);
                     ViewCompat.animate(mWaterView)
                             .translationY(0)
@@ -125,6 +136,11 @@ public class MainActivity extends BaseActivity {
             }
             return true;
         });
+    }
+
+    private void addWater() {
+        mWaterRenderer.addWater(100);
+        mDrinkRepository.add(new Drink(100, System.currentTimeMillis()));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
