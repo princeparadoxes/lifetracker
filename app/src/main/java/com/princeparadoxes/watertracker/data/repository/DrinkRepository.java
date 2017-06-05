@@ -5,6 +5,7 @@ import com.princeparadoxes.watertracker.data.db.model.DbDrink;
 import com.princeparadoxes.watertracker.data.db.repository.DBDrinkRepository;
 import com.princeparadoxes.watertracker.data.model.Drink;
 import com.princeparadoxes.watertracker.data.model.StatisticType;
+import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticModel;
 
 import javax.inject.Inject;
@@ -15,10 +16,12 @@ import io.reactivex.Observable;
 public class DrinkRepository {
 
     private final DBDrinkRepository mDBDrinkRepository;
+    private final ProjectPreferences mProjectPreferences;
 
     @Inject
-    public DrinkRepository(DBDrinkRepository dbDrinkRepository) {
+    public DrinkRepository(DBDrinkRepository dbDrinkRepository, ProjectPreferences projectPreferences) {
         mDBDrinkRepository = dbDrinkRepository;
+        mProjectPreferences = projectPreferences;
 
     }
 
@@ -32,12 +35,15 @@ public class DrinkRepository {
         return Observable.just(mDBDrinkRepository.getDayStatistic());
     }
 
-    public Observable<StatisticModel> getByPeriod(int typeQuery) {
-        return Observable.just(mDBDrinkRepository.getByPeriod(typeQuery))
-                .map(result -> new StatisticModel(StatisticType.values()[typeQuery], result));
+    public Observable<StatisticModel> getByPeriod(StatisticType statisticType) {
+        return Observable.just(mDBDrinkRepository.getAllByPeriod(statisticType))
+                .map(result -> {
+                    int normValue = statisticType.getCountDays() * mProjectPreferences.getCurrentDayNorm();
+                    return new StatisticModel(statisticType, result, normValue);
+                });
     }
 
-    public Observable<Boolean> del(long Timestamp) {
-        return Observable.just(mDBDrinkRepository.deleteAllWithTimestamp(Timestamp));
+    public Observable<Boolean> del(long timestamp) {
+        return Observable.just(mDBDrinkRepository.deleteAllWithTimestamp(timestamp));
     }
 }

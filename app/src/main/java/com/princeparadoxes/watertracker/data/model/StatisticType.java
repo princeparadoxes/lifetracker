@@ -7,19 +7,21 @@ import com.princeparadoxes.watertracker.R;
 
 public enum StatisticType {
 
-    DAY(R.string.statistic_type_day, R.drawable.ic_water_particle_32dp),
-    WEEK(R.string.statistic_type_week, R.drawable.ic_water_particle_32dp),
-    MONTH(R.string.statistic_type_month, R.drawable.ic_water_particle_32dp),
-    YEAR(R.string.statistic_type_year, R.drawable.ic_water_particle_32dp);
+    DAY(R.string.statistic_type_day, R.drawable.ic_water_particle_32dp, 1),
+    WEEK(R.string.statistic_type_week, R.drawable.ic_water_particle_32dp, 7),
+    MONTH(R.string.statistic_type_month, R.drawable.ic_water_particle_32dp, 31),
+    YEAR(R.string.statistic_type_year, R.drawable.ic_water_particle_32dp, 365);
 
     @StringRes
     private final int mName;
     @DrawableRes
     private final int mIcon;
+    private final int mCountDays;
 
-    StatisticType(@StringRes int name, @DrawableRes int icon) {
+    StatisticType(@StringRes int name, @DrawableRes int icon, int countDays) {
         mName = name;
         mIcon = icon;
+        mCountDays = countDays;
     }
 
     public int getName() {
@@ -28,5 +30,9 @@ public enum StatisticType {
 
     public int getIcon() {
         return mIcon;
+    }
+
+    public int getCountDays() {
+        return mCountDays;
     }
 }

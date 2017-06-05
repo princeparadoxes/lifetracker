@@ -18,6 +18,7 @@ import com.princeparadoxes.watertracker.base.BaseActivity;
 import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
 import com.princeparadoxes.watertracker.data.model.Drink;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
+import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
@@ -140,7 +141,9 @@ public class MainActivity extends BaseActivity {
 
     private void addWater() {
         mWaterRenderer.addWater(100);
-        mDrinkRepository.add(new Drink(100, System.currentTimeMillis()));
+        mDrinkRepository.add(new Drink(100, System.currentTimeMillis()))
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

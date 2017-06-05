@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
-import com.princeparadoxes.watertracker.data.model.Drink;
 import com.princeparadoxes.watertracker.data.model.StatisticType;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
@@ -28,7 +26,6 @@ import com.princeparadoxes.watertracker.utils.DimenTools;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -118,10 +115,10 @@ public class StatisticFragment extends BaseFragment
         switch (newState) {
             case BottomSheetBehavior.STATE_COLLAPSED:
                 mTopBorderView.setVisibility(View.VISIBLE);
-                TransitionManager.beginDelayedTransition((ViewGroup) getView());
                 createHeaderAnimator(R.string.statistic_header_open, mChevronUpDrawable).start();
                 break;
             case BottomSheetBehavior.STATE_EXPANDED:
+                loadStatistic();
                 mTopBorderView.setVisibility(View.INVISIBLE);
                 createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
                 break;
@@ -157,7 +154,6 @@ public class StatisticFragment extends BaseFragment
     @Override
     public void onStart() {
         super.onStart();
-        loadStatistic();
         initTypePicker();
     }
 
@@ -177,11 +173,12 @@ public class StatisticFragment extends BaseFragment
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void loadStatistic() {
-        mDisposable.add(Observable.range(0, StatisticType.values().length)
-                .concatMap(integer -> mDrinkRepository.getByPeriod(integer))
-                .buffer(4)
+        mDisposable.add(Observable.fromArray(StatisticType.values())
+                .concatMap(statisticType -> mDrinkRepository.getByPeriod(statisticType))
+                .toList()
+                .toObservable()
                 .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleLoadStatisticDrink));
+                .subscribe(this::handleLoadStatisticDrink, this::handleLoadStatisticError));
     }
 
     private void handleLoadStatisticDrink(List<StatisticModel> statisticModels) {
@@ -200,9 +197,8 @@ public class StatisticFragment extends BaseFragment
     }
 
     private void handleLoadStatisticError(Throwable throwable) {
-
+        throwable.printStackTrace();
     }
-
 
     @Override
     public void onCurrentItemChanged(@NonNull StatisticItemViewHolder viewHolder, int adapterPosition) {

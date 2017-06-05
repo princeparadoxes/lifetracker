@@ -39,7 +39,9 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticItemViewHold
     }
 
     public StatisticAdapter setData(List<StatisticModel> data) {
+        this.data.clear();
         this.data.addAll(data);
+        notifyDataSetChanged();
         return this;
     }
 }

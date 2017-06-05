@@ -3,6 +3,7 @@ package com.princeparadoxes.watertracker.data.db.repository;
 import com.princeparadoxes.watertracker.ApplicationScope;
 import com.princeparadoxes.watertracker.data.db.DBService;
 import com.princeparadoxes.watertracker.data.db.model.DbDrink;
+import com.princeparadoxes.watertracker.data.model.StatisticType;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -28,32 +29,32 @@ public class DBDrinkRepository {
     }
 
     public Float getDayStatistic() {
-        return getByPeriod(0);
+        return getAllByPeriod(StatisticType.DAY);
     }
 
-    public Float getByPeriod(int typeQuery) {
+    public Float getAllByPeriod(StatisticType statisticType) {
         Calendar currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         currentTime.setTimeZone(TimeZone.getDefault());
-
         currentTime.set(Calendar.HOUR, 0);
         currentTime.set(Calendar.MINUTE, 0);
         currentTime.set(Calendar.SECOND, 0);
         currentTime.set(Calendar.MILLISECOND, 0);
 
-        switch (typeQuery) {
-            case 0:
+        switch (statisticType) {
+            case DAY:
                 break;
-            case 1:
-                currentTime.add(Calendar.DAY_OF_YEAR, -1);
-                break;
-            case 2:
+            case WEEK:
                 currentTime.add(Calendar.WEEK_OF_YEAR, -1);
                 break;
-            case 3:
+            case MONTH:
+                currentTime.add(Calendar.MONTH, -1);
+                break;
+            case YEAR:
                 currentTime.add(Calendar.YEAR, -1);
                 break;
+            default:
+                throw new IllegalArgumentException("Wrong statistic type");
         }
-
 
         long timeInMillis = currentTime.getTimeInMillis();
 
@@ -63,16 +64,7 @@ public class DBDrinkRepository {
                 findAll()
                 .sum("mSize").floatValue();
 
-        Number number = Realm.getDefaultInstance().
-                where(DbDrink.class).
-                greaterThan("mTimestamp", timeInMillis).
-                findAll().min("mSize");
-        long minTimestamp = 0;
-        if(number != null) minTimestamp = number.longValue();
-
-        float deltaDay = (System.currentTimeMillis() - minTimestamp) / DAY_IN_MILLISECONDS;
-
-        return result / deltaDay;
+        return result;
     }
 
     public Boolean deleteAllWithTimestamp(final long timestamp) {

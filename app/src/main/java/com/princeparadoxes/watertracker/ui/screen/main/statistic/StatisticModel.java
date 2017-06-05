@@ -9,17 +9,23 @@ import com.princeparadoxes.watertracker.data.model.StatisticType;
 public class StatisticModel {
     private StatisticType mStatisticType;
     private float mValue;
+    private float mNormValue;
 
-    public StatisticModel(StatisticType mStatisticType, float mValue) {
-        this.mStatisticType = mStatisticType;
-        this.mValue = mValue;
+    public StatisticModel(StatisticType statisticType, float value, float normValue) {
+        mStatisticType = statisticType;
+        mValue = value;
+        mNormValue = normValue;
     }
 
-    public StatisticType getmStatisticType() {
+    public StatisticType getStatisticType() {
         return mStatisticType;
     }
 
     public float getValue() {
         return mValue;
+    }
+
+    public float getNormValue() {
+        return mNormValue;
     }
 }

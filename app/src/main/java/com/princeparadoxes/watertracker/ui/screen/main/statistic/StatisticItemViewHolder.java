@@ -13,7 +13,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.princeparadoxes.watertracker.R;
 
 import java.util.ArrayList;
@@ -64,23 +63,24 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
     @Override
     public void bindView(int position, StatisticModel item, StatisticTypeItemListener actionListener) {
         super.bindView(position, item, actionListener);
-        mTextView.setText(item.getmStatisticType().getName());
+        mTextView.setText(item.getStatisticType().getName());
         setChartData(item);
         mPieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
     }
 
     private void setChartData(StatisticModel statisticModel) {
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-        float a = 100;
-        float b = statisticModel.getValue();
 
-        entries.add(new PieEntry(a, "", null));
-        entries.add(new PieEntry(b, "", null));
+        if (statisticModel.getValue() >= statisticModel.getNormValue()) {
+            entries.add(new PieEntry(statisticModel.getNormValue(), "", null));
+            entries.add(new PieEntry(0, "", null));
+        } else {
+            entries.add(new PieEntry(statisticModel.getValue(), "", null));
+            entries.add(new PieEntry(statisticModel.getNormValue() - statisticModel.getValue(), "", null));
+        }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-
         dataSet.setDrawIcons(false);
-
         dataSet.setSliceSpace(1f);
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
