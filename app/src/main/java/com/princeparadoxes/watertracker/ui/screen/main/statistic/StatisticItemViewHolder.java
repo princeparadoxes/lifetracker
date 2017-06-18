@@ -1,7 +1,10 @@
 package com.princeparadoxes.watertracker.ui.screen.main.statistic;
 
 import android.graphics.Color;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.danil.recyclerbindableadapter.library.view.BindableViewHolder;
@@ -24,10 +27,14 @@ import butterknife.ButterKnife;
 public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
         StatisticItemViewHolder.StatisticTypeItemListener> implements OnChartValueSelectedListener {
 
+    //    @BindView(R.id.statistic_type_item_container)
+//    ViewGroup mContainer;
     @BindView(R.id.statistic_type_item_chart)
     PieChart mPieChart;
     @BindView(R.id.statistic_type_item_name)
     TextView mTextView;
+    @BindView(R.id.statistic_type_item_logo)
+    ImageView mLogo;
 
     @BindColor(R.color.accent)
     int mAccentColor;
@@ -48,7 +55,7 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
         mPieChart.setHoleRadius(58f);
         mPieChart.setTransparentCircleRadius(61f);
         mPieChart.setDrawCenterText(false);
-        // enable rotation of the chart by touch
+        // disable rotation of the chart by touch
         mPieChart.setRotationEnabled(false);
         mPieChart.setHighlightPerTapEnabled(true);
         mPieChart.setDrawEntryLabels(false);
@@ -65,7 +72,6 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
         super.bindView(position, item, actionListener);
         mTextView.setText(item.getStatisticType().getName());
         setChartData(item);
-        mPieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
     }
 
     private void setChartData(StatisticModel statisticModel) {
@@ -91,27 +97,20 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
         PieData data = new PieData(dataSet);
         data.setValueTextColor(Color.TRANSPARENT);
         mPieChart.setData(data);
+    }
+
+    public void onChanged() {
+        ViewCompat.animate(mLogo).alpha(0.0f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        ViewCompat.animate(mPieChart).alpha(1.0f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        ViewCompat.animate(mTextView).alpha(1.0f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
         mPieChart.invalidate();
+        mPieChart.animateY(600, Easing.EasingOption.EaseInOutQuad);
     }
 
-    public void showText() {
-        int parentHeight = ((View) mPieChart.getParent()).getHeight();
-        float scale = (parentHeight - mTextView.getHeight()) / (float) mPieChart.getHeight();
-        mPieChart.setPivotX(mPieChart.getWidth() * 0.5f);
-        mPieChart.setPivotY(0);
-        mPieChart.animate().scaleX(scale)
-                .withEndAction(() -> {
-                    mTextView.setVisibility(View.VISIBLE);
-                })
-                .scaleY(scale).setDuration(200)
-                .start();
-    }
-
-    public void hideText() {
-        mTextView.setVisibility(View.INVISIBLE);
-        mPieChart.animate().scaleX(1f).scaleY(1f)
-                .setDuration(200)
-                .start();
+    public void onUnchanged() {
+        ViewCompat.animate(mLogo).alpha(1.0f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        ViewCompat.animate(mPieChart).alpha(0.0f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+        ViewCompat.animate(mTextView).alpha(0.0f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
     }
 
     @Override

@@ -205,12 +205,12 @@ public class StatisticFragment extends BaseFragment
         mStatisticChartView.bindView(
                 new float[]{0f, 2f, 1.4f, 4.f, 3.5f, 4.3f, 2f, 4f, 6.f},
                 new float[]{0f, 2f, 1.4f, 4.f, 3.5f, 4.3f, 2f, 4f, 6.f});
-        viewHolder.showText();
+        viewHolder.onChanged();
     }
 
     @Override
     public void onScrollStart(@NonNull StatisticItemViewHolder currentItemHolder, int adapterPosition) {
-        currentItemHolder.hideText();
+        currentItemHolder.onUnchanged();
     }
 
     @Override
