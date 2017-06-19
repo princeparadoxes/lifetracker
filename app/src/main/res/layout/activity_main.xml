@@ -9,6 +9,9 @@
     android:fitsSystemWindows="true"
     tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
 
+    <com.princeparadoxes.watertracker.ui.screen.main.RulerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <android.opengl.GLSurfaceView
         android:id="@+id/water_gl_view"

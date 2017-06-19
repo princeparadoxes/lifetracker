@@ -5,4 +5,7 @@
 
     <dimen name="divider_height">1dp</dimen>
 
+    <dimen name="ruler_short_line">16dp</dimen>
+    <dimen name="ruler_long_line">32dp</dimen>
+
 </resources>
