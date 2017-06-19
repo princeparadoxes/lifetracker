@@ -44,7 +44,7 @@ public class StatisticChartView extends LinearLayout {
     }
 
     public void bindView(@NonNull float[] xValues, @NonNull float[] yValues) {
-        if (xValues.length != yValues.length){
+        if (xValues.length != yValues.length) {
             throw new IllegalArgumentException("xValues length must be equals yValues length");
         }
         ArrayList<Entry> entries = new ArrayList<>();
