@@ -28,4 +28,16 @@ public class StatisticModel {
     public float getNormValue() {
         return mNormValue;
     }
+
+    public int getName() {
+        return getStatisticType().getName();
+    }
+
+    public int getIcon() {
+        return getStatisticType().getIcon();
+    }
+
+    public int getCountDays() {
+        return getStatisticType().getCountDays();
+    }
 }

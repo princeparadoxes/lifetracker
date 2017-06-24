@@ -35,7 +35,7 @@ public class WaterWorld {
 
     private static final float BASE_UNITS = 20f;
     private static final int MAX_PARTICLE_COUNT = 10000;
-    private static final float PARTICLE_RADIUS = 0.5f;
+    private static final float PARTICLE_RADIUS = 1f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -52,8 +52,8 @@ public class WaterWorld {
     private float mVirtualHeight;
     private boolean isObjectCreated = false;
 
-    private float mLastAccelerometerGravityX = 0;
-    private float mLastAccelerometerGravityY = 0;
+    private float mLastAccelerometerGravityX = 0.0f;
+    private float mLastAccelerometerGravityY = -9.81f;
     private boolean mIsAccelerometerGravityLock = false;
 
     private enum ObjectType {
@@ -72,7 +72,7 @@ public class WaterWorld {
     }
 
     private void createWorld() {
-        mWorld = new World(0.0f, -9.81f);
+        mWorld = new World(mLastAccelerometerGravityX, mLastAccelerometerGravityY);
         ParticleSystemDef def = new ParticleSystemDef();
         def.setRadius(PARTICLE_RADIUS);
         def.setMaxCount(MAX_PARTICLE_COUNT);
@@ -153,7 +153,10 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void addWater(int ml) {
-        createWater(BASE_UNITS, 1.0f, BASE_UNITS / 2, 1.0f / 2);
+        float aspect = ml / 2000f;
+        int count = (int) ((mVirtualHeight * mVirtualWidth) * aspect);
+        count /= PARTICLE_RADIUS;
+        createWater(count);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,32 +172,24 @@ public class WaterWorld {
         isObjectCreated = true;
     }
 
-    private void createWater(float hx, float hy, float centerX, float centerY) {
-        for (int i = 4; i < 16; i++) {
+    private void createWater(int count) {
+
+        float offset = PARTICLE_RADIUS / 2;
+        for (int i = 0; i < count; i++) {
             ParticleDef particleDef = new ParticleDef();
-            particleDef.setPosition(i, i);
+            float x = (i + offset) % mVirtualWidth;
+            float y = ((int) (x / mVirtualWidth)) + offset;
+            particleDef.setPosition(x, y);
             particleDef.setFlags(ParticleFlag.waterParticle);
 
             mParticleSystem.createParticle(particleDef);
         }
-
-
-//        PolygonShape shape = new PolygonShape();
-//        shape.setAsBox(hx, hy, centerX, centerY, 0);
-//
-//        ParticleGroupDef particleGroupDef = new ParticleGroupDef();
-//        particleGroupDef.setFlags(ParticleFlag.waterParticle);
-//        particleGroupDef.setShape(shape);
-//
-//        ParticleGroup particleGroup = mParticleSystem.createParticleGroup(particleGroupDef);
-
-//        particleGroup.d(ObjectType.WATER_PARTICLES);
     }
 
     private void createBorders() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.setUserData(ObjectType.BORDERS);
-        bodyDef.setType(BodyType.kinematicBody);
+        bodyDef.setType(BodyType.staticBody);
         Body body = mWorld.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
@@ -224,7 +219,7 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(float delta) {
-        mWorld.step(1f / 8f, 1, 1, 1);
+        mWorld.step(1f / 8f, 3, 3, 3);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,17 +233,16 @@ public class WaterWorld {
         Timber.d("Draw time %d ms", System.currentTimeMillis() - startTime);
     }
 
-    private void drawBodies() {
-        int bodyCount = mWorld.getBodyCount();
-        if (bodyCount <= 0) return;
+//    private void drawBodies() {
+//        int bodyCount = mWorld.getBodyCount();
+//        if (bodyCount <= 0) return;
 //        Body body = mWorld.getBodyList();
 //        for (int i = 0; i < bodyCount; i++) {
 //                switch ((ObjectType) body.getUserData()) {
 //                }
 //            body = body.getNext();
 //        }
-    }
-
+//    }
 
     private void drawParticles() {
         long startTime = System.currentTimeMillis();

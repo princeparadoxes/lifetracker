@@ -13,9 +13,6 @@ import timber.log.Timber;
 
 import static android.opengl.GLES20.GL_FLOAT;
 
-/**
- * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
- */
 public class ParticleDrawer extends Drawer {
 
     public static final int POINTS_ON_PARTICLE = 12;
@@ -47,7 +44,7 @@ public class ParticleDrawer extends Drawer {
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final float PARTICLE_SIZE = 2;
+    public static final float PARTICLE_SIZE = 4;
     public static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

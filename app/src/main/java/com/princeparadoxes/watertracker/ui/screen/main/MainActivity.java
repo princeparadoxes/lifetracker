@@ -11,6 +11,7 @@ import android.support.v4.view.ViewCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
+import android.widget.TextView;
 
 import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.R;
@@ -40,6 +41,10 @@ public class MainActivity extends BaseActivity {
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    @BindView(R.id.main_ruler_view)
+    RulerView mRulerView;
+    @BindView(R.id.main_value)
+    TextView mValueView;
     @BindView(R.id.main_start_fragment_container)
     View mStartFragmentContainer;
     @BindView(R.id.main_statistic_fragment_container)
@@ -122,10 +127,11 @@ public class MainActivity extends BaseActivity {
                     newTranslationY = newTranslationY < 0 ? 0 : newTranslationY;
                     mWaterView.setTranslationY(newTranslationY);
                     mDownY = event.getY();
+                    mValueView.setText(String.valueOf(mRulerView.getNearestValue((int) mWaterView.getTranslationY())));
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    addWater();
+                    addWater(mRulerView.getNearestValue((int) mWaterView.getTranslationY()));
                     mWaterRenderer.setGravityWithLock(0.0f, mWaterView.getTranslationY() / 100);
                     ViewCompat.animate(mWaterView)
                             .translationY(0)
@@ -139,9 +145,9 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void addWater() {
-        mWaterRenderer.addWater(100);
-        mDrinkRepository.add(new Drink(100, System.currentTimeMillis()))
+    private void addWater(int ml) {
+        mWaterRenderer.addWater(ml);
+        mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
                 .compose(SchedulerTransformer.getInstance())
                 .subscribe();
     }

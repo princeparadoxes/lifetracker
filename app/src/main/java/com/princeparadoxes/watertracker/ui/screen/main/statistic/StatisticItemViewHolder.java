@@ -72,6 +72,7 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
         super.bindView(position, item, actionListener);
         mTextView.setText(item.getStatisticType().getName());
         setChartData(item);
+        mLogo.setImageResource(item.getIcon());
     }
 
     private void setChartData(StatisticModel statisticModel) {
