@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
@@ -127,7 +128,7 @@ public class MainActivity extends BaseActivity {
                     newTranslationY = newTranslationY < 0 ? 0 : newTranslationY;
                     mWaterView.setTranslationY(newTranslationY);
                     mDownY = event.getY();
-                    mValueView.setText(String.valueOf(mRulerView.getNearestValue((int) mWaterView.getTranslationY())));
+                    setCurrentValueText();
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
@@ -143,6 +144,19 @@ public class MainActivity extends BaseActivity {
             }
             return true;
         });
+    }
+
+    private void setCurrentValueText() {
+        int value = mRulerView.getNearestValue((int) mWaterView.getTranslationY());
+        int sp = value / 25;
+        mValueView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12 + sp);
+        String s = "";
+        if (sp > 15) {
+            for (int i = 0; i < sp - 15; i = i + 2) {
+                s += "!";
+            }
+        }
+        mValueView.setText(value + "ml" + s);
     }
 
     private void addWater(int ml) {

@@ -38,11 +38,16 @@ public class RulerView extends FrameLayout {
         mOffsetValueMap.put(0, 0);
         for (int i = 50; i <= 500; i += 50) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.ruler_item_view, null);
-            ((TextView) view.findViewById(R.id.ruler_item_text)).setText(i + " ml");
             View line = view.findViewById(R.id.ruler_item_line);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) line.getLayoutParams();
-            int id = i % 100 == 0 ? R.dimen.ruler_long_line : R.dimen.ruler_short_line;
-            params.width = getContext().getResources().getDimensionPixelOffset(id);
+            if (i % 100 == 0) {
+                ((TextView) view.findViewById(R.id.ruler_item_text)).setText(i + " ml");
+                params.width = getContext().getResources().getDimensionPixelOffset(R.dimen.ruler_long_line);
+//                params.height = (int) DimenTools.pxFromDp(getContext(), 2);
+            } else {
+                params.width = getContext().getResources().getDimensionPixelOffset(R.dimen.ruler_short_line);
+//                params.height = (int) DimenTools.pxFromDp(getContext(), 1);
+            }
             line.setLayoutParams(params);
             mViewContainer.addView(view);
             int finalI = i;
