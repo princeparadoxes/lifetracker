@@ -35,6 +35,7 @@ public class RulerView extends FrameLayout {
     }
 
     private void initViews() {
+        mOffsetValueMap.put(0, 0);
         for (int i = 50; i <= 500; i += 50) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.ruler_item_view, null);
             ((TextView) view.findViewById(R.id.ruler_item_text)).setText(i + " ml");
@@ -49,7 +50,7 @@ public class RulerView extends FrameLayout {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    mOffsetValueMap.put((int) view.getY(), finalI);
+                    mOffsetValueMap.put((int) view.getY() + (view.getHeight() / 2), finalI);
                     return false;
                 }
             });
@@ -57,17 +58,25 @@ public class RulerView extends FrameLayout {
     }
 
     public int getNearestValue(int offset) {
+
         Iterator<Integer> iterator = mOffsetValueMap.keySet().iterator();
-        int nearest = iterator.next();
-        float delta = Math.abs(nearest - offset);
+        int nearest = 0;
         for (; iterator.hasNext(); ) {
             int mapOffset = iterator.next();
-            float tempDelta = Math.abs(mapOffset - offset);
-            if (tempDelta < delta) {
+            if (mapOffset < offset && mapOffset > nearest   ) {
                 nearest = mapOffset;
-                delta = tempDelta;
             }
         }
+//        int nearest = iterator.next();
+//        float delta = Math.abs(nearest - offset);
+//        for (; iterator.hasNext(); ) {
+//            int mapOffset = iterator.next();
+//            float tempDelta = Math.abs(mapOffset - offset);
+//            if (tempDelta < delta && mapOffset > offset) {
+//                nearest = mapOffset;
+//                delta = tempDelta;
+//            }
+//        }
         return mOffsetValueMap.get(nearest);
     }
 
