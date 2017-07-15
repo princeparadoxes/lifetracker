@@ -152,8 +152,8 @@ public class WaterWorld {
     ////////////////////////////////////  WATER ///////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void addWater(int ml) {
-        float aspect = ml / 2000f;
+    public void addWater(int ml, int dayNorm) {
+        float aspect = (float) ml / dayNorm;
         int count = (int) ((mVirtualHeight * mVirtualWidth) * aspect);
         count /= PARTICLE_RADIUS;
         createWater(count);

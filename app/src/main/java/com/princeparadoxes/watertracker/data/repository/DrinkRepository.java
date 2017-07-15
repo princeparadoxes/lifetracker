@@ -31,11 +31,15 @@ public class DrinkRepository {
                 .map(Drink::mapFromDBDrink);
     }
 
-    public Observable<Float> getDayStatistic() {
+    public Observable<Float> getDaySum() {
         return Observable.just(mDBDrinkRepository.getDayStatistic());
     }
 
-    public Observable<StatisticModel> getByPeriod(StatisticType statisticType) {
+    public Observable<Float> getLastByDay() {
+        return Observable.fromCallable(mDBDrinkRepository::getLastByDay);
+    }
+
+    public Observable<StatisticModel> getSumByPeriod(StatisticType statisticType) {
         return Observable.just(mDBDrinkRepository.getAllByPeriod(statisticType))
                 .map(result -> {
                     int normValue = statisticType.getCountDays() * mProjectPreferences.getCurrentDayNorm();

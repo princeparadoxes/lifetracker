@@ -19,8 +19,8 @@
     <!--===============================  STATISTICS  ===========================================-->
     <!--========================================================================================-->
 
-    <string name="statistic_header_open">Slide top to open statistic</string>
-    <string name="statistic_header_closed">Slide down to close statistic</string>
+    <string name="statistic_header_open">Stats</string>
+    <string name="statistic_header_closed">Stats</string>
 
     <string name="statistic_type_day">Day</string>
     <string name="statistic_type_week">Week</string>

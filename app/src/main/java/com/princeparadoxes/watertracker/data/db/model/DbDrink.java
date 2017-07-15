@@ -10,17 +10,16 @@ import io.realm.RealmObject;
 
 public class DbDrink extends RealmObject {
 
-    private long mTimestamp;
-    private int mSize;
+    private long timestamp;
+    private int size;
 
     public DbDrink() {
 
     }
 
-    public DbDrink(int mSize, long mTimestamp) {
-
-        this.mSize = mSize;
-        this.mTimestamp = mTimestamp;
+    public DbDrink(int size, long timestamp) {
+        this.size = size;
+        this.timestamp = timestamp;
     }
 
 
@@ -31,18 +30,18 @@ public class DbDrink extends RealmObject {
     }
 
     public int getSize() {
-        return mSize;
+        return size;
     }
 
     public long getTimestamp() {
-        return mTimestamp;
+        return timestamp;
     }
 
     public void setSize(int mSize) {
-        this.mSize = mSize;
+        this.size = mSize;
     }
 
     public void setTimestamp(long mTimestamp) {
-        this.mTimestamp = mTimestamp;
+        this.timestamp = mTimestamp;
     }
 }

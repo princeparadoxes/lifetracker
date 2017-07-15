@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,10 @@ import com.princeparadoxes.watertracker.base.BaseFragment;
 import com.princeparadoxes.watertracker.data.model.StatisticType;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
+import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
 import com.princeparadoxes.watertracker.utils.AnimatorUtils;
 import com.princeparadoxes.watertracker.utils.DimenTools;
+import com.princeparadoxes.watertracker.utils.SpannableUtils;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
@@ -46,13 +49,19 @@ public class StatisticFragment extends BaseFragment
 
     @Inject
     DrinkRepository mDrinkRepository;
+    @Inject
+    ProjectPreferences mProjectPreferences;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    @BindView(R.id.statistic_header)
-    TextView mStatisticHeader;
+    @BindView(R.id.statistic_header_start)
+    TextView mStatisticHeaderStart;
+    @BindView(R.id.statistic_header_center)
+    TextView mStatisticHeaderCenter;
+    @BindView(R.id.statistic_header_end)
+    TextView mStatisticHeaderEnd;
     @BindView(R.id.statistic_type_view)
     DiscreteScrollView mTypePicker;
     @BindView(R.id.statistic_forecast_view)
@@ -88,11 +97,27 @@ public class StatisticFragment extends BaseFragment
         mDisposable = new CompositeDisposable();
     }
 
+    @Override
+    protected int layoutId() {
+        return R.layout.fragment_statistic;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mStatisticAdapter = new StatisticAdapter();
+        initHeader();
+        initBehavior(container);
+        onCollapsed();
+        return view;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // BEHAVIOR
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void initBehavior(ViewGroup container) {
         mStatisticBottomSheetBehavior = BottomSheetBehavior.from(container);
         mStatisticBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -108,43 +133,64 @@ public class StatisticFragment extends BaseFragment
         mStatisticBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mStatisticBottomSheetBehavior.setHideable(false);
         mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(getContext(), 64));
-        return view;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // HEADER
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void initHeader() {
+
     }
 
     private void changeHeaderState(int newState) {
         switch (newState) {
             case BottomSheetBehavior.STATE_COLLAPSED:
-                mTopBorderView.setVisibility(View.VISIBLE);
-                createHeaderAnimator(R.string.statistic_header_open, mChevronUpDrawable).start();
+                onCollapsed();
                 break;
             case BottomSheetBehavior.STATE_EXPANDED:
-                loadStatistic();
-                mTopBorderView.setVisibility(View.INVISIBLE);
-                createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
+                onExpanded();
                 break;
         }
+    }
+
+    private void onCollapsed() {
+        mTopBorderView.setVisibility(View.VISIBLE);
+        createHeaderAnimator(R.string.statistic_header_open, mChevronUpDrawable).start();
+        loadDaySumm();
+        loadLastDrink();
+
+    }
+
+    private void onExpanded() {
+        loadAllStatistic();
+        mTopBorderView.setVisibility(View.INVISIBLE);
+        createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Day norm", 12))
+                .append("\n")
+                .append(String.valueOf(mProjectPreferences.getCurrentDayNorm()))
+                .append("ml");
+
+        mStatisticHeaderStart.setText(builder);
+        mStatisticHeaderEnd.setText("Send feedback");
     }
 
     @NonNull
     private AnimatorSet createHeaderAnimator(int text, Drawable drawable) {
         AnimatorSet set = new AnimatorSet();
-        Animator out = AnimatorUtils.alphaAnimator(1, 0, mStatisticHeader, 200, new AnimatorListenerAdapter() {
+        Animator out = AnimatorUtils.alphaAnimator(1, 0, mStatisticHeaderCenter, 200, new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mStatisticHeader.setText(text);
-                mStatisticHeader.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+                mStatisticHeaderCenter.setText(text);
+                mStatisticHeaderCenter.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
             }
         });
         out.setInterpolator(new AccelerateInterpolator());
-        Animator in = AnimatorUtils.alphaAnimator(0, 1, mStatisticHeader, 200);
+        Animator in = AnimatorUtils.alphaAnimator(0, 1, mStatisticHeaderCenter, 200);
         in.setInterpolator(new DecelerateInterpolator());
         set.playSequentially(out, in);
         return set;
-    }
-
-    @Override
-    protected int layoutId() {
-        return R.layout.fragment_statistic;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,37 +214,77 @@ public class StatisticFragment extends BaseFragment
                 .build());
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////  LOAD STATISTIC  /////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    // LOAD ALL STATISTIC
+    ///////////////////////////////////////////////////////////////////////////
 
-    private void loadStatistic() {
+
+    private void loadAllStatistic() {
         mDisposable.add(Observable.fromArray(StatisticType.values())
-                .concatMap(statisticType -> mDrinkRepository.getByPeriod(statisticType))
+                .concatMap(statisticType -> mDrinkRepository.getSumByPeriod(statisticType))
                 .toList()
                 .toObservable()
                 .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleLoadStatisticDrink, this::handleLoadStatisticError));
+                .subscribe(this::handleLoadAllStatistic, this::handleLoadAllStatisticError));
     }
 
-    private void handleLoadStatisticDrink(List<StatisticModel> statisticModels) {
-//        float a1 = 50;
-//        float a2 = 50 * 7;
-//        float a3 = 50 * 30;
-//        float a4 = 50 * 365;
-//
-//        List<StatisticModel> statisticModelList = new ArrayList<>();
-//        statisticModelList.add(new StatisticModel(StatisticType.DAY, a1));
-//        statisticModelList.add(new StatisticModel(StatisticType.WEEK, a2));
-//        statisticModelList.add(new StatisticModel(StatisticType.MONTH, a3));
-//        statisticModelList.add(new StatisticModel(StatisticType.YEAR, a4));
-//        mStatisticAdapter.setData(statisticModelList);
+    private void handleLoadAllStatistic(List<StatisticModel> statisticModels) {
         mStatisticAdapter.setData(statisticModels);
     }
 
-    private void handleLoadStatisticError(Throwable throwable) {
+    private void handleLoadAllStatisticError(Throwable throwable) {
         throwable.printStackTrace();
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // LOAD DAY STATISTIC
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void loadDaySumm() {
+        mDisposable.add(mDrinkRepository.getDaySum()
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe(this::handleLoadDaySumm, this::handleLoadDaySummError));
+    }
+
+    private void handleLoadDaySumm(Float daySum) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Day", 12))
+                .append("\n")
+                .append(String.valueOf(daySum))
+                .append("ml");
+        mStatisticHeaderStart.setText(builder);
+    }
+
+    private void handleLoadDaySummError(Throwable throwable) {
+        throwable.printStackTrace();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // LOAD LAST DRINK
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void loadLastDrink() {
+        mDisposable.add(mDrinkRepository.getLastByDay()
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe(this::handleLoadLastDrink, this::handleLoadLastDrinkError));
+    }
+
+    private void handleLoadLastDrink(Float lastByDay) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Last", 12))
+                .append("\n")
+                .append(String.valueOf(lastByDay))
+                .append("ml");
+        mStatisticHeaderEnd.setText(builder);
+    }
+
+    private void handleLoadLastDrinkError(Throwable throwable) {
+        throwable.printStackTrace();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // TYPE PICKER
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onCurrentItemChanged(@NonNull StatisticItemViewHolder viewHolder, int adapterPosition) {

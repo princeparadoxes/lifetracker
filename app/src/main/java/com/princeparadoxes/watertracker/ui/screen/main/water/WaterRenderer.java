@@ -58,7 +58,7 @@ public class WaterRenderer implements GLSurfaceView.Renderer {
         mWaterWorld.restoreLastAccelerometerGravity();
     }
 
-    public void addWater(int ml) {
-        mWaterWorld.addWater(ml);
+    public void addWater(int ml, int dayNorm) {
+        mWaterWorld.addWater(ml, dayNorm);
     }
 }

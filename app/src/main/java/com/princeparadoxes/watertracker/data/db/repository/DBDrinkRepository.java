@@ -6,6 +6,7 @@ import com.princeparadoxes.watertracker.data.db.model.DbDrink;
 import com.princeparadoxes.watertracker.data.model.StatisticType;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -58,19 +59,36 @@ public class DBDrinkRepository {
 
         long timeInMillis = currentTime.getTimeInMillis();
 
-        float result = Realm.getDefaultInstance().
-                where(DbDrink.class).
-                greaterThan("mTimestamp", timeInMillis).
-                findAll()
-                .sum("mSize").floatValue();
+        float result = Realm.getDefaultInstance()
+                .where(DbDrink.class)
+                .greaterThan("timestamp", timeInMillis)
+                .findAll()
+                .sum("size")
+                .floatValue();
 
         return result;
+    }
+
+    public Float getLastByDay() {
+        Calendar currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        currentTime.setTimeZone(TimeZone.getDefault());
+        currentTime.set(Calendar.HOUR, 0);
+        currentTime.set(Calendar.MINUTE, 0);
+        currentTime.set(Calendar.SECOND, 0);
+        currentTime.set(Calendar.MILLISECOND, 0);
+
+        List<DbDrink> dayDrinks = Realm.getDefaultInstance()
+                .where(DbDrink.class)
+                .greaterThan("timestamp", currentTime.getTimeInMillis())
+                .findAllSorted("timestamp");
+
+        return (float) dayDrinks.get(dayDrinks.size() - 1).getSize();
     }
 
     public Boolean deleteAllWithTimestamp(final long timestamp) {
         Realm.getDefaultInstance().beginTransaction();
         RealmResults<DbDrink> dbDrinks = Realm.getDefaultInstance().where(DbDrink.class)
-                .equalTo("mTimestamp", timestamp)
+                .equalTo("timestamp", timestamp)
                 .findAll();
 
         boolean result = dbDrinks.deleteAllFromRealm();

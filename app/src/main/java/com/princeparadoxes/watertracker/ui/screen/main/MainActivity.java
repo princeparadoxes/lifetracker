@@ -21,6 +21,7 @@ import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
 import com.princeparadoxes.watertracker.data.model.Drink;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
+import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
 import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
@@ -37,6 +38,8 @@ public class MainActivity extends BaseActivity {
 
     @Inject
     DrinkRepository mDrinkRepository;
+    @Inject
+    ProjectPreferences mProjectPreferences;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -118,6 +121,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        initTouchFrame();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // TOUCH FRAME
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void initTouchFrame() {
         mTouchFrame.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -146,6 +157,10 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // CURRENT VALUE
+    ///////////////////////////////////////////////////////////////////////////
+
     private void setCurrentValueText() {
         int value = mRulerView.getNearestValue((int) mWaterView.getTranslationY());
         int sp = value / 25;
@@ -159,8 +174,12 @@ public class MainActivity extends BaseActivity {
         mValueView.setText(value + "ml" + s);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // WATER
+    ///////////////////////////////////////////////////////////////////////////
+
     private void addWater(int ml) {
-        mWaterRenderer.addWater(ml);
+        mWaterRenderer.addWater(ml, mProjectPreferences.getCurrentDayNorm());
         mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
                 .compose(SchedulerTransformer.getInstance())
                 .subscribe();
