@@ -102,6 +102,26 @@ public class MainActivity extends BaseActivity {
         mStartBottomSheetBehavior = BottomSheetBehavior.from(mStartFragmentContainer);
         mStartBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         mStartBottomSheetBehavior.setPeekHeight(0);
+//        final SwipeDismissBehavior<View> swipe = new SwipeDismissBehavior<>();
+//
+//        swipe.setSwipeDirection(SwipeDismissBehavior.SWIPE_DIRECTION_ANY);
+//
+//        swipe.setListener(new SwipeDismissBehavior.OnDismissListener() {
+//            @Override
+//            public void onDismiss(View view) {
+//                Toast.makeText(MainActivity.this,
+//                        "Card swiped !!", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onDragStateChanged(int state) {
+//            }
+//        });
+//
+//        CoordinatorLayout.LayoutParams coordinatorParams =
+//                (CoordinatorLayout.LayoutParams) mStartFragmentContainer.getLayoutParams();
+//
+//        coordinatorParams.setBehavior(swipe);
 
         mWaterRenderer = new WaterRenderer(this);
         initGlSurfaceViewIfNeeded();
@@ -179,6 +199,7 @@ public class MainActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////
 
     private void addWater(int ml) {
+        if (ml == 0) return;
         mWaterRenderer.addWater(ml, mProjectPreferences.getCurrentDayNorm());
         mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
                 .compose(SchedulerTransformer.getInstance())

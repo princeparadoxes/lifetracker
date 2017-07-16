@@ -16,6 +16,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
@@ -56,6 +57,8 @@ public class StatisticFragment extends BaseFragment
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    @BindView(R.id.statistic_header)
+    SwipeLayout mHeaderView;
     @BindView(R.id.statistic_header_start)
     TextView mStatisticHeaderStart;
     @BindView(R.id.statistic_header_center)
@@ -114,33 +117,12 @@ public class StatisticFragment extends BaseFragment
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // BEHAVIOR
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void initBehavior(ViewGroup container) {
-        mStatisticBottomSheetBehavior = BottomSheetBehavior.from(container);
-        mStatisticBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                changeHeaderState(newState);
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-        mStatisticBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        mStatisticBottomSheetBehavior.setHideable(false);
-        mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(getContext(), 64));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
     // HEADER
     ///////////////////////////////////////////////////////////////////////////
 
     private void initHeader() {
-
+        mHeaderView.setLeftSwipeEnabled(true);
+        mHeaderView.setRightSwipeEnabled(true);
     }
 
     private void changeHeaderState(int newState) {
@@ -166,14 +148,14 @@ public class StatisticFragment extends BaseFragment
         loadAllStatistic();
         mTopBorderView.setVisibility(View.INVISIBLE);
         createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
-        SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Day norm", 12))
-                .append("\n")
-                .append(String.valueOf(mProjectPreferences.getCurrentDayNorm()))
-                .append("ml");
-
-        mStatisticHeaderStart.setText(builder);
-        mStatisticHeaderEnd.setText("Send feedback");
+//        SpannableStringBuilder builder = new SpannableStringBuilder();
+//        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Day norm", 12))
+//                .append("\n")
+//                .append(String.valueOf(mProjectPreferences.getCurrentDayNorm()))
+//                .append("ml");
+//
+//        mStatisticHeaderStart.setText(builder);
+//        mStatisticHeaderEnd.setText("Send feedback");
     }
 
     @NonNull
@@ -192,6 +174,29 @@ public class StatisticFragment extends BaseFragment
         set.playSequentially(out, in);
         return set;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // BEHAVIOR
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void initBehavior(ViewGroup container) {
+        mStatisticBottomSheetBehavior = BottomSheetBehavior.from(container);
+        mStatisticBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                changeHeaderState(newState);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+        mStatisticBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mStatisticBottomSheetBehavior.setHideable(false);
+        mStatisticBottomSheetBehavior.setPeekHeight((int) DimenTools.pxFromDp(getContext(), 64));
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////  START SCREEN  ////////////////////////////////////////////
@@ -280,6 +285,11 @@ public class StatisticFragment extends BaseFragment
 
     private void handleLoadLastDrinkError(Throwable throwable) {
         throwable.printStackTrace();
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Last", 12))
+                .append("\n")
+                .append("none");
+        mStatisticHeaderEnd.setText(builder);
     }
 
     ///////////////////////////////////////////////////////////////////////////

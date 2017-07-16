@@ -180,6 +180,7 @@ dependencies {
     compile 'com.yarolegovich:discrete-scrollview:1.1.4'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.diogobernardino:williamchart:2.5.0'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
 
     compile "com.jakewharton.timber:timber:4.2.0"
     //rx
