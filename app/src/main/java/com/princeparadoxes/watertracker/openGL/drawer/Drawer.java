@@ -85,5 +85,9 @@ public abstract class Drawer {
 
     public abstract void draw(Vec2[] positions);
 
+    public void drawV2(float[] positions){
+
+    };
+
 
 }

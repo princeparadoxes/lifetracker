@@ -11,7 +11,9 @@ import android.support.v4.view.ViewCompat;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.BounceInterpolator;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.princeparadoxes.watertracker.ProjectComponent;
@@ -29,6 +31,7 @@ import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class MainActivity extends BaseActivity {
 
@@ -53,6 +56,12 @@ public class MainActivity extends BaseActivity {
     View mStartFragmentContainer;
     @BindView(R.id.main_statistic_fragment_container)
     View mStatisticFragmentContainer;
+    @BindView(R.id.day_norm_container)
+    View mDayNormContainer;
+    @BindView(R.id.day_norm_value)
+    TextView mDayNormValue;
+    @BindView(R.id.main_water_container)
+    FrameLayout mWaterContainer;
     @BindView(R.id.water_gl_view)
     GLSurfaceView mWaterView;
     @BindView(R.id.main_water_touch_frame)
@@ -64,6 +73,7 @@ public class MainActivity extends BaseActivity {
 
     private BottomSheetBehavior mStartBottomSheetBehavior;
     private WaterRenderer mWaterRenderer;
+    private CompositeDisposable mDisposable;
     private float mDownY;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +105,7 @@ public class MainActivity extends BaseActivity {
             addStartScreen();
             addStatisticScreen();
         }
+        mDisposable = new CompositeDisposable();
         int color = ContextCompat.getColor(this, R.color.accent);
         getWindow().setStatusBarColor(color);
         getWindow().setNavigationBarColor(color);
@@ -125,6 +136,7 @@ public class MainActivity extends BaseActivity {
 
         mWaterRenderer = new WaterRenderer(this);
         initGlSurfaceViewIfNeeded();
+        loadDaySumm();
     }
 
     private void initGlSurfaceViewIfNeeded() {
@@ -141,7 +153,26 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        initDayNorm();
         initTouchFrame();
+    }
+
+    private void initDayNorm() {
+        int dayNorm = mProjectPreferences.getCurrentDayNorm();
+        mDayNormValue.setText(dayNorm + "ml");
+//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mDayNormContainer.getLayoutParams();
+//        params.topMargin = (int) ();
+//        mDayNormContainer.setLayoutParams(params);
+        mWaterView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mWaterView.getViewTreeObserver().removeOnPreDrawListener(this);
+                float translationY = ((float) mWaterView.getHeight()) / 10 - mDayNormContainer.getHeight();
+                mDayNormContainer.setTranslationY(translationY);
+                return false;
+            }
+        });
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -155,17 +186,17 @@ public class MainActivity extends BaseActivity {
                     mDownY = event.getY();
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    float newTranslationY = mWaterView.getTranslationY() + event.getY() - mDownY;
+                    float newTranslationY = mWaterContainer.getTranslationY() + event.getY() - mDownY;
                     newTranslationY = newTranslationY < 0 ? 0 : newTranslationY;
-                    mWaterView.setTranslationY(newTranslationY);
+                    mWaterContainer.setTranslationY(newTranslationY);
                     mDownY = event.getY();
                     setCurrentValueText();
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    addWater(mRulerView.getNearestValue((int) mWaterView.getTranslationY()));
-                    mWaterRenderer.setGravityWithLock(0.0f, mWaterView.getTranslationY() / 100);
-                    ViewCompat.animate(mWaterView)
+                    addWater(mRulerView.getNearestValue((int) mWaterContainer.getTranslationY()));
+                    mWaterRenderer.setGravityWithLock(0.0f, mWaterContainer.getTranslationY() / 100);
+                    ViewCompat.animate(mWaterContainer)
                             .translationY(0)
                             .setInterpolator(new BounceInterpolator())
                             .withEndAction(() -> mWaterRenderer.restoreLastAccelerometerGravity())
@@ -182,7 +213,7 @@ public class MainActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////
 
     private void setCurrentValueText() {
-        int value = mRulerView.getNearestValue((int) mWaterView.getTranslationY());
+        int value = mRulerView.getNearestValue((int) mWaterContainer.getTranslationY());
         int sp = value / 25;
         mValueView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12 + sp);
         String s = "";
@@ -204,6 +235,25 @@ public class MainActivity extends BaseActivity {
         mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
                 .compose(SchedulerTransformer.getInstance())
                 .subscribe();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // LOAD DAY STATISTIC
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void loadDaySumm() {
+        mDisposable.add(mDrinkRepository.getDaySum()
+                .compose(SchedulerTransformer.getInstance())
+                .subscribe(this::handleLoadDaySumm, this::handleLoadDaySummError));
+    }
+
+    private void handleLoadDaySumm(Float daySum) {
+        mWaterRenderer.clearWater();
+        mWaterRenderer.addWater((int) daySum.floatValue(), mProjectPreferences.getCurrentDayNorm());
+    }
+
+    private void handleLoadDaySummError(Throwable throwable) {
+        throwable.printStackTrace();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,6 +297,16 @@ public class MainActivity extends BaseActivity {
                 .fragment(StatisticFragment.newInstance())
                 .containerId(R.id.main_statistic_fragment_container)
                 .add();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON DESTROY
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected void onDestroy() {
+        mDisposable.dispose();
+        super.onDestroy();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

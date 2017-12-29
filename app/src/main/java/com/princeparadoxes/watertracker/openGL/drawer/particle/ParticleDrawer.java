@@ -197,4 +197,26 @@ public class ParticleDrawer extends Drawer {
         }
         return calculatedPoints;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DRAW VERSION 2
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public void drawV2(float[] positions) {
+        // Add program to OpenGL ES environment
+        long startTime = System.currentTimeMillis();
+        GLES20.glUseProgram(mProgram);
+        Timber.d("glUseProgram %d ms", System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
+        mVertexData.put(positions);
+        mVertexData.position(0);
+        GLES20.glVertexAttribPointer(mPositionHandle, 2, GL_FLOAT, false, 0, mVertexData);
+        GLES20.glVertexAttribPointer(aTexCoord, 2, GL_FLOAT, false, 0, mTextureData);
+        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mUniformMatrix, 0);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, positions.length / 2);
+        Timber.d("glDrawArrays %d ms", System.currentTimeMillis() - startTime);
+    }
 }

@@ -12,6 +12,8 @@ import com.google.fpl.liquidfun.BodyType;
 import com.google.fpl.liquidfun.FixtureDef;
 import com.google.fpl.liquidfun.ParticleDef;
 import com.google.fpl.liquidfun.ParticleFlag;
+import com.google.fpl.liquidfun.ParticleGroupDef;
+import com.google.fpl.liquidfun.ParticleGroupFlag;
 import com.google.fpl.liquidfun.ParticleSystem;
 import com.google.fpl.liquidfun.ParticleSystemDef;
 import com.google.fpl.liquidfun.PolygonShape;
@@ -27,6 +29,9 @@ import java.util.Arrays;
 
 import timber.log.Timber;
 
+import static com.princeparadoxes.watertracker.openGL.drawer.particle.ParticleDrawer.HALF_PARTICLE_SIZE;
+import static com.princeparadoxes.watertracker.openGL.drawer.particle.ParticleDrawer.POINTS_ON_PARTICLE;
+
 public class WaterWorld {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,13 +40,17 @@ public class WaterWorld {
 
     private static final float BASE_UNITS = 20f;
     private static final int MAX_PARTICLE_COUNT = 10000;
-    private static final float PARTICLE_RADIUS = 1f;
+    private static final float PARTICLE_RADIUS = 0.5f;
+    public static final float BORDER_THICKNESS = 2f;
+    public static final float FLOAT = 0.8f;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private final Resources mResources;
+
+    private Thread mWaterCalcThread;
 
     private World mWorld;
     private ParticleSystem mParticleSystem;
@@ -55,6 +64,9 @@ public class WaterWorld {
     private float mLastAccelerometerGravityX = 0.0f;
     private float mLastAccelerometerGravityY = -9.81f;
     private boolean mIsAccelerometerGravityLock = false;
+
+    private float addedWater = 0.0f;
+    private float tempWater = 0.0f;
 
     private enum ObjectType {
         WATER_PARTICLES,
@@ -73,6 +85,10 @@ public class WaterWorld {
 
     private void createWorld() {
         mWorld = new World(mLastAccelerometerGravityX, mLastAccelerometerGravityY);
+        createParticleSystem();
+    }
+
+    private void createParticleSystem() {
         ParticleSystemDef def = new ParticleSystemDef();
         def.setRadius(PARTICLE_RADIUS);
         def.setMaxCount(MAX_PARTICLE_COUNT);
@@ -137,6 +153,10 @@ public class WaterWorld {
         final float aspectRatio = ((float) height) / ((float) width);
         mVirtualWidth = BASE_UNITS;
         mVirtualHeight = mVirtualWidth * aspectRatio;
+        if (tempWater != 0){
+            addWater(tempWater);
+            tempWater = 0;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,10 +173,53 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void addWater(int ml, int dayNorm) {
+//        double countHorizontal = Math.floor(16 / PARTICLE_RADIUS);
+//        double countVertical = Math.floor((mVirtualHeight / mVirtualWidth) * countHorizontal);
+//        int containerCount = (int) (countHorizontal * countVertical);
         float aspect = (float) ml / dayNorm;
-        int count = (int) ((mVirtualHeight * mVirtualWidth) * aspect);
-        count /= PARTICLE_RADIUS;
-        createWater(count);
+        aspect = aspect * FLOAT;
+        if (addedWater + aspect >= FLOAT) {
+             aspect = FLOAT - addedWater;
+             addedWater = FLOAT;
+        } else {
+            addedWater += aspect;
+        }
+//        float areaOfWater = (mVirtualHeight * mVirtualWidth) * aspect;
+//        float areaOfParticle = (float) (Math.PI * ((PARTICLE_RADIUS) * (PARTICLE_RADIUS)));
+//        int count = (int) (areaOfWater / areaOfParticle);
+//        int count = (int) (containerCount * aspect);
+        if (mVirtualWidth == 0 || mVirtualHeight == 0) {
+            tempWater = addedWater;
+        } else {
+            addWater(aspect);
+        }
+//        float offset = PARTICLE_RADIUS;
+//        for (int i = 0; i < count; i++) {
+//            ParticleDef particleDef = new ParticleDef();
+//            float x = (i + offset) % mVirtualWidth;
+//            float y = ((int) (x / mVirtualWidth)) + offset;
+//            particleDef.setPosition(x, y);
+//            particleDef.setFlags(ParticleFlag.waterParticle);
+//            mParticleSystem.createParticle(particleDef);
+//        }
+
+
+//        createWater(count);
+    }
+
+    private void addWater(float aspect) {
+        ParticleGroupDef groupDef = new ParticleGroupDef();
+        groupDef.setFlags(ParticleFlag.waterParticle);
+        groupDef.setGroupFlags(ParticleGroupFlag.solidParticleGroup);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(mVirtualWidth, BASE_UNITS * aspect,  mVirtualWidth / 2, mVirtualHeight / 2, 0);
+        groupDef.setShape(shape);
+        mParticleSystem.createParticleGroup(groupDef);
+    }
+
+    public void clearWater() {
+        mParticleSystem.delete();
+        createParticleSystem();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,15 +236,13 @@ public class WaterWorld {
     }
 
     private void createWater(int count) {
-
-        float offset = PARTICLE_RADIUS / 2;
+        float offset = PARTICLE_RADIUS;
         for (int i = 0; i < count; i++) {
             ParticleDef particleDef = new ParticleDef();
             float x = (i + offset) % mVirtualWidth;
             float y = ((int) (x / mVirtualWidth)) + offset;
             particleDef.setPosition(x, y);
             particleDef.setFlags(ParticleFlag.waterParticle);
-
             mParticleSystem.createParticle(particleDef);
         }
     }
@@ -193,24 +254,26 @@ public class WaterWorld {
         Body body = mWorld.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(mVirtualWidth + 2 * 0.05f, 0.05f, mVirtualWidth / 2, 0, 0);
+        // bottom
+        shape.setAsBox(mVirtualWidth + 2 * BORDER_THICKNESS, BORDER_THICKNESS, mVirtualWidth / 2, -BORDER_THICKNESS, 0);
         createBorderFixture(body, shape);
-        shape.setAsBox(mVirtualWidth + 2 * 0.05f, 0.05f, mVirtualWidth / 2, mVirtualHeight, 0);
+        // top
+        shape.setAsBox(mVirtualWidth + 2 * BORDER_THICKNESS, BORDER_THICKNESS, mVirtualWidth / 2, mVirtualHeight + BORDER_THICKNESS, 0);
         createBorderFixture(body, shape);
-        shape.setAsBox(0.05f, mVirtualHeight, 0, mVirtualHeight / 2, 0);
+        // left
+        shape.setAsBox(BORDER_THICKNESS, mVirtualHeight, -BORDER_THICKNESS, mVirtualHeight / 2, 0);
         createBorderFixture(body, shape);
-        shape.setAsBox(0.05f, mVirtualHeight, mVirtualWidth, mVirtualHeight / 2, 0);
+        // right
+        shape.setAsBox(BORDER_THICKNESS, mVirtualHeight, mVirtualWidth + BORDER_THICKNESS, mVirtualHeight / 2, 0);
         createBorderFixture(body, shape);
     }
 
     private void createBorderFixture(Body body, PolygonShape shape) {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.setShape(shape);
-//        fixtureDef.userData = null;
         fixtureDef.setFriction(0.5f);
         fixtureDef.setRestitution(0.05f);
         fixtureDef.setDensity(1.0f);
-//        fixtureDef.isSensor = false;
         body.createFixture(fixtureDef);
     }
 
@@ -219,7 +282,12 @@ public class WaterWorld {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(float delta) {
-        mWorld.step(1f / 8f, 3, 3, 3);
+        if (mWaterCalcThread != null) return;
+        mWaterCalcThread = new Thread(() -> {
+            mWorld.step(1f / 8f, 3, 3, 3);
+            mWaterCalcThread = null;
+        });
+        mWaterCalcThread.start();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,17 +301,6 @@ public class WaterWorld {
         Timber.d("Draw time %d ms", System.currentTimeMillis() - startTime);
     }
 
-//    private void drawBodies() {
-//        int bodyCount = mWorld.getBodyCount();
-//        if (bodyCount <= 0) return;
-//        Body body = mWorld.getBodyList();
-//        for (int i = 0; i < bodyCount; i++) {
-//                switch ((ObjectType) body.getUserData()) {
-//                }
-//            body = body.getNext();
-//        }
-//    }
-
     private void drawParticles() {
         long startTime = System.currentTimeMillis();
         int particleCount = mParticleSystem.getParticleCount();
@@ -254,6 +311,52 @@ public class WaterWorld {
         Vec2[] vec2s = Arrays.copyOf(mParticlePositions, particleCount);
         Timber.d("create array %d ms", System.currentTimeMillis() - startTime);
         mDrawer.draw(vec2s);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DRAW VERSION 2
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void onDrawV2() {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        long startTime = System.currentTimeMillis();
+        mDrawer.drawV2(calculateAdditionalPoints());
+        Timber.d("Draw time %d ms", System.currentTimeMillis() - startTime);
+    }
+
+    private float[] calculateAdditionalPoints() {
+        long startTime = System.currentTimeMillis();
+        int particleCount = mParticleSystem.getParticleCount();
+        float[] calculatedPoints = new float[particleCount * POINTS_ON_PARTICLE];
+        int pos = 0;
+        for (int i = 0; i < particleCount; i++) {
+            float x = mParticleSystem.getParticlePositionX(i);
+            float y = mParticleSystem.getParticlePositionY(i);
+            float left = x - HALF_PARTICLE_SIZE;
+            float top = y + HALF_PARTICLE_SIZE;
+            float right = x + HALF_PARTICLE_SIZE;
+            float bottom = y - HALF_PARTICLE_SIZE;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = top;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = top;
+
+            calculatedPoints[pos++] = left;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = bottom;
+
+            calculatedPoints[pos++] = right;
+            calculatedPoints[pos++] = top;
+        }
+        Timber.d("calculatedPositions %d ms", System.currentTimeMillis() - startTime);
+        return calculatedPoints;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
