@@ -26,8 +26,11 @@ public class LiquidPaint {
         return new LiquidPaint(Color.BLACK, ParticleFlag.wallParticle, ParticleGroupFlag.rigidParticleGroup);
     }
 
+//    public static LiquidPaint LIQUID() {
+//        return LIQUID(0xFF1a99e3);
+//    }
     public static LiquidPaint LIQUID() {
-        return LIQUID(0xFF1a99e3);
+        return LIQUID(0xFF0081dc);
     }
 
     public static LiquidPaint LIQUID(int color) {
