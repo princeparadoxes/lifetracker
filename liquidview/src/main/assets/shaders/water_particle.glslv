@@ -40,6 +40,7 @@ void main() {
   float weight = aWeight * aWeight * uWeightParams[0] + uWeightParams[1];
 
   // Modulate the color by weight, if the weight is above the cutoff.
-  vColor.rgb *= ((weight > uWeightParams[2]) ? 1.0 / weight : 1.0);
-  vColor.rgb *= (aVelocity.x > 10.0 && weight < uWeightParams[2] + 0.2) ? aVelocity.x : 1.0;
+  //vColor.rgb *= ((weight > uWeightParams[2]) ? 1.0 / weight : 1.0);
+  //vColor.rgb *= (aVelocity.x > 10.0 && weight < uWeightParams[2] + 0.2) ? aVelocity.x : 1.0;
+  // Все частицы окрашены равномерно
 }
