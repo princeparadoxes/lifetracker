@@ -21,12 +21,12 @@ public class ParticleSystems extends HashMap<String, DrawableParticleSystem> {
 
     private static ParticleSystems sInstance = new ParticleSystems();
 
-    public static ParticleSystems getInstance(){
+    public static ParticleSystems getInstance() {
         return sInstance;
     }
 
-    public void reset(World world){
-        for(DrawableParticleSystem system : values())
+    public void reset(World world) {
+        for (DrawableParticleSystem system : values())
             system.delete();
 
         clear();
@@ -47,32 +47,32 @@ public class ParticleSystems extends HashMap<String, DrawableParticleSystem> {
         put(key, new DrawableParticleSystem(particleSystem));
     }
 
-    public int getParticleCount(){
+    public int getParticleCount() {
         int count = 0;
-        for(DrawableParticleSystem system : values()){
+        for (DrawableParticleSystem system : values()) {
             count += system.getParticleCount();
         }
         return count;
     }
 
 
-    public void fillShape(Vector2f[] normalizedVertices, LiquidPaint options, String key){
+    public void fillShape(Vector2f[] normalizedVertices, LiquidPaint options, String key) {
         get(key).createParticleGroup(normalizedVertices, options);
     }
 
-    public void eraseParticles(Vector2f[] normalizedVertices){
+    public void eraseParticles(Vector2f[] normalizedVertices) {
         eraseParticles(normalizedVertices, DEFAULT_PARTICLE_SYSTEM);
     }
 
-    public void eraseParticles(Vector2f[] normalizedVertices, String key){
+    public void eraseParticles(Vector2f[] normalizedVertices, String key) {
         get(key).clearParticles(normalizedVertices);
     }
 
     @Override
     public DrawableParticleSystem get(Object key) {
-        if(containsKey(key))
+        if (containsKey(key))
             return super.get(key);
-        else{
+        else {
             World world = WorldLock.getInstance().getWorld();
             createParticleSystem(world, key.toString());
             return get(key);
@@ -80,7 +80,7 @@ public class ParticleSystems extends HashMap<String, DrawableParticleSystem> {
 
     }
 
-    public DrawableParticleSystem get(){
+    public DrawableParticleSystem get() {
         return get(DEFAULT_PARTICLE_SYSTEM);
     }
 }

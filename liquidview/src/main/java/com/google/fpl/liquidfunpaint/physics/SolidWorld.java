@@ -28,7 +28,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created on 8/15/2015.
  */
-public class SolidWorld implements DrawableLayer{
+public class SolidWorld implements DrawableLayer {
 
     private final List<Body> bodies = new ArrayList<>();
     private final Map<Body, PolygonShape> polygons = new HashMap<>();
@@ -40,17 +40,18 @@ public class SolidWorld implements DrawableLayer{
 
     private static SolidWorld sInstance = new SolidWorld();
 
-    public static SolidWorld getInstance(){
+    public static SolidWorld getInstance() {
         return sInstance;
     }
+
     private Context mContext;
 
     @Override
-    public void init(Context context){
+    public void init(Context context) {
         mContext = context.getApplicationContext();
     }
 
-    private void createWorldBoundaries(){
+    private void createWorldBoundaries() {
 
         float worldWidth = WorldLock.getInstance().sPhysicsWorldWidth;
         float worldHeight = WorldLock.getInstance().sPhysicsWorldHeight;
@@ -61,24 +62,24 @@ public class SolidWorld implements DrawableLayer{
 
         // boundary definitions
         // top
-        Vector2f[] vTop = MathHelper.createBox(new Vector2f(worldWidth / 2, worldHeight + BOUNDARY_THICKNESS/2), 2*extraWidth, BOUNDARY_THICKNESS);
+        Vector2f[] vTop = MathHelper.createBox(new Vector2f(worldWidth / 2, worldHeight + BOUNDARY_THICKNESS / 2), 2 * extraWidth, BOUNDARY_THICKNESS);
         createSolidObject(vTop, BodyType.staticBody, null);
 
         // bottom
-        vTop = MathHelper.createBox(new Vector2f(worldWidth / 2, -BOUNDARY_THICKNESS/2), 2*extraWidth, BOUNDARY_THICKNESS);
+        vTop = MathHelper.createBox(new Vector2f(worldWidth / 2, -BOUNDARY_THICKNESS / 2), 2 * extraWidth, BOUNDARY_THICKNESS);
         createSolidObject(vTop, BodyType.staticBody, null);
 
         // left
-        vTop = MathHelper.createBox(new Vector2f(-BOUNDARY_THICKNESS/2, worldHeight / 2), BOUNDARY_THICKNESS, worldHeight);
+        vTop = MathHelper.createBox(new Vector2f(-BOUNDARY_THICKNESS / 2, worldHeight / 2), BOUNDARY_THICKNESS, worldHeight);
         createSolidObject(vTop, BodyType.staticBody, null);
 
         // right
-        vTop = MathHelper.createBox(new Vector2f(worldWidth + BOUNDARY_THICKNESS/2, worldHeight / 2), BOUNDARY_THICKNESS, worldHeight);
+        vTop = MathHelper.createBox(new Vector2f(worldWidth + BOUNDARY_THICKNESS / 2, worldHeight / 2), BOUNDARY_THICKNESS, worldHeight);
         createSolidObject(vTop, BodyType.staticBody, null);
 
     }
 
-    public void createSolidObject(Vector2f[] vertices, BodyType type, String textureName){
+    public void createSolidObject(Vector2f[] vertices, BodyType type, String textureName) {
         World world = WorldLock.getInstance().getWorld();
 
         // Create native objects
@@ -97,7 +98,7 @@ public class SolidWorld implements DrawableLayer{
 
         polygons.put(body, boundaryPolygon);
 
-        if(!TextUtils.isEmpty(textureName)){
+        if (!TextUtils.isEmpty(textureName)) {
             Texture texture = new Texture(mContext, textureName);
             textures.put(body, texture);
         }
@@ -121,11 +122,11 @@ public class SolidWorld implements DrawableLayer{
                 1);
     }
 
-    public void onDrawFrame(GL10 gl){
-        for(Body body : bodies) {
+    public void onDrawFrame(GL10 gl) {
+        for (Body body : bodies) {
             if (body != null) {
 
-                if(textures.containsKey(body)) {
+                if (textures.containsKey(body)) {
                     PolygonShape shape = polygons.get(body);
 
                     Vector2f poly = MathHelper.getPolygonSize(shape);
@@ -143,10 +144,11 @@ public class SolidWorld implements DrawableLayer{
             }
         }
     }
-    @Override
-    public void reset(){
 
-        for(Body body : bodies) {
+    @Override
+    public void reset() {
+
+        for (Body body : bodies) {
             if (body != null) {
                 polygons.get(body).delete();
                 body.delete();

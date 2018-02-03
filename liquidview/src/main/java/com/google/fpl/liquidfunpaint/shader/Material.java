@@ -1,19 +1,18 @@
 /**
-* Copyright (c) 2014 Google, Inc. All rights reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
+ * Copyright (c) 2014 Google, Inc. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.google.fpl.liquidfunpaint.shader;
 
@@ -49,6 +48,7 @@ public class Material {
         FLOAT(GLES20.GL_FLOAT);
 
         private final int mGlComponentType;
+
         private AttrComponentType(int glComponentType) {
             mGlComponentType = glComponentType;
         }
@@ -79,8 +79,9 @@ public class Material {
         ONE_MINUS_CONSTANT_ALPHA(GLES20.GL_ONE_MINUS_CONSTANT_ALPHA);
 
         private final int mGlBlendFactor;
+
         private BlendFactor(int glBlendFactor) {
-          mGlBlendFactor = glBlendFactor;
+            mGlBlendFactor = glBlendFactor;
         }
 
         protected int getGlType() {
@@ -132,7 +133,7 @@ public class Material {
     /// Member variables
     protected ShaderProgram mShader = null;
     private Map<String, AttributeInfo> mVertexAttributes =
-        new HashMap<String, AttributeInfo>();
+            new HashMap<String, AttributeInfo>();
     private Map<String, Texture> mTextures = new HashMap<String, Texture>(1);
     private RenderState mRenderState = new RenderState();
 
@@ -145,7 +146,7 @@ public class Material {
         } else {
             throw new IllegalArgumentException(
                     "ShaderProgram " + shader + " is not valid! Failed to " +
-                    "assign to new Material.");
+                            "assign to new Material.");
         }
     }
 

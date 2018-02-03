@@ -26,8 +26,8 @@ public class MaskEditTextChangedListener implements TextWatcher {
         initSymbolMask();
     }
 
-    private void initSymbolMask(){
-        for (int i=0; i < mMask.length(); i++){
+    private void initSymbolMask() {
+        for (int i = 0; i < mMask.length(); i++) {
             char ch = mMask.charAt(i);
             if (ch != '#')
                 symbolMask.add(String.valueOf(ch));
@@ -45,8 +45,8 @@ public class MaskEditTextChangedListener implements TextWatcher {
             return;
         }
 
-        if(str.length() > old.length())
-            mascara = mask(mMask,str);
+        if (str.length() > old.length())
+            mascara = mask(mMask, str);
         else
             mascara = s.toString();
 
@@ -70,14 +70,14 @@ public class MaskEditTextChangedListener implements TextWatcher {
     public static String unmask(String s, Set<String> replaceSymbols) {
 
         for (String symbol : replaceSymbols)
-            s = s.replaceAll("["+symbol+"]","");
+            s = s.replaceAll("[" + symbol + "]", "");
 
         return s;
     }
 
-    public static String mask(String format, String text){
-        String maskedText="";
-        int i =0;
+    public static String mask(String format, String text) {
+        String maskedText = "";
+        int i = 0;
         for (char m : format.toCharArray()) {
             if (m != '#') {
                 maskedText += m;

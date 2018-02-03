@@ -12,12 +12,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.princeparadoxes.watertracker.R;
 import com.livetyping.library.animators.property.PropertyAnimators;
 import com.livetyping.library.animators.reveal.RevealAnimators;
 import com.livetyping.library.interfaces.DefaultCannyAnimators;
 import com.livetyping.library.interfaces.InAnimator;
 import com.livetyping.library.interfaces.OutAnimator;
+import com.princeparadoxes.watertracker.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -292,7 +292,7 @@ public class DevelopCannyViewAnimator extends DevelopTransitionViewAnimator {
         super.addView(child, index, params);
     }
 
-    public void cancelAnimatorsForView(View view){
+    public void cancelAnimatorsForView(View view) {
         isImmediateRemove = true;
         for (Animator animator : playedList.get(view)) {
             animator.cancel();
@@ -302,8 +302,8 @@ public class DevelopCannyViewAnimator extends DevelopTransitionViewAnimator {
         isImmediateRemove = false;
     }
 
-    private void cancelAnimator(Animator cancelAnimator){
-        if (cancelAnimator instanceof AnimatorSet){
+    private void cancelAnimator(Animator cancelAnimator) {
+        if (cancelAnimator instanceof AnimatorSet) {
             AnimatorSet animatorSet = (AnimatorSet) cancelAnimator;
             for (Animator animator : animatorSet.getChildAnimations()) {
                 cancelAnimator(animator);

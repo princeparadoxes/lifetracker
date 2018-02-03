@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
+apply from: "$rootDir/dependencies.gradle"
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "26.0.2"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
         versionCode 1
         versionName "1.0"
 
@@ -22,18 +23,8 @@ android {
         }
     }
 
-    sourceSets.main {
-        jni.srcDirs = [] // This prevents the auto generation of Android.mk
-        jniLibs.srcDir 'src/main/Box2D/swig/libs'
-
-        java {
-            srcDir 'src/main/java'
-            srcDir 'src/main/Box2D/swig/gen'
-        }
-    }
-
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(":liquidfunwrapper")
 }

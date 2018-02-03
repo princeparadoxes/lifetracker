@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.princeparadoxes.watertracker.base.lifecycle.Foreground;
-import com.princeparadoxes.watertracker.service.network.NetworkReceiver;
 import com.squareup.leakcanary.LeakCanary;
 
 import timber.log.Timber;
@@ -13,7 +12,6 @@ import timber.log.Timber;
 public class ProjectApplication extends Application implements Foreground.Listener {
 
 
-    private NetworkReceiver mNetworkReceiver;
     private ProjectComponent mComponent;
 
     static {
@@ -42,10 +40,6 @@ public class ProjectApplication extends Application implements Foreground.Listen
         Foreground.get().addListener(this);
 
         buildComponentAndInject();
-
-        mNetworkReceiver = new NetworkReceiver(isConnected -> {
-        });
-        mNetworkReceiver.register(this);
     }
 
     public void buildComponentAndInject() {

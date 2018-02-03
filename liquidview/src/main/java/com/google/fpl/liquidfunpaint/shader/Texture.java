@@ -1,19 +1,18 @@
 /**
-* Copyright (c) 2014 Google, Inc. All rights reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
+ * Copyright (c) 2014 Google, Inc. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.fpl.liquidfunpaint.shader;
 
 import android.content.Context;
@@ -45,6 +44,7 @@ public class Texture {
         DEFAULT(GLES20.GL_CLAMP_TO_EDGE);
 
         private final int mGlComponentType;
+
         private WrapParam(int glComponentType) {
             mGlComponentType = glComponentType;
         }
@@ -63,6 +63,7 @@ public class Texture {
     // whereas Android Bitmaps use (0,0) as the upper left corner.
     // We flip images on load to get around this.
     private static final Matrix Y_FLIP_MATRIX;
+
     static {
         Y_FLIP_MATRIX = new Matrix();
         Y_FLIP_MATRIX.setScale(1, -1);
@@ -108,11 +109,11 @@ public class Texture {
      * @param assetName
      */
     public Texture(Context context, String assetName, boolean scale,
-            WrapParam wrapS, WrapParam wrapT) {
+                   WrapParam wrapS, WrapParam wrapT) {
         mName = assetName;
         generateTexture();
         Bitmap bitmap = FileHelper.loadBitmap(context.getAssets(), assetName);
-        if(bitmap == null || bitmap.isRecycled()) {
+        if (bitmap == null || bitmap.isRecycled()) {
             Log.e("", String.format("Unable to load bitmap texture %s in assets. Bitmap was null.", assetName));
             return;
         }

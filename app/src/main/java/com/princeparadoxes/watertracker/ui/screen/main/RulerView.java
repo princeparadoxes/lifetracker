@@ -68,7 +68,7 @@ public class RulerView extends FrameLayout {
         int nearest = 0;
         for (; iterator.hasNext(); ) {
             int mapOffset = iterator.next();
-            if (mapOffset < offset && mapOffset > nearest   ) {
+            if (mapOffset < offset && mapOffset > nearest) {
                 nearest = mapOffset;
             }
         }

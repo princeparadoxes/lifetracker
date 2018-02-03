@@ -1,8 +1,8 @@
 package com.princeparadoxes.watertracker.data.json;
 
-import com.princeparadoxes.watertracker.ApplicationScope;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.princeparadoxes.watertracker.ApplicationScope;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;

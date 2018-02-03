@@ -16,16 +16,16 @@ public class SolidShape implements PhysicsCommand {
     private final Vector2f[] mVertices;
     private final String mTextureName;
 
-    public SolidShape(Vector2f[] vertices){
+    public SolidShape(Vector2f[] vertices) {
         mVertices = vertices;
         mTextureName = null;
     }
 
-    public SolidShape(Vector2f[] vertices, String textureName){
+    public SolidShape(Vector2f[] vertices, String textureName) {
         mVertices = vertices;
 
-        if(TextUtils.isEmpty(textureName))
-            mTextureName = "textures/smiley.png";
+        if (TextUtils.isEmpty(textureName))
+            throw new IllegalArgumentException("textureName is empty");
         else
             mTextureName = textureName;
     }

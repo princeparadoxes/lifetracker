@@ -275,6 +275,7 @@ public class BitmapTools {
 
     /**
      * Add more variable params later on;
+     *
      * @param context
      * @param bitmap
      * @return
@@ -363,9 +364,10 @@ public class BitmapTools {
     /**
      * onDraw the badge with number at the top|right corner of drawable.
      * Thx for idea: http://www.skoumal.net/en/android-how-draw-text-bitmap/
+     *
      * @param context
      * @param drawable origin drawable.
-     * @param count the number witch will be drawn.
+     * @param count    the number witch will be drawn.
      * @return new drawable with drawn badge.
      */
     public static Drawable drawBadge(Context context, Drawable drawable,

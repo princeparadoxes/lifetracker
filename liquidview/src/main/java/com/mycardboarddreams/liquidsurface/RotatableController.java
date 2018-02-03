@@ -5,23 +5,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.View;
 
 import com.google.fpl.liquidfunpaint.physics.WorldLock;
-import com.google.fpl.liquidfunpaint.tool.Tool;
 
-/**
- * Created on 5/24/2015.
- */
-public class RotatableController implements View.OnTouchListener, SensorEventListener {
+public class RotatableController implements SensorEventListener {
+
     private SensorManager mManager;
     private Sensor mAccelerometer;
     private final float[] mGravityVec = new float[2];
-    private Tool mTool = null;
 
-    private static final String TAG = "Controller";
     private static final float GRAVITY = 10f;
 
     public RotatableController(Activity activity) {
@@ -61,14 +54,6 @@ public class RotatableController implements View.OnTouchListener, SensorEventLis
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent e) {
-        if (mTool != null) {
-            mTool.onTouch(v, e);
-        }
-        return true;
-    }
-
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
@@ -84,27 +69,4 @@ public class RotatableController implements View.OnTouchListener, SensorEventLis
         }
     }
 
-    public void setColor(int color) {
-        if (mTool != null) {
-            mTool.setColor(color);
-        }
-    }
-
-    public void setTool(Tool.ToolType type) {
-        Tool oldTool = mTool;
-        mTool = Tool.getTool(type);
-
-        if (oldTool != mTool) {
-            if (oldTool != null) {
-                oldTool.deactivate();
-            }
-            if (mTool != null) {
-                mTool.activate();
-            }
-        }
-    }
-
-    public void reset() {
-        Tool.resetAllTools();
-    }
 }

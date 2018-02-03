@@ -1,8 +1,8 @@
 package com.princeparadoxes.watertracker.data.api;
 
+import com.google.gson.Gson;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.princeparadoxes.watertracker.ApplicationScope;
-import com.google.gson.Gson;
 
 import javax.inject.Named;
 

@@ -30,7 +30,6 @@ import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
-import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 
 import javax.inject.Inject;
 
@@ -76,7 +75,7 @@ public class MainActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private BottomSheetBehavior mStartBottomSheetBehavior;
-    private WaterRenderer mWaterRenderer;
+    //    private WaterRenderer mWaterRenderer;
     private CompositeDisposable mDisposable;
     private float mDownY;
 
@@ -138,7 +137,7 @@ public class MainActivity extends BaseActivity {
 //
 //        coordinatorParams.setBehavior(swipe);
 
-        mWaterRenderer = new WaterRenderer(this);
+//        mWaterRenderer = new WaterRenderer(this);
         initGlSurfaceViewIfNeeded();
         loadDaySumm();
     }
@@ -211,7 +210,7 @@ public class MainActivity extends BaseActivity {
                     addWater(mRulerView.getNearestValue((int) mWaterContainer.getTranslationY()));
                     WorldLock.getInstance().setBlockAccelerometer(true);
                     WorldLock.getInstance().setGravity(0.0f, mWaterContainer.getTranslationY() / 100, false);
-                    mWaterRenderer.setGravityWithLock(0.0f, mWaterContainer.getTranslationY() / 100);
+//                    mWaterRenderer.setGravityWithLock(0.0f, mWaterContainer.getTranslationY() / 100);
                     ViewCompat.animate(mWaterContainer)
                             .translationY(0)
                             .setInterpolator(new BounceInterpolator())
@@ -247,7 +246,7 @@ public class MainActivity extends BaseActivity {
 
     private void addWater(int ml) {
         if (ml == 0) return;
-        mWaterRenderer.addWater(ml, mProjectPreferences.getCurrentDayNorm());
+//        mWaterRenderer.addWater(ml, mProjectPreferences.getCurrentDayNorm());
         mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
                 .compose(SchedulerTransformer.getInstance())
                 .subscribe();
@@ -264,8 +263,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void handleLoadDaySumm(Float daySum) {
-        mWaterRenderer.clearWater();
-        mWaterRenderer.addWater((int) daySum.floatValue(), mProjectPreferences.getCurrentDayNorm());
+//        mWaterRenderer.clearWater();
+//        mWaterRenderer.addWater((int) daySum.floatValue(), mProjectPreferences.getCurrentDayNorm());
     }
 
     private void handleLoadDaySummError(Throwable throwable) {

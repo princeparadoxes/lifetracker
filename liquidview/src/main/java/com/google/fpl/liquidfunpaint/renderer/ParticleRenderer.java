@@ -1,21 +1,25 @@
 /**
  * Copyright (c) 2014 Google, Inc. All rights reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package com.google.fpl.liquidfunpaint.renderer;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.opengl.GLES20;
+import android.util.Log;
 
 import com.google.fpl.liquidfunpaint.physics.DrawableParticleSystem;
 import com.google.fpl.liquidfunpaint.physics.ParticleSystems;
@@ -26,12 +30,8 @@ import com.google.fpl.liquidfunpaint.util.DrawableLayer;
 import com.google.fpl.liquidfunpaint.util.FileHelper;
 import com.google.fpl.liquidfunpaint.util.RenderHelper;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.opengl.GLES20;
-import android.util.Log;
-
-import org.json.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -78,7 +78,7 @@ public class ParticleRenderer implements DrawableLayer {
      */
     @Override
     public void onDrawFrame(GL10 gl) {
-        for(DrawableParticleSystem dps : ParticleSystems.getInstance().values())
+        for (DrawableParticleSystem dps : ParticleSystems.getInstance().values())
             drawParticleSystemToScreen(dps);
     }
 
@@ -219,7 +219,7 @@ public class ParticleRenderer implements DrawableLayer {
 
     @Override
     public void reset() {
-        for(DrawableParticleSystem dps : ParticleSystems.getInstance().values())
+        for (DrawableParticleSystem dps : ParticleSystems.getInstance().values())
             dps.reset();
     }
 

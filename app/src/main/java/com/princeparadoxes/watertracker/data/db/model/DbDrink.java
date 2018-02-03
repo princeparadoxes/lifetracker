@@ -25,7 +25,7 @@ public class DbDrink extends RealmObject {
 
     public static DbDrink mapFromDrink(Drink drink) {
 
-        return new DbDrink(drink.getSize(),drink.getTimestamp());
+        return new DbDrink(drink.getSize(), drink.getTimestamp());
 
     }
 

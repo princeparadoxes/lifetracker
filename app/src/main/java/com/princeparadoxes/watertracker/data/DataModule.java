@@ -2,10 +2,10 @@ package com.princeparadoxes.watertracker.data;
 
 import android.app.Application;
 
-import com.princeparadoxes.watertracker.ApplicationScope;
-import com.princeparadoxes.watertracker.data.sp.ProjectPreferenceModule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.princeparadoxes.watertracker.ApplicationScope;
+import com.princeparadoxes.watertracker.data.sp.ProjectPreferenceModule;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

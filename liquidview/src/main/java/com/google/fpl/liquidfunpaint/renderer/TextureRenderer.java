@@ -1,19 +1,18 @@
 /**
-* Copyright (c) 2014 Google, Inc. All rights reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
+ * Copyright (c) 2014 Google, Inc. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.google.fpl.liquidfunpaint.renderer;
 
@@ -48,7 +47,7 @@ public class TextureRenderer {
         mPositionBuffer = ByteBuffer.allocateDirect(8 * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-        float data[] = new float[] {
+        float data[] = new float[]{
                 0, 0, 1, 0, 0, 1, 1, 1
         };
         mTexCoordBuffer = ByteBuffer.allocateDirect(8 * 4)
@@ -129,10 +128,10 @@ public class TextureRenderer {
             // scaled. The UV will be scaled inverse proportionally.
             float widthUvScale =
                     (right - left) / 2 * width /
-                    texture.getWidth();
+                            texture.getWidth();
             float heightUvScale =
                     (top - bottom) / 2 * height /
-                    texture.getHeight();
+                            texture.getHeight();
             Matrix.scaleM(uvTransform, 0, widthUvScale, heightUvScale, 1);
         }
 
@@ -170,7 +169,7 @@ public class TextureRenderer {
     }
 
     private void setRect(float left, float bottom, float right, float top) {
-        float[] data = new float[] {
+        float[] data = new float[]{
                 left, bottom, right, bottom, left, top, right, top
         };
         mPositionBuffer.position(0);

@@ -7,36 +7,16 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
 import com.google.fpl.liquidfunpaint.physics.WorldLock;
+import com.google.fpl.liquidfunpaint.physics.actions.ParticleEraser;
 import com.google.fpl.liquidfunpaint.physics.actions.ParticleGroup;
 import com.google.fpl.liquidfunpaint.physics.actions.SolidShape;
-import com.google.fpl.liquidfunpaint.physics.actions.ParticleEraser;
 import com.google.fpl.liquidfunpaint.renderer.PhysicsLoop;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-/**
- * Created on 15-09-19.
- */
 public class LiquidSurfaceView extends GLSurfaceView implements ILiquidWorld {
 
-    /**
-     * Load the native libraries
-     */
-    static {
-        try{
-            System.loadLibrary("liquidfun");
-            System.loadLibrary("liquidfun_jni");
-
-        } catch (UnsatisfiedLinkError e) {
-            // only ignore exception in non-android env. This is to aid Robolectric integration.
-            if ("Dalvik".equals(System.getProperty("java.vm.name"))) throw e;
-        }
-    }
-
-    private PhysicsLoop mPhysicsLoop;
-    private WorldLock mWorldLock;
-    private RotatableController mController;
+    private PhysicsLoop physicsLoop;
+    private WorldLock worldLock;
+    private RotatableController rotatableController;
 
     public LiquidSurfaceView(Context context) {
         super(context);
@@ -50,12 +30,12 @@ public class LiquidSurfaceView extends GLSurfaceView implements ILiquidWorld {
 
     protected void initialize(Context context) {
 
-        if(isInEditMode())
+        if (isInEditMode())
             return;
-        
-        mPhysicsLoop = PhysicsLoop.getInstance();
-        mPhysicsLoop.init(context);
-        mWorldLock = WorldLock.getInstance();
+
+        physicsLoop = PhysicsLoop.getInstance();
+        physicsLoop.init(context);
+        worldLock = WorldLock.getInstance();
 
         setEGLContextClientVersion(2);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -66,42 +46,42 @@ public class LiquidSurfaceView extends GLSurfaceView implements ILiquidWorld {
                             GLSurfaceView.DEBUG_CHECK_GL_ERROR);
         }
 
-        setRenderer(mPhysicsLoop);
+        setRenderer(physicsLoop);
 
-        mController = new RotatableController((Activity)context);
+        rotatableController = new RotatableController((Activity) context);
     }
 
     @Override
     public void resumePhysics() {
-        mController.updateDownDirection((Activity) getContext());
-        mPhysicsLoop.startSimulation();
-        mController.onResume();
+        rotatableController.updateDownDirection((Activity) getContext());
+        physicsLoop.startSimulation();
+        rotatableController.onResume();
     }
 
     @Override
     public void createSolidShape(SolidShape solidShape) {
-        mWorldLock.addPhysicsCommand(solidShape);
+        worldLock.addPhysicsCommand(solidShape);
     }
 
     @Override
     public void eraseParticles(ParticleEraser eraserShape) {
-        mWorldLock.addPhysicsCommand(eraserShape);
+        worldLock.addPhysicsCommand(eraserShape);
     }
 
     @Override
     public void createParticles(ParticleGroup liquidShape) {
-        mWorldLock.addPhysicsCommand(liquidShape);
+        worldLock.addPhysicsCommand(liquidShape);
     }
 
     @Override
-    public void pausePhysics(){
-        mPhysicsLoop.pauseSimulation();
-        mController.onPause();
+    public void pausePhysics() {
+        physicsLoop.pauseSimulation();
+        rotatableController.onPause();
     }
 
     @Override
     public void clearAll() {
-        mWorldLock.clearPhysicsCommands();
-        mPhysicsLoop.reset();
+        worldLock.clearPhysicsCommands();
+        physicsLoop.reset();
     }
 }

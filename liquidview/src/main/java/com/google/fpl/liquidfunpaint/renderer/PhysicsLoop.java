@@ -1,23 +1,27 @@
 /**
  * Copyright (c) 2014 Google, Inc. All rights reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package com.google.fpl.liquidfunpaint.renderer;
 
-import com.google.fpl.liquidfunpaint.physics.SolidWorld;
+import android.content.Context;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
+import android.util.Log;
+
 import com.google.fpl.liquidfunpaint.physics.ParticleSystems;
+import com.google.fpl.liquidfunpaint.physics.SolidWorld;
 import com.google.fpl.liquidfunpaint.physics.WorldLock;
 import com.google.fpl.liquidfunpaint.shader.ShaderProgram;
 import com.google.fpl.liquidfunpaint.shader.Texture;
@@ -26,16 +30,8 @@ import com.google.fpl.liquidfunpaint.util.FileHelper;
 import com.google.fpl.liquidfunpaint.util.Observable;
 import com.mycardboarddreams.liquidsurface.BuildConfig;
 
-import android.content.Context;
-import android.opengl.GLES20;
-import android.opengl.Matrix;
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -253,7 +249,7 @@ public class PhysicsLoop extends Observable<Float> implements DrawableLayer {
             JSONObject materialData = json.getJSONObject(PAPER_MATERIAL_NAME);
             String textureName = materialData.getString(DIFFUSE_TEXTURE_NAME);
             mPaperTexture = new Texture(context, textureName);
-        }  catch (JSONException ex) {
+        } catch (JSONException ex) {
             Log.e(TAG, "Cannot parse" + ParticleRenderer.JSON_FILE + "\n" + ex.getMessage());
         }
     }

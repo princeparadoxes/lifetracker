@@ -1,4 +1,3 @@
-
 package com.princeparadoxes.watertracker.utils;
 
 import android.content.Context;
@@ -40,15 +39,19 @@ public class AlertDialogTools {
 
     public static class Builder {
         private Context mContext;
-        private @StyleRes int mStyleRes = R.style.DialogTheme;
+        private @StyleRes
+        int mStyleRes = R.style.DialogTheme;
         private boolean mCancelable = false;
         private String mTitle = null;
         private String mMessage = null;
         private View mView = null;
         private int mMinWidthPx = 0;
-        private @ColorInt int mPositiveTitleColor;
-        private @ColorInt int mNegativeTitleColor;
-        private @ColorInt int mNeutralTitleColor;
+        private @ColorInt
+        int mPositiveTitleColor;
+        private @ColorInt
+        int mNegativeTitleColor;
+        private @ColorInt
+        int mNeutralTitleColor;
         private String mPositiveTitle = null;
         private String mNegativeTitle = null;
         private String mNeutralTitle = null;

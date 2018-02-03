@@ -16,15 +16,15 @@ public class ApplicationSwitcher {
     public static final int GALLERY_REQUEST = 1786;
     public static final int FILE_REQUEST = 1763;
 
-    public static ApplicationSwitcherBuilder start(Activity activity){
+    public static ApplicationSwitcherBuilder start(Activity activity) {
         return new ApplicationSwitcherBuilder(activity);
     }
 
-    public static ApplicationSwitcherBuilder start(Application application){
+    public static ApplicationSwitcherBuilder start(Application application) {
         return new ApplicationSwitcherBuilder(application);
     }
 
-    public static ApplicationSwitcherBuilder start(Context context){
+    public static ApplicationSwitcherBuilder start(Context context) {
         return new ApplicationSwitcherBuilder(context);
     }
 
@@ -142,7 +142,7 @@ public class ApplicationSwitcher {
             context.startActivity(browserIntent);
         }
 
-        public void openAppSettings(){
+        public void openAppSettings() {
             checkContext();
             final Context context = mContextReference.get();
             final Intent intent = new Intent();

@@ -111,19 +111,19 @@ public final class Strings {
     /**
      * <p>Capitalizes all the whitespace separated words in a String.
      * Only the first letter of each word is changed.</p>
-     *
+     * <p>
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
      * A <code>null</code> input String returns <code>null</code>.
      * Capitalization uses the Unicode text case, normally equivalent to
      * upper case.</p>
-     *
+     * <p>
      * <pre>
      * WordUtils.capitalize(null)        = null
      * WordUtils.capitalize("")          = ""
      * WordUtils.capitalize("i am FINE") = "I Am FINE"
      * </pre>
      *
-     * @param str  the String to capitalize, may be null
+     * @param str the String to capitalize, may be null
      * @return capitalized String, <code>null</code> if null String input
      * @see #uncapitalize(String)
      */
@@ -134,15 +134,15 @@ public final class Strings {
     /**
      * <p>Capitalizes all the delimiter separated words in a String.
      * Only the first letter of each word is changed. </p>
-     *
+     * <p>
      * <p>The delimiters represent a set of characters understood to separate words.
      * The first string character and the first non-delimiter character after a
      * delimiter will be capitalized. </p>
-     *
+     * <p>
      * <p>A <code>null</code> input String returns <code>null</code>.
      * Capitalization uses the Unicode text case, normally equivalent to
      * upper case.</p>
-     *
+     * <p>
      * <pre>
      * WordUtils.capitalize(null, *)            = null
      * WordUtils.capitalize("", *)              = ""
@@ -151,8 +151,8 @@ public final class Strings {
      * WordUtils.capitalize("i aM.fine", {'.'}) = "I aM.Fine"
      * </pre>
      *
-     * @param str  the String to capitalize, may be null
-     * @param delimiters  set of characters to determine capitalization, null means whitespace
+     * @param str        the String to capitalize, may be null
+     * @param delimiters set of characters to determine capitalization, null means whitespace
      * @return capitalized String, <code>null</code> if null String input
      * @see #uncapitalize(String)
      */
@@ -178,8 +178,8 @@ public final class Strings {
     /**
      * Is the character a delimiter.
      *
-     * @param ch  the character to check
-     * @param delimiters  the delimiters
+     * @param ch         the character to check
+     * @param delimiters the delimiters
      * @return true if it is a delimiter
      */
     private static boolean isDelimiter(final char ch, final char[] delimiters) {
@@ -197,17 +197,17 @@ public final class Strings {
     /**
      * <p>Uncapitalizes all the whitespace separated words in a String.
      * Only the first letter of each word is changed.</p>
-     *
+     * <p>
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
      * A <code>null</code> input String returns <code>null</code>.</p>
-     *
+     * <p>
      * <pre>
      * WordUtils.uncapitalize(null)        = null
      * WordUtils.uncapitalize("")          = ""
      * WordUtils.uncapitalize("I Am FINE") = "i am fINE"
      * </pre>
      *
-     * @param str  the String to uncapitalize, may be null
+     * @param str the String to uncapitalize, may be null
      * @return uncapitalized String, <code>null</code> if null String input
      * @see #capitalize(String)
      */
@@ -218,14 +218,14 @@ public final class Strings {
     /**
      * <p>Uncapitalizes all the whitespace separated words in a String.
      * Only the first letter of each word is changed.</p>
-     *
+     * <p>
      * <p>The delimiters represent a set of characters understood to separate words.
      * The first string character and the first non-delimiter character after a
      * delimiter will be uncapitalized. </p>
-     *
+     * <p>
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
      * A <code>null</code> input String returns <code>null</code>.</p>
-     *
+     * <p>
      * <pre>
      * WordUtils.uncapitalize(null, *)            = null
      * WordUtils.uncapitalize("", *)              = ""
@@ -234,8 +234,8 @@ public final class Strings {
      * WordUtils.uncapitalize("I AM.FINE", {'.'}) = "i AM.fINE"
      * </pre>
      *
-     * @param str  the String to uncapitalize, may be null
-     * @param delimiters  set of characters to determine uncapitalization, null means whitespace
+     * @param str        the String to uncapitalize, may be null
+     * @param delimiters set of characters to determine uncapitalization, null means whitespace
      * @return uncapitalized String, <code>null</code> if null String input
      * @see #capitalize(String)
      * @since 2.1
@@ -265,10 +265,10 @@ public final class Strings {
      * such problem;
      */
     public static Spanned fromHtml(String string) {
-        return Html.fromHtml(string.replace("\n","<br />"));
+        return Html.fromHtml(string.replace("\n", "<br />"));
     }
 
-    public static <T>String format(String format, T... value) {
+    public static <T> String format(String format, T... value) {
         return String.format(Locale.getDefault(), format, value);
     }
 }

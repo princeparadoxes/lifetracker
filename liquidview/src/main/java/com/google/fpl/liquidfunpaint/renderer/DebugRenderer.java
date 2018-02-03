@@ -1,19 +1,18 @@
 /**
-* Copyright (c) 2014 Google, Inc. All rights reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
+ * Copyright (c) 2014 Google, Inc. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.fpl.liquidfunpaint.renderer;
 
 import android.content.Context;
@@ -24,7 +23,6 @@ import com.google.fpl.liquidfun.Color;
 import com.google.fpl.liquidfun.Draw;
 import com.google.fpl.liquidfun.Transform;
 import com.google.fpl.liquidfun.Vec2;
-import com.google.fpl.liquidfun.World;
 import com.google.fpl.liquidfunpaint.physics.WorldLock;
 import com.google.fpl.liquidfunpaint.shader.Material;
 import com.google.fpl.liquidfunpaint.shader.Material.AttributeInfo;
@@ -328,14 +326,14 @@ public class DebugRenderer extends Draw implements DrawableLayer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-          Matrix.setIdentityM(mTransformFromWorld, 0);
-          Matrix.translateM(mTransformFromWorld, 0, -1, -1, 0);
-          Matrix.scaleM(
-                  mTransformFromWorld,
-                  0,
-                  2f / WorldLock.getInstance().sRenderWorldWidth,
-                  2f / WorldLock.getInstance().sRenderWorldHeight,
-                  1);
+        Matrix.setIdentityM(mTransformFromWorld, 0);
+        Matrix.translateM(mTransformFromWorld, 0, -1, -1, 0);
+        Matrix.scaleM(
+                mTransformFromWorld,
+                0,
+                2f / WorldLock.getInstance().sRenderWorldWidth,
+                2f / WorldLock.getInstance().sRenderWorldHeight,
+                1);
     }
 
     @Override

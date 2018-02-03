@@ -7,11 +7,11 @@ public class ReverseInterpolator implements Interpolator {
 
     private final Interpolator delegate;
 
-    public ReverseInterpolator(Interpolator delegate){
+    public ReverseInterpolator(Interpolator delegate) {
         this.delegate = delegate;
     }
 
-    public ReverseInterpolator(){
+    public ReverseInterpolator() {
         this(new LinearInterpolator());
     }
 

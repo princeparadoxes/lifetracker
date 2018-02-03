@@ -36,7 +36,7 @@ public class DrawableParticleSystem {
     public ByteBuffer mParticleVelocityBuffer;
     public ByteBuffer mParticleWeightBuffer;
 
-    public DrawableParticleSystem(ParticleSystem pSystem){
+    public DrawableParticleSystem(ParticleSystem pSystem) {
         particleSystem = pSystem;
 
         mParticlePositionBuffer = ByteBuffer
@@ -53,11 +53,11 @@ public class DrawableParticleSystem {
                 .order(ByteOrder.nativeOrder());
     }
 
-    public int getParticleCount(){
+    public int getParticleCount() {
         return particleSystem.getParticleCount();
     }
 
-    public void createParticleGroup(Vector2f[] normalizedVertices, LiquidPaint options){
+    public void createParticleGroup(Vector2f[] normalizedVertices, LiquidPaint options) {
 
         if (normalizedVertices == null || normalizedVertices.length == 0 || normalizedVertices.length % 2 != 0)
             return;
@@ -73,7 +73,7 @@ public class DrawableParticleSystem {
         pgd.delete();
     }
 
-    public void clearParticles(Vector2f[] normalizedVertices){
+    public void clearParticles(Vector2f[] normalizedVertices) {
         final PolygonShape polygon = createPolygonShape(normalizedVertices);
         particleSystem.destroyParticlesInShape(polygon, MAT_IDENTITY);
     }
@@ -85,7 +85,7 @@ public class DrawableParticleSystem {
         return polygon;
     }
 
-    public void onDrawFrame(){
+    public void onDrawFrame() {
 
         mParticlePositionBuffer.rewind();
         mParticleColorBuffer.rewind();
@@ -107,7 +107,7 @@ public class DrawableParticleSystem {
     }
 
     public void renderWaterParticles(WaterParticleMaterial mWaterParticleMaterial,
-                                     float[] mPerspectiveTransform){
+                                     float[] mPerspectiveTransform) {
 
         mWaterParticleMaterial.beginRender();
 
@@ -143,7 +143,7 @@ public class DrawableParticleSystem {
 
 
     public void renderNonWaterParticles(ParticleMaterial mParticleMaterial,
-                                        float[] mPerspectiveTransform){
+                                        float[] mPerspectiveTransform) {
 
         mParticleMaterial.beginRender();
 
@@ -185,14 +185,14 @@ public class DrawableParticleSystem {
                 GLES20.GL_POINTS, instanceOffset, particleCount);
     }
 
-    public void reset(){
+    public void reset() {
         mParticlePositionBuffer.clear();
         mParticleColorBuffer.clear();
         mParticleWeightBuffer.clear();
         mParticleVelocityBuffer.clear();
     }
 
-    public void delete(){
+    public void delete() {
         particleSystem.delete();
     }
 }

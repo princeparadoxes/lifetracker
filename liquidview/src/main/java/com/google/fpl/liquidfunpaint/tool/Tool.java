@@ -1,19 +1,18 @@
 /**
-* Copyright (c) 2014 Google, Inc. All rights reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
+ * Copyright (c) 2014 Google, Inc. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.fpl.liquidfunpaint.tool;
 
 import android.util.SparseArray;
@@ -138,7 +137,7 @@ public abstract class Tool {
         return mType;
     }
 
-    public void setColor (int color) {
+    public void setColor(int color) {
         // Convert ABGR back into ParticleColor
         // Box2D doesn't have this functionality,
         // check why color is stored as an int to begin with.
@@ -155,55 +154,55 @@ public abstract class Tool {
 
     public void onTouch(View v, MotionEvent e) {
         switch (e.getActionMasked()) {
-          case MotionEvent.ACTION_DOWN:
-          case MotionEvent.ACTION_POINTER_DOWN: {
-              int pointerIndex = e.getActionIndex();
-              int pID = e.getPointerId(pointerIndex);
-              // Create new PointerInfo as this is a new pointer
-              PointerInfo pInfo = new PointerInfo(pID);
-              assert (mGroupMap.get(pID) == null);
-              processTouchInput(v, e, pInfo, pointerIndex, true, true);
-              // Put updated PointerInfo back in map
-              mGroupMap.put(pID, pInfo);
-              break;
-          }
-          case MotionEvent.ACTION_MOVE: {
-              for (int pointerIndex = 0;
-                      pointerIndex < e.getPointerCount();
-                      ++pointerIndex) {
-                  int pID = e.getPointerId(pointerIndex);
-                  // Get cached PointerInfo
-                  PointerInfo pInfo = mGroupMap.get(pID);
-                  assert (pInfo != null);
-                  processTouchInput(v, e, pInfo, pointerIndex, true, true);
-                  // Put updated PointerInfo back in map
-                  mGroupMap.put(pID, pInfo);
-              }
-              break;
-          }
-          case MotionEvent.ACTION_UP:
-          case MotionEvent.ACTION_POINTER_UP:{
-              int pointerIndex = e.getActionIndex();
-              int pID = e.getPointerId(pointerIndex);
-              // Get cached PointerInfo
-              PointerInfo pInfo = mGroupMap.get(pID);
-              assert (pInfo != null);
-              processTouchInput(v, e, pInfo, pointerIndex, true, true);
-              // Pointer is up -- end the action.
-              endAction(pID);
-              break;
-          }
-          case MotionEvent.ACTION_CANCEL: {
-              // All pointers are cancelled, call endAction() on them.
-              for (int i = 0; i < mGroupMap.size(); ++i) {
-                  int pID = mGroupMap.keyAt(i);
-                  endAction(pID);
-              }
-              mGroupMap.clear();
-              break;
-          }
-          default:
-              break;
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN: {
+                int pointerIndex = e.getActionIndex();
+                int pID = e.getPointerId(pointerIndex);
+                // Create new PointerInfo as this is a new pointer
+                PointerInfo pInfo = new PointerInfo(pID);
+                assert (mGroupMap.get(pID) == null);
+                processTouchInput(v, e, pInfo, pointerIndex, true, true);
+                // Put updated PointerInfo back in map
+                mGroupMap.put(pID, pInfo);
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                for (int pointerIndex = 0;
+                     pointerIndex < e.getPointerCount();
+                     ++pointerIndex) {
+                    int pID = e.getPointerId(pointerIndex);
+                    // Get cached PointerInfo
+                    PointerInfo pInfo = mGroupMap.get(pID);
+                    assert (pInfo != null);
+                    processTouchInput(v, e, pInfo, pointerIndex, true, true);
+                    // Put updated PointerInfo back in map
+                    mGroupMap.put(pID, pInfo);
+                }
+                break;
+            }
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP: {
+                int pointerIndex = e.getActionIndex();
+                int pID = e.getPointerId(pointerIndex);
+                // Get cached PointerInfo
+                PointerInfo pInfo = mGroupMap.get(pID);
+                assert (pInfo != null);
+                processTouchInput(v, e, pInfo, pointerIndex, true, true);
+                // Pointer is up -- end the action.
+                endAction(pID);
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL: {
+                // All pointers are cancelled, call endAction() on them.
+                for (int i = 0; i < mGroupMap.size(); ++i) {
+                    int pID = mGroupMap.keyAt(i);
+                    endAction(pID);
+                }
+                mGroupMap.clear();
+                break;
+            }
+            default:
+                break;
         }
     }
 
@@ -258,10 +257,10 @@ public abstract class Tool {
 
         Vector2f worldPoint = new Vector2f(
                 WorldLock.getInstance().sRenderWorldWidth
-                    * screenX / v.getWidth(),
+                        * screenX / v.getWidth(),
                 WorldLock.getInstance().sRenderWorldHeight *
-                    (v.getHeight() - screenY)
-                / v.getHeight());
+                        (v.getHeight() - screenY)
+                        / v.getHeight());
         clampToWorld(worldPoint, radius);
 
         // Initialize this touch event, specifically the buffers
@@ -338,9 +337,9 @@ public abstract class Tool {
     }
 
     /**
-      * @param pInfo The pointer info containing information for creating
-      *              particle groups.
-      */
+     * @param pInfo The pointer info containing information for creating
+     *              particle groups.
+     */
     protected void applyTool(PointerInfo pInfo) {
         float radius = mBrushSize / 2;
 
@@ -380,7 +379,7 @@ public abstract class Tool {
                 ParticleGroup pGroup = ps.createParticleGroup(pgd);
                 ParticleGroup existingGroup = pInfo.getParticleGroup();
                 if ((existingGroup == null) ||
-                    (existingGroup.getGroupFlags() != pgd.getGroupFlags())) {
+                        (existingGroup.getGroupFlags() != pgd.getGroupFlags())) {
                     pInfo.setParticleGroup(pGroup);
                 } else {
                     ps.joinParticleGroups(existingGroup, pGroup);
@@ -399,6 +398,9 @@ public abstract class Tool {
      * It allows for the tools to register/de-register themselves from different
      * listener or observer classes.
      */
-    public void deactivate() {}
-    public void activate() {}
+    public void deactivate() {
+    }
+
+    public void activate() {
+    }
 }

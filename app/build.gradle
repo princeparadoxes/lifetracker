@@ -11,7 +11,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.ofg.uptodate'
-apply plugin: 'com.getkeepsafe.dexcount'
+//apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'realm-android'
 apply from: "$rootDir/dependencies.gradle"
 apply from: "$rootDir/keystore.gradle"
@@ -31,15 +31,6 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-/*
-    6th advice from http://www.universalmind.com/blog/10-tips-to-improve-your-gradle-build-time/
-    allows the developer to set minSdk at build in order to take
-    advantage of faster build times leveraging ART in API 21+ without
-    losing mush needed lint checks
-    How to use: `./gradlew installDebug -PminSdk=22`
- */
-def minSdk = hasProperty('minSdk') ? minSdk : versions.minSdk
-
 android {
 
     compileSdkVersion versions.compileSdk
@@ -49,7 +40,7 @@ android {
 
         applicationId = versions.packagename
 
-        minSdkVersion minSdk
+        minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
         versionCode buildVersionCode()
@@ -59,9 +50,9 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        jackOptions {
-            enabled false
-        }
+//        jackOptions {
+//            enabled false
+//        }
 
         // Enabling vector drawables support.
         vectorDrawables.useSupportLibrary = true
@@ -213,19 +204,18 @@ dependencies {
     })
 }
 
-dexcount {
-    format = "list"
-    includeClasses = false
-    includeFieldCount = true
-    includeTotalMethodCount = false
-    orderByMethodCount = false
-    verbose = false
-    maxTreeDepth = Integer.MAX_VALUE
-    teamCityIntegration = false
-    enableForInstantRun = false
-    teamCitySlug = null
-    runOnEachAssemble = true
-}
+//dexcount {
+//    format = "list"
+//    includeClasses = false
+//    includeFieldCount = true
+//    includeTotalMethodCount = false
+//    orderByMethodCount = false
+//    verbose = false
+//    maxTreeDepth = Integer.MAX_VALUE
+//    teamCityIntegration = false
+//    teamCitySlug = null
+//    runOnEachAssemble = true
+//}
 
 ///////////////////////////////////////////////////
 ///////////////// Change apk name /////////////////

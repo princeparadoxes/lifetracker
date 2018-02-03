@@ -4,8 +4,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
-import timber.log.Timber;
-
 public class AccelerometerListener implements SensorEventListener {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +43,7 @@ public class AccelerometerListener implements SensorEventListener {
         mListener.onSensorChangeWithDeltaListener(x, y);
     }
 
-    public interface OnSensorChangeWithDeltaListener{
+    public interface OnSensorChangeWithDeltaListener {
         void onSensorChangeWithDeltaListener(float x, float y);
     }
 

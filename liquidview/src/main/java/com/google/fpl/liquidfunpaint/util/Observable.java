@@ -22,8 +22,7 @@ public class Observable<T> {
      * Adds the specified observer to the list of observers. If it is already
      * registered, it is not added a second time.
      *
-     * @param observer
-     *            the Observer to add.
+     * @param observer the Observer to add.
      */
     public void addObserver(Observer<T> observer) {
         if (observer == null) {
@@ -56,8 +55,7 @@ public class Observable<T> {
      * Removes the specified observer from the list of observers. Passing null
      * won't do anything.
      *
-     * @param observer
-     *            the observer to remove.
+     * @param observer the observer to remove.
      */
     public synchronized void deleteObserver(Observer<T> observer) {
         observers.remove(observer);
@@ -74,7 +72,7 @@ public class Observable<T> {
      * Returns the changed flag for this {@code Observable}.
      *
      * @return {@code true} when the changed flag for this {@code Observable} is
-     *         set, {@code false} otherwise.
+     * set, {@code false} otherwise.
      */
     public boolean hasChanged() {
         return changed;
@@ -96,8 +94,7 @@ public class Observable<T> {
      * method for every Observer in the list of observers using the specified
      * argument. Afterwards calls {@code clearChanged()}.
      *
-     * @param data
-     *            the argument passed to {@code update()}.
+     * @param data the argument passed to {@code update()}.
      */
     @SuppressWarnings("unchecked")
     public void notifyObservers(T data) {
@@ -133,10 +130,8 @@ public class Observable<T> {
          * {@code notifyObservers} method is called (because the {@code Observable}
          * object has been updated.
          *
-         * @param observable
-         *            the {@link java.util.Observable} object.
-         * @param data
-         *            the data passed to {@link java.util.Observable#notifyObservers(Object)}.
+         * @param observable the {@link java.util.Observable} object.
+         * @param data       the data passed to {@link java.util.Observable#notifyObservers(Object)}.
          */
         void update(Observable<T> observable, T data);
     }

@@ -13,11 +13,11 @@ public class ParticleEraser implements PhysicsCommand {
     private final Vector2f[] mVertices;
     private final String mGroup;
 
-    public ParticleEraser(Vector2f[] vertices){
+    public ParticleEraser(Vector2f[] vertices) {
         this(vertices, ParticleSystems.DEFAULT_PARTICLE_SYSTEM);
     }
 
-    public ParticleEraser(Vector2f[] vertices, String particleGroup){
+    public ParticleEraser(Vector2f[] vertices, String particleGroup) {
         mVertices = vertices;
         mGroup = particleGroup;
     }
