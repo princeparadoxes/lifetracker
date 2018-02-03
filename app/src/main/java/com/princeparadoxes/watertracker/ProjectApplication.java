@@ -25,14 +25,15 @@ public class ProjectApplication extends Application implements Foreground.Listen
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not bind your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
+
 
         if (BuildConfig.DEBUG) {
+            if (LeakCanary.isInAnalyzerProcess(this)) {
+                // This process is dedicated to LeakCanary for heap analysis.
+                // You should not bind your app in this process.
+                return;
+            }
+            LeakCanary.install(this);
             Timber.plant(new Timber.DebugTree());
         }
 
