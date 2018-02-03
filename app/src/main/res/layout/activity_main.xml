@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
+    tools:context=".presentation.screen.main.MainActivity">
 
-    <com.princeparadoxes.watertracker.ui.screen.main.RulerView
+    <com.princeparadoxes.watertracker.presentation.view.RulerView
         android:id="@+id/main_ruler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

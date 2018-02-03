@@ -1,7 +1,7 @@
 package com.princeparadoxes.watertracker.data.api;
 
 import com.princeparadoxes.watertracker.ApplicationScope;
-import com.princeparadoxes.watertracker.data.consts.Consts;
+import com.princeparadoxes.watertracker.data.source.consts.Consts;
 
 import javax.inject.Named;
 

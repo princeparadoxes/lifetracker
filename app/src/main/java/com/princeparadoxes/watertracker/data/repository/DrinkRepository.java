@@ -1,12 +1,12 @@
 package com.princeparadoxes.watertracker.data.repository;
 
 import com.princeparadoxes.watertracker.ApplicationScope;
-import com.princeparadoxes.watertracker.data.db.model.DbDrink;
-import com.princeparadoxes.watertracker.data.db.repository.DBDrinkRepository;
+import com.princeparadoxes.watertracker.data.source.db.model.DbDrink;
+import com.princeparadoxes.watertracker.data.source.db.repository.DBDrinkRepository;
 import com.princeparadoxes.watertracker.data.model.Drink;
 import com.princeparadoxes.watertracker.data.model.StatisticType;
-import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
-import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticModel;
+import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences;
+import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticModel;
 
 import javax.inject.Inject;
 

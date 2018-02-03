@@ -1,6 +1,6 @@
 package com.princeparadoxes.watertracker.data.model;
 
-import com.princeparadoxes.watertracker.data.db.model.DbDrink;
+import com.princeparadoxes.watertracker.data.source.db.model.DbDrink;
 
 
 public class Drink {

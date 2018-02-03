@@ -1,6 +1,6 @@
 package com.princeparadoxes.watertracker.data;
 
-import com.princeparadoxes.watertracker.data.sp.ProjectPreferenceModule;
+import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferenceModule;
 
 import dagger.Module;
 

@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 import com.princeparadoxes.watertracker.ApplicationScope;
 import com.princeparadoxes.watertracker.DebugDrawerInitializer;
-import com.princeparadoxes.watertracker.data.sp.DebugSharedPreferences;
-import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
+import com.princeparadoxes.watertracker.data.source.sp.DebugSharedPreferences;
+import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences;
 
 import javax.inject.Named;
 

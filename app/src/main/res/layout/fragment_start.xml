@@ -8,7 +8,7 @@
     android:background="@color/accent"
     android:clickable="true"
     android:orientation="vertical"
-    tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
+    tools:context=".presentation.screen.main.MainActivity">
 
     <TextView
         android:id="@+id/fragment_start_center_text"
