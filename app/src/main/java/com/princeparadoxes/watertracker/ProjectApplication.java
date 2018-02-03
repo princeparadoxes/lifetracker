@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.princeparadoxes.watertracker.base.lifecycle.Foreground;
 import com.squareup.leakcanary.LeakCanary;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class ProjectApplication extends Application implements Foreground.Listener {
@@ -41,6 +42,7 @@ public class ProjectApplication extends Application implements Foreground.Listen
         Foreground.get().addListener(this);
 
         buildComponentAndInject();
+        Realm.init(this);
     }
 
     public void buildComponentAndInject() {

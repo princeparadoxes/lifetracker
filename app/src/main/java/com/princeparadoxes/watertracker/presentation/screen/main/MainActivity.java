@@ -25,8 +25,7 @@ import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseActivity;
 import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat;
-import com.princeparadoxes.watertracker.data.model.Drink;
-import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
+import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway;
 import com.princeparadoxes.watertracker.utils.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences;
 import com.princeparadoxes.watertracker.presentation.view.RulerView;
@@ -44,7 +43,7 @@ public class MainActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    DrinkRepository mDrinkRepository;
+    DrinkOutputGateway drinkOutputGateway;
     @Inject
     ProjectPreferences mProjectPreferences;
 
@@ -139,7 +138,7 @@ public class MainActivity extends BaseActivity {
 //        coordinatorParams.setBehavior(swipe);
 
         initGlSurfaceViewIfNeeded();
-        loadDaySumm();
+        loadDaySum();
     }
 
     private void initGlSurfaceViewIfNeeded() {
@@ -238,7 +237,7 @@ public class MainActivity extends BaseActivity {
     private void addWater(int ml) {
         if (ml == 0) return;
         drawWater(ml);
-        mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
+        drinkOutputGateway.addWater(ml)
                 .compose(SchedulerTransformer.getInstance())
                 .subscribe();
     }
@@ -258,17 +257,17 @@ public class MainActivity extends BaseActivity {
     // LOAD DAY STATISTIC
     ///////////////////////////////////////////////////////////////////////////
 
-    private void loadDaySumm() {
-        mDisposable.add(mDrinkRepository.getDaySum()
+    private void loadDaySum() {
+        mDisposable.add(drinkOutputGateway.getDaySum()
                 .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleLoadDaySumm, this::handleLoadDaySummError));
+                .subscribe(this::handleLoadDaySum, this::handleLoadDaySumError));
     }
 
-    private void handleLoadDaySumm(Float daySum) {
-        drawWater(daySum.intValue());
+    private void handleLoadDaySum(int daySum) {
+        drawWater(daySum);
     }
 
-    private void handleLoadDaySummError(Throwable throwable) {
+    private void handleLoadDaySumError(Throwable throwable) {
         throwable.printStackTrace();
     }
 

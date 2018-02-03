@@ -20,7 +20,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
-import com.princeparadoxes.watertracker.data.model.StatisticType;
+import com.princeparadoxes.watertracker.domain.entity.StatisticType;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.utils.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences;
@@ -251,7 +251,7 @@ public class StatisticFragment extends BaseFragment
                 .subscribe(this::handleLoadDaySumm, this::handleLoadDaySummError));
     }
 
-    private void handleLoadDaySumm(Float daySum) {
+    private void handleLoadDaySumm(int daySum) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Day", 12))
                 .append("\n")

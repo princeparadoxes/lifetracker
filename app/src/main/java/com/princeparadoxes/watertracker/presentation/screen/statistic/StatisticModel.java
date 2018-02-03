@@ -1,6 +1,6 @@
 package com.princeparadoxes.watertracker.presentation.screen.statistic;
 
-import com.princeparadoxes.watertracker.data.model.StatisticType;
+import com.princeparadoxes.watertracker.domain.entity.StatisticType;
 
 /**
  * Created by as3co on 17.05.2017.
@@ -30,7 +30,7 @@ public class StatisticModel {
     }
 
     public int getName() {
-        return getStatisticType().getName();
+        return getStatisticType().getText();
     }
 
     public int getIcon() {

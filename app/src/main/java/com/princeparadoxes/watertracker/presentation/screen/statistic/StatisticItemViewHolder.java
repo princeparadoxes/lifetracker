@@ -70,7 +70,7 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
     @Override
     public void bindView(int position, StatisticModel item, StatisticTypeItemListener actionListener) {
         super.bindView(position, item, actionListener);
-        mTextView.setText(item.getStatisticType().getName());
+        mTextView.setText(item.getStatisticType().getText());
         setChartData(item);
         mLogo.setImageResource(item.getIcon());
     }
