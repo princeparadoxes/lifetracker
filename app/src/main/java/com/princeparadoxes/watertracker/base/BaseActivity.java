@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import icepick.Icepick;
 
 public abstract class BaseActivity extends DebugBaseActivity {
 
@@ -37,8 +36,6 @@ public abstract class BaseActivity extends DebugBaseActivity {
         onViewSetup();
 
         ButterKnife.bind(this);
-
-        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     protected void onExtractParams(Bundle params) {
@@ -65,7 +62,6 @@ public abstract class BaseActivity extends DebugBaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Icepick.saveInstanceState(this, outState);
         super.onSaveInstanceState(outState);
     }
 

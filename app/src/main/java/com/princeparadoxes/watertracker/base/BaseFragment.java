@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.princeparadoxes.watertracker.utils.KeyboardUtils;
 
 import butterknife.ButterKnife;
-import icepick.Icepick;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -25,14 +24,12 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Icepick.saveInstanceState(this, outState);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     @Override

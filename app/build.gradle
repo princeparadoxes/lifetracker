@@ -127,76 +127,62 @@ android {
         warning 'InvalidPackage'
     }
 
-    buildToolsVersion '26.0.2'
 }
 
 dependencies {
-//    compile fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':liquidview')
-    // Supports
-    compile "com.android.support:design:${versions.supportLibrary}"
-    compile "com.android.support:recyclerview-v7:${versions.supportLibrary}"
-    compile "com.android.support:support-annotations:${versions.supportLibrary}"
-    compile "com.android.support:cardview-v7:${versions.supportLibrary}"
-    compile "com.android.support:support-fragment:${versions.supportLibrary}"
-    compile "com.android.support:percent:${versions.supportLibrary}"
+
+    // Support libraries
+    implementation deps.support.app_compat
+    implementation deps.support.v4
+    implementation deps.support.design
+    implementation deps.support.recyclerview
+    implementation deps.support.support_annotations
+    implementation deps.support.cardview
 
     // DI
-    compile "com.google.dagger:dagger:${versions.dagger}"
-    annotationProcessor "com.google.dagger:dagger-compiler:${versions.dagger}"
+    implementation deps.dagger.runtime
+    annotationProcessor deps.dagger.compiler
+
+
+
     compileOnly "javax.annotation:jsr250-api:1.0"
 
-    // IcePick
-    compile "frankiesardo:icepick:${versions.icepick}"
-    annotationProcessor "frankiesardo:icepick-processor:${versions.icepick}"
-
-    // Data Base
-
-    // Http
-    compile "com.squareup.okhttp3:okhttp:${versions.okhttp}"
-    compile "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    compile "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    compile "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    compile "com.squareup.retrofit2:converter-moshi:${versions.retrofit}"
-    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-    compile "com.github.bumptech.glide:glide:${versions.glide}"
-
-
     // Ui
-    compile "com.jakewharton:butterknife:8.8.1"
+    implementation "com.jakewharton:butterknife:8.8.1"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
-    compile 'com.github.princeparadoxes:recyclerbindableadapter:1.3'
-    compile 'com.livetyping:cannyviewanimator:0.8'
-    compile 'com.yarolegovich:discrete-scrollview:1.1.4'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
-    compile 'com.diogobernardino:williamchart:2.5.0'
-    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    implementation 'com.github.princeparadoxes:recyclerbindableadapter:1.3'
+    implementation 'com.livetyping:cannyviewanimator:0.8'
+    implementation 'com.yarolegovich:discrete-scrollview:1.1.4'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation 'com.diogobernardino:williamchart:2.5.0'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 
-    compile "com.jakewharton.timber:timber:4.5.1"
+    implementation "com.jakewharton.timber:timber:4.6.0"
     //rx
-    compile "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
-    compile "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
+    implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
+    implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
 
     // Debug
-    debugCompile "com.facebook.stetho:stetho:${versions.stetho}"
-    debugCompile "com.facebook.stetho:stetho-okhttp3:${versions.stetho}"
-    debugCompile 'io.palaima.debugdrawer:debugdrawer:0.7.0'
-    releaseCompile 'io.palaima.debugdrawer:debugdrawer-no-op:0.7.0'
-    debugCompile 'io.palaima.debugdrawer:debugdrawer-commons:0.7.0'
-    debugCompile 'io.palaima.debugdrawer:debugdrawer-actions:0.7.0'
-    debugCompile 'io.palaima.debugdrawer:debugdrawer-okhttp:0.7.0'
-    debugCompile 'io.palaima.debugdrawer:debugdrawer-okhttp3:0.7.0'
-    debugCompile 'io.palaima.debugdrawer:debugdrawer-glide:0.7.0'
-    debugCompile "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}"
-    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}"
-    debugCompile "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+    debugImplementation "com.facebook.stetho:stetho:${versions.stetho}"
+    debugImplementation "com.facebook.stetho:stetho-okhttp3:${versions.stetho}"
+    debugImplementation 'io.palaima.debugdrawer:debugdrawer:0.7.0'
+    releaseImplementation 'io.palaima.debugdrawer:debugdrawer-no-op:0.7.0'
+    debugImplementation 'io.palaima.debugdrawer:debugdrawer-commons:0.7.0'
+    debugImplementation 'io.palaima.debugdrawer:debugdrawer-actions:0.7.0'
+    debugImplementation 'io.palaima.debugdrawer:debugdrawer-okhttp:0.7.0'
+    debugImplementation 'io.palaima.debugdrawer:debugdrawer-okhttp3:0.7.0'
+    debugImplementation 'io.palaima.debugdrawer:debugdrawer-glide:0.7.0'
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}"
+    debugImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 
     // Unit Tests
-    androidTestCompile "junit:junit:4.12"
-    testCompile "org.hamcrest:hamcrest-library:1.4-atlassian-1"
-    testCompile "org.mockito:mockito-core:1.10.19"
-    testCompile "com.google.truth:truth:0.28"
+    androidTestImplementation "junit:junit:4.12"
+    testImplementation "org.hamcrest:hamcrest-library:1.4-atlassian-1"
+    testImplementation "org.mockito:mockito-core:2.11.0"
+    testImplementation "com.google.truth:truth:0.28"
 
 
     androidTestCompile("com.android.support.test.espresso:espresso-core:2.2.2", {
