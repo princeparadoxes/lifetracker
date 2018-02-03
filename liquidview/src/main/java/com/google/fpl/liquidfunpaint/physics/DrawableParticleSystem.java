@@ -114,8 +114,8 @@ public class DrawableParticleSystem {
         // Set attribute arrays
         mWaterParticleMaterial.setVertexAttributeBuffer(
                 "aPosition", mParticlePositionBuffer, 0);
-        mWaterParticleMaterial.setVertexAttributeBuffer(
-                "aVelocity", mParticleVelocityBuffer, 0);
+//        mWaterParticleMaterial.setVertexAttributeBuffer(
+//                "aVelocity", mParticleVelocityBuffer, 0);
         mWaterParticleMaterial.setVertexAttributeBuffer(
                 "aColor", mParticleColorBuffer, 0);
         mWaterParticleMaterial.setVertexAttributeBuffer(

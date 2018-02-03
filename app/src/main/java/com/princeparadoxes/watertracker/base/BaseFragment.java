@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import com.princeparadoxes.watertracker.utils.KeyboardUtils;
 
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public abstract class BaseFragment extends Fragment {
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Nullable
     @Override
@@ -36,6 +39,15 @@ public abstract class BaseFragment extends Fragment {
     public void onStop() {
         KeyboardUtils.hideSoftKeyboard(getActivity());
         super.onStop();
+        compositeDisposable.clear();
+    }
+
+    public void unsubscribeOnStop(Disposable disposable){
+        compositeDisposable.add(disposable);
+    }
+
+    public void unsubscribeOnStop(Disposable... disposable){
+        compositeDisposable.addAll(disposable);
     }
 
     protected abstract int layoutId();

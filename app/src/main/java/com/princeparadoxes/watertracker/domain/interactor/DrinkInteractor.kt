@@ -1,6 +1,8 @@
 package com.princeparadoxes.watertracker.domain.interactor
 
 import com.princeparadoxes.watertracker.domain.entity.Drink
+import com.princeparadoxes.watertracker.domain.entity.StatisticType
+import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticModel
 import io.reactivex.Observable
 
 class DrinkInteractor(
@@ -13,6 +15,14 @@ class DrinkInteractor(
 
     override fun getDaySum(): Observable<Int> {
         return drinkInputGateway.getDaySum()
+    }
+
+    override fun getLast(): Observable<Drink> {
+        return drinkInputGateway.getLast();
+    }
+
+    override fun getStatisticByPeriod(statisticType: StatisticType): Observable<StatisticModel> {
+        return drinkInputGateway.getStatisticByPeriod(statisticType)
     }
 
 }

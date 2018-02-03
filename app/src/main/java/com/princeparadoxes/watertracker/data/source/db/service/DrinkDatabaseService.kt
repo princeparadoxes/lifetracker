@@ -1,38 +1,28 @@
 package com.princeparadoxes.watertracker.data.source.db.service
 
+import com.princeparadoxes.watertracker.data.source.db.model.DrinkSchema
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
-import com.princeparadoxes.watertracker.data.source.db.model.DbDrink
+import io.reactivex.Observable
 import io.realm.Realm
 import java.util.*
 
 class DrinkDatabaseService {
 
-    val dayStatistic: Float?
-        get() = getAllByPeriod(StatisticType.DAY)
-
-    val lastByDay: Float?
-        get() {
-            val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            currentTime.timeZone = TimeZone.getDefault()
-            currentTime.set(Calendar.HOUR, 0)
-            currentTime.set(Calendar.MINUTE, 0)
-            currentTime.set(Calendar.SECOND, 0)
-            currentTime.set(Calendar.MILLISECOND, 0)
-
-            val dayDrinks = Realm.getDefaultInstance()
-                    .where(DbDrink::class.java)
-                    .greaterThan("timestamp", currentTime.timeInMillis)
-                    .findAllSorted("timestamp")
-
-            return dayDrinks[dayDrinks.size - 1]!!.size.toFloat()
-        }
-
-    fun add(dbDrink: DbDrink): DbDrink {
-        Realm.getDefaultInstance().executeTransaction { realm -> realm.copyToRealm(dbDrink) }
-        return dbDrink
+    fun getLast(): Observable<DrinkSchema> {
+        return Realm.getDefaultInstance()
+                .where(DrinkSchema::class.java)
+                .findAll()
+                .asFlowable()
+                .map { it.last()!! }
+                .toObservable()
     }
 
-    fun getAllByPeriod(statisticType: StatisticType): Float? {
+    fun add(drinkSchema: DrinkSchema): DrinkSchema {
+        Realm.getDefaultInstance().executeTransaction { realm -> realm.copyToRealm(drinkSchema) }
+        return drinkSchema
+    }
+
+    fun getAllByPeriod(statisticType: StatisticType): Observable<Int> {
         val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         currentTime.timeZone = TimeZone.getDefault()
         currentTime.set(Calendar.HOUR, 0)
@@ -52,16 +42,17 @@ class DrinkDatabaseService {
         val timeInMillis = currentTime.timeInMillis
 
         return Realm.getDefaultInstance()
-                .where(DbDrink::class.java)
+                .where(DrinkSchema::class.java)
                 .greaterThan("timestamp", timeInMillis)
                 .findAll()
-                .sum("size")
-                .toFloat()
+                .asFlowable()
+                .map { it.map { it.size }.sum() }
+                .toObservable()
     }
 
     fun deleteAllWithTimestamp(timestamp: Long): Boolean? {
         Realm.getDefaultInstance().beginTransaction()
-        val dbDrinks = Realm.getDefaultInstance().where(DbDrink::class.java)
+        val dbDrinks = Realm.getDefaultInstance().where(DrinkSchema::class.java)
                 .equalTo("timestamp", timestamp)
                 .findAll()
 

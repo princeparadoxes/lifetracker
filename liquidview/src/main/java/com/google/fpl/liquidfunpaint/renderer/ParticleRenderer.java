@@ -185,9 +185,9 @@ public class ParticleRenderer implements DrawableLayer {
         mWaterParticleMaterial.addAttribute(
                 "aPosition", 2, Material.AttrComponentType.FLOAT,
                 4, false, 0);
-        mWaterParticleMaterial.addAttribute(
-                "aVelocity", 2, Material.AttrComponentType.FLOAT,
-                4, false, 0);
+//        mWaterParticleMaterial.addAttribute(
+//                "aVelocity", 2, Material.AttrComponentType.FLOAT,
+//                4, false, 0);
         mWaterParticleMaterial.addAttribute(
                 "aColor", 4, Material.AttrComponentType.UNSIGNED_BYTE,
                 1, true, 0);

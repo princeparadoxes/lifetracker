@@ -40,4 +40,13 @@ public class StatisticModel {
     public int getCountDays() {
         return getStatisticType().getCountDays();
     }
+
+    @Override
+    public String toString() {
+        return "StatisticModel{" +
+                "mStatisticType=" + mStatisticType +
+                ", mValue=" + mValue +
+                ", mNormValue=" + mNormValue +
+                '}';
+    }
 }

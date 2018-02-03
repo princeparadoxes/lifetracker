@@ -41,9 +41,7 @@ public class LiquidSurfaceView extends GLSurfaceView implements ILiquidWorld {
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         if (BuildConfig.DEBUG) {
-            setDebugFlags(
-                    GLSurfaceView.DEBUG_LOG_GL_CALLS |
-                            GLSurfaceView.DEBUG_CHECK_GL_ERROR);
+//            setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS | GLSurfaceView.DEBUG_CHECK_GL_ERROR);
         }
 
         setRenderer(physicsLoop);

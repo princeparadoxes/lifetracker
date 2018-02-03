@@ -17,7 +17,7 @@
 // Vertex shader for particles
 
 attribute vec4 aPosition; // in 2d worldspace
-attribute vec4 aVelocity; // in 2d worldspace
+//attribute vec4 aVelocity; // in 2d worldspace
 attribute vec4 aColor;    // vertex color
 attribute float aWeight;  // particle weight
 uniform mat4 uTransform;  // transforms from worldspace to clip space

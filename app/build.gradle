@@ -147,10 +147,12 @@ dependencies {
     // DI
     implementation deps.dagger.runtime
     kapt deps.dagger.compiler
-
-
-
     compileOnly "javax.annotation:jsr250-api:1.0"
+
+    // Architecture components
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.extensions
+    kapt deps.lifecycle.compiler
 
     // Ui
     implementation "com.jakewharton:butterknife:8.8.1"

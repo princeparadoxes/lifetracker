@@ -20,9 +20,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.princeparadoxes.watertracker.ProjectApplication;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseFragment;
-import com.princeparadoxes.watertracker.domain.entity.StatisticType;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
-import com.princeparadoxes.watertracker.utils.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences;
 import com.princeparadoxes.watertracker.utils.AnimatorUtils;
 import com.princeparadoxes.watertracker.utils.DimenTools;
@@ -36,22 +34,19 @@ import javax.inject.Inject;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import timber.log.Timber;
 
 public class StatisticFragment extends BaseFragment
         implements
         DiscreteScrollView.OnItemChangedListener<StatisticItemViewHolder>,
         DiscreteScrollView.ScrollStateChangeListener<StatisticItemViewHolder> {
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////  INJECTS  ////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
+    ///////////////////////////////////////////////////////////////////////////
+    // INJECTS
+    ///////////////////////////////////////////////////////////////////////////
     @Inject
-    DrinkRepository mDrinkRepository;
-    @Inject
-    ProjectPreferences mProjectPreferences;
+    StatisticViewModel statisticViewModel;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -81,7 +76,6 @@ public class StatisticFragment extends BaseFragment
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private CompositeDisposable mDisposable;
     private BottomSheetBehavior mStatisticBottomSheetBehavior;
     private StatisticAdapter mStatisticAdapter;
 
@@ -95,9 +89,9 @@ public class StatisticFragment extends BaseFragment
         ProjectApplication app = ProjectApplication.get(getActivity());
         StatisticScope.Component component = DaggerStatisticScope_Component.builder()
                 .projectComponent(app.component())
+                .module(new StatisticScope.Module(this))
                 .build();
         component.inject(this);
-        mDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -139,13 +133,9 @@ public class StatisticFragment extends BaseFragment
     private void onCollapsed() {
         mTopBorderView.setVisibility(View.VISIBLE);
         createHeaderAnimator(R.string.statistic_header_open, mChevronUpDrawable).start();
-        loadDaySumm();
-        loadLastDrink();
-
     }
 
     private void onExpanded() {
-        loadAllStatistic();
         mTopBorderView.setVisibility(View.INVISIBLE);
         createHeaderAnimator(R.string.statistic_header_closed, mChevronDownDrawable).start();
 //        SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -206,6 +196,11 @@ public class StatisticFragment extends BaseFragment
     public void onStart() {
         super.onStart();
         initTypePicker();
+        unsubscribeOnStop(
+                statisticViewModel.getStatistic().subscribe(this::handleLoadAllStatistic, Timber::e),
+                statisticViewModel.getDayNorm().subscribe(this::handleLoadDaySum, Timber::e),
+                statisticViewModel.getLast().subscribe(this::handleLoadLastDrink, Timber::e)
+        );
     }
 
     private void initTypePicker() {
@@ -219,39 +214,11 @@ public class StatisticFragment extends BaseFragment
                 .build());
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // LOAD ALL STATISTIC
-    ///////////////////////////////////////////////////////////////////////////
-
-
-    private void loadAllStatistic() {
-        mDisposable.add(Observable.fromArray(StatisticType.values())
-                .concatMap(statisticType -> mDrinkRepository.getSumByPeriod(statisticType))
-                .toList()
-                .toObservable()
-                .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleLoadAllStatistic, this::handleLoadAllStatisticError));
-    }
-
     private void handleLoadAllStatistic(List<StatisticModel> statisticModels) {
         mStatisticAdapter.setData(statisticModels);
     }
 
-    private void handleLoadAllStatisticError(Throwable throwable) {
-        throwable.printStackTrace();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // LOAD DAY STATISTIC
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void loadDaySumm() {
-        mDisposable.add(mDrinkRepository.getDaySum()
-                .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleLoadDaySumm, this::handleLoadDaySummError));
-    }
-
-    private void handleLoadDaySumm(int daySum) {
+    private void handleLoadDaySum(int daySum) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Day", 12))
                 .append("\n")
@@ -260,35 +227,11 @@ public class StatisticFragment extends BaseFragment
         mStatisticHeaderStart.setText(builder);
     }
 
-    private void handleLoadDaySummError(Throwable throwable) {
-        throwable.printStackTrace();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // LOAD LAST DRINK
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void loadLastDrink() {
-        mDisposable.add(mDrinkRepository.getLastByDay()
-                .compose(SchedulerTransformer.getInstance())
-                .subscribe(this::handleLoadLastDrink, this::handleLoadLastDrinkError));
-    }
-
-    private void handleLoadLastDrink(Float lastByDay) {
+    private void handleLoadLastDrink(int lastByDay) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Last", 12))
                 .append("\n")
-                .append(String.valueOf(lastByDay))
-                .append("ml");
-        mStatisticHeaderEnd.setText(builder);
-    }
-
-    private void handleLoadLastDrinkError(Throwable throwable) {
-        throwable.printStackTrace();
-        SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(SpannableUtils.getAbsoluteSizeSpan(getContext(), "Last", 12))
-                .append("\n")
-                .append("none");
+                .append(lastByDay != 0 ? String.valueOf(lastByDay) + "ml" : "none");
         mStatisticHeaderEnd.setText(builder);
     }
 
@@ -337,20 +280,10 @@ public class StatisticFragment extends BaseFragment
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onStop() {
-        mDisposable.dispose();
-        super.onStop();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mStatisticBottomSheetBehavior.setBottomSheetCallback(null);
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////  NAVIGATION  ////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////

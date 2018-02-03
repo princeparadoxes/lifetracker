@@ -258,8 +258,7 @@ public class MainActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////
 
     private void loadDaySum() {
-        mDisposable.add(drinkOutputGateway.getDaySum()
-                .compose(SchedulerTransformer.getInstance())
+        mDisposable.add(drinkOutputGateway.getDaySum().firstOrError()
                 .subscribe(this::handleLoadDaySum, this::handleLoadDaySumError));
     }
 
