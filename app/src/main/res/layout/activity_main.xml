@@ -28,10 +28,10 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="64dp">
 
-        <android.opengl.GLSurfaceView
+        <com.mycardboarddreams.liquidsurface.LiquidSurfaceView
             android:id="@+id/water_gl_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
         <FrameLayout
             android:id="@+id/day_norm_container"

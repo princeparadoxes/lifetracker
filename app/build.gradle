@@ -10,8 +10,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.ofg.uptodate'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'realm-android'
@@ -138,11 +136,12 @@ android {
         warning 'InvalidPackage'
     }
 
+    buildToolsVersion '26.0.2'
 }
 
 dependencies {
 //    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':liquidfunwrapper')
+    implementation project(':liquidview')
     // Supports
     compile "com.android.support:design:${versions.supportLibrary}"
     compile "com.android.support:recyclerview-v7:${versions.supportLibrary}"
@@ -153,12 +152,12 @@ dependencies {
 
     // DI
     compile "com.google.dagger:dagger:${versions.dagger}"
-    apt "com.google.dagger:dagger-compiler:${versions.dagger}"
-    provided "javax.annotation:jsr250-api:1.0"
+    annotationProcessor "com.google.dagger:dagger-compiler:${versions.dagger}"
+    compileOnly "javax.annotation:jsr250-api:1.0"
 
     // IcePick
     compile "frankiesardo:icepick:${versions.icepick}"
-    provided "frankiesardo:icepick-processor:${versions.icepick}"
+    annotationProcessor "frankiesardo:icepick-processor:${versions.icepick}"
 
     // Data Base
 
@@ -173,8 +172,8 @@ dependencies {
 
 
     // Ui
-    compile "com.jakewharton:butterknife:8.4.0"
-    apt "com.jakewharton:butterknife-compiler:8.4.0"
+    compile "com.jakewharton:butterknife:8.8.1"
+    annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
     compile 'com.github.princeparadoxes:recyclerbindableadapter:1.3'
     compile 'com.livetyping:cannyviewanimator:0.8'
     compile 'com.yarolegovich:discrete-scrollview:1.1.4'
@@ -182,7 +181,7 @@ dependencies {
     compile 'com.diogobernardino:williamchart:2.5.0'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
 
-    compile "com.jakewharton.timber:timber:4.2.0"
+    compile "com.jakewharton.timber:timber:4.5.1"
     //rx
     compile "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
     compile "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
@@ -232,13 +231,13 @@ dexcount {
 ///////////////// Change apk name /////////////////
 ///////////////////////////////////////////////////
 android.applicationVariants.all { variant ->
-    for (output in variant.outputs) {
-        def outputFile = output.outputFile
-        if (outputFile != null && outputFile.name.endsWith('.apk')) {
-            def fileName = "${versions.apkname}-${output.name}.apk"
-            output.outputFile = new File(outputFile.parent, fileName)
-        }
-    }
+//    for (output in variant.outputs) {
+//        def outputFile = output.outputFile
+//        if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//            def fileName = "${versions.apkname}-${output.name}.apk"
+//            output.outputFile = new File(outputFile.parent, fileName)
+//        }
+//    }
 }
 
 ///////////////////////////////////////////////////

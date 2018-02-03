@@ -153,7 +153,7 @@ public class WaterWorld {
         final float aspectRatio = ((float) height) / ((float) width);
         mVirtualWidth = BASE_UNITS;
         mVirtualHeight = mVirtualWidth * aspectRatio;
-        if (tempWater != 0){
+        if (tempWater != 0) {
             addWater(tempWater);
             tempWater = 0;
         }
@@ -179,8 +179,8 @@ public class WaterWorld {
         float aspect = (float) ml / dayNorm;
         aspect = aspect * FLOAT;
         if (addedWater + aspect >= FLOAT) {
-             aspect = FLOAT - addedWater;
-             addedWater = FLOAT;
+            aspect = FLOAT - addedWater;
+            addedWater = FLOAT;
         } else {
             addedWater += aspect;
         }
@@ -212,7 +212,7 @@ public class WaterWorld {
         groupDef.setFlags(ParticleFlag.waterParticle);
         groupDef.setGroupFlags(ParticleGroupFlag.solidParticleGroup);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(mVirtualWidth, BASE_UNITS * aspect,  mVirtualWidth / 2, mVirtualHeight / 2, 0);
+        shape.setAsBox(mVirtualWidth - 2 * BORDER_THICKNESS, BASE_UNITS * aspect, mVirtualWidth / 2, mVirtualHeight / 2, 0);
         groupDef.setShape(shape);
         mParticleSystem.createParticleGroup(groupDef);
     }
@@ -249,7 +249,7 @@ public class WaterWorld {
 
     private void createBorders() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.setUserData(ObjectType.BORDERS);
+//        bodyDef.setUserData(ObjectType.BORDERS);
         bodyDef.setType(BodyType.staticBody);
         Body body = mWorld.createBody(bodyDef);
 
@@ -271,9 +271,9 @@ public class WaterWorld {
     private void createBorderFixture(Body body, PolygonShape shape) {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.setShape(shape);
-        fixtureDef.setFriction(0.5f);
-        fixtureDef.setRestitution(0.05f);
-        fixtureDef.setDensity(1.0f);
+//        fixtureDef.setFriction(0.5f);
+//        fixtureDef.setRestitution(0.05f);
+//        fixtureDef.setDensity(1.0f);
         body.createFixture(fixtureDef);
     }
 

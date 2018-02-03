@@ -2,7 +2,7 @@ package com.princeparadoxes.watertracker.ui.screen.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.opengl.GLSurfaceView;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -16,6 +16,11 @@ import android.view.animation.BounceInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.fpl.liquidfunpaint.physics.WorldLock;
+import com.google.fpl.liquidfunpaint.physics.actions.ParticleGroup;
+import com.google.fpl.liquidfunpaint.util.MathHelper;
+import com.google.fpl.liquidfunpaint.util.Vector2f;
+import com.mycardboarddreams.liquidsurface.LiquidSurfaceView;
 import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.R;
 import com.princeparadoxes.watertracker.base.BaseActivity;
@@ -24,7 +29,6 @@ import com.princeparadoxes.watertracker.data.model.Drink;
 import com.princeparadoxes.watertracker.data.repository.DrinkRepository;
 import com.princeparadoxes.watertracker.data.rx.SchedulerTransformer;
 import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
-import com.princeparadoxes.watertracker.ui.screen.main.start.StartFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.statistic.StatisticFragment;
 import com.princeparadoxes.watertracker.ui.screen.main.water.WaterRenderer;
 
@@ -63,7 +67,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.main_water_container)
     FrameLayout mWaterContainer;
     @BindView(R.id.water_gl_view)
-    GLSurfaceView mWaterView;
+    LiquidSurfaceView mWaterView;
     @BindView(R.id.main_water_touch_frame)
     View mTouchFrame;
 
@@ -140,10 +144,20 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initGlSurfaceViewIfNeeded() {
-        mWaterView.setEGLContextClientVersion(2);
-        mWaterView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
-        mWaterView.setRenderer(mWaterRenderer);
-        mWaterView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        ParticleGroup liquidShape1 = new ParticleGroup(MathHelper.createCircle(getScreenCenter(), 400, 8));
+        mWaterView.createParticles(liquidShape1);
+
+//        mWaterView.setEGLContextClientVersion(2);
+//        mWaterView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
+//        mWaterView.setRenderer(mWaterRenderer);
+//        mWaterView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+    }
+
+    private Vector2f getScreenCenter() {
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        Vector2f center = new Vector2f(size.x / 2, size.y / 2);
+        return center;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,11 +209,13 @@ public class MainActivity extends BaseActivity {
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     addWater(mRulerView.getNearestValue((int) mWaterContainer.getTranslationY()));
+                    WorldLock.getInstance().setBlockAccelerometer(true);
+                    WorldLock.getInstance().setGravity(0.0f, mWaterContainer.getTranslationY() / 100, false);
                     mWaterRenderer.setGravityWithLock(0.0f, mWaterContainer.getTranslationY() / 100);
                     ViewCompat.animate(mWaterContainer)
                             .translationY(0)
                             .setInterpolator(new BounceInterpolator())
-                            .withEndAction(() -> mWaterRenderer.restoreLastAccelerometerGravity())
+                            .withEndAction(() -> WorldLock.getInstance().setBlockAccelerometer(false))
                             .start();
                     break;
 
@@ -263,13 +279,13 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mWaterView.onResume();
+        mWaterView.resumePhysics();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mWaterView.onPause();
+        mWaterView.pausePhysics();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,10 +302,10 @@ public class MainActivity extends BaseActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void addStartScreen() {
-        FragmentSwitcherCompat.start(getSupportFragmentManager())
-                .fragment(StartFragment.newInstance())
-                .containerId(R.id.main_start_fragment_container)
-                .add();
+//        FragmentSwitcherCompat.start(getSupportFragmentManager())
+//                .fragment(StartFragment.newInstance())
+//                .containerId(R.id.main_start_fragment_container)
+//                .add();
     }
 
     private void addStatisticScreen() {

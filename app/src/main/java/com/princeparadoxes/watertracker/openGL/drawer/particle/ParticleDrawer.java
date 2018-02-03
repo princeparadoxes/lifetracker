@@ -44,7 +44,7 @@ public class ParticleDrawer extends Drawer {
     ////////////////////////////////////  INSTANCE  ///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static final float PARTICLE_SIZE = 4;
+    public static final float PARTICLE_SIZE = 1;
     public static final float HALF_PARTICLE_SIZE = PARTICLE_SIZE / 2;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,8 +118,8 @@ public class ParticleDrawer extends Drawer {
 
         final float aspectRatio = ((float) width) / ((float) height);
         mUniformMatrix = new float[]{
-                .1f, 0, 0, -1,
-                0, .1f * aspectRatio, 0, -1,
+                .01f, 0, 0, 0,
+                0, .01f * aspectRatio, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1,
         };

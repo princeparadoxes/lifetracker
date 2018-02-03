@@ -16,12 +16,16 @@ public class ProjectApplication extends Application implements Foreground.Listen
     private NetworkReceiver mNetworkReceiver;
     private ProjectComponent mComponent;
 
+    static {
+        System.loadLibrary("liquidfun");
+        System.loadLibrary("liquidfun_jni");
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        System.loadLibrary("liquidfun");
-        System.loadLibrary("liquidfun_jni");
+
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
