@@ -137,19 +137,13 @@ public class MainActivity extends BaseActivity {
 //
 //        coordinatorParams.setBehavior(swipe);
 
-//        mWaterRenderer = new WaterRenderer(this);
         initGlSurfaceViewIfNeeded();
         loadDaySumm();
     }
 
     private void initGlSurfaceViewIfNeeded() {
-        ParticleGroup liquidShape1 = new ParticleGroup(MathHelper.createCircle(getScreenCenter(), 400, 8));
-        mWaterView.createParticles(liquidShape1);
-
-//        mWaterView.setEGLContextClientVersion(2);
-//        mWaterView.setEGLConfigChooser(8, 8, 8, 8, 8, 0);
-//        mWaterView.setRenderer(mWaterRenderer);
-//        mWaterView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+//        ParticleGroup liquidShape1 = new ParticleGroup(MathHelper.createCircle(getScreenCenter(), 400, 8));
+//        mWaterView.createParticles(liquidShape1);
     }
 
     private Vector2f getScreenCenter() {
@@ -173,9 +167,6 @@ public class MainActivity extends BaseActivity {
     private void initDayNorm() {
         int dayNorm = mProjectPreferences.getCurrentDayNorm();
         mDayNormValue.setText(dayNorm + "ml");
-//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mDayNormContainer.getLayoutParams();
-//        params.topMargin = (int) ();
-//        mDayNormContainer.setLayoutParams(params);
         mWaterView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -210,7 +201,6 @@ public class MainActivity extends BaseActivity {
                     addWater(mRulerView.getNearestValue((int) mWaterContainer.getTranslationY()));
                     WorldLock.getInstance().setBlockAccelerometer(true);
                     WorldLock.getInstance().setGravity(0.0f, mWaterContainer.getTranslationY() / 100, false);
-//                    mWaterRenderer.setGravityWithLock(0.0f, mWaterContainer.getTranslationY() / 100);
                     ViewCompat.animate(mWaterContainer)
                             .translationY(0)
                             .setInterpolator(new BounceInterpolator())
@@ -246,10 +236,21 @@ public class MainActivity extends BaseActivity {
 
     private void addWater(int ml) {
         if (ml == 0) return;
-//        mWaterRenderer.addWater(ml, mProjectPreferences.getCurrentDayNorm());
+        drawWater(ml);
         mDrinkRepository.add(new Drink(ml, System.currentTimeMillis()))
                 .compose(SchedulerTransformer.getInstance())
                 .subscribe();
+    }
+
+    private void drawWater(int ml) {
+        if (ml == 0) return;
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        float aspect = ((float) ml) / mProjectPreferences.getCurrentDayNorm();
+        Vector2f center = new Vector2f(size.x / 2, size.y / 2);
+        Vector2f[] shape = MathHelper.createBox(center, size.x, size.y * aspect);
+        ParticleGroup group = new ParticleGroup(shape);
+        mWaterView.createParticles(group);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -263,8 +264,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void handleLoadDaySumm(Float daySum) {
-//        mWaterRenderer.clearWater();
-//        mWaterRenderer.addWater((int) daySum.floatValue(), mProjectPreferences.getCurrentDayNorm());
+        drawWater(daySum.intValue());
     }
 
     private void handleLoadDaySummError(Throwable throwable) {
