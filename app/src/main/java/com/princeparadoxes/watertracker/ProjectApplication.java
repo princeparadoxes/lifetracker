@@ -13,7 +13,7 @@ import timber.log.Timber;
 public class ProjectApplication extends Application implements Foreground.Listener {
 
 
-    private ProjectComponent mComponent;
+    private static ProjectComponent mComponent;
 
     static {
         System.loadLibrary("liquidfun");
@@ -54,7 +54,7 @@ public class ProjectApplication extends Application implements Foreground.Listen
         return (ProjectApplication) context.getApplicationContext();
     }
 
-    public ProjectComponent component() {
+    public static ProjectComponent component() {
         return mComponent;
     }
 

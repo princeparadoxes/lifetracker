@@ -1,10 +1,10 @@
 package com.princeparadoxes.watertracker.presentation.screen.statistic
 
 import android.arch.lifecycle.ViewModel
+import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway
 import io.reactivex.Observable
-import timber.log.Timber
 
 class StatisticViewModel(private val drinkOutputGateway: DrinkOutputGateway) : ViewModel() {
 

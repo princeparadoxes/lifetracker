@@ -36,7 +36,6 @@ class DrinkDatabaseService {
             StatisticType.WEEK -> currentTime.add(Calendar.WEEK_OF_YEAR, -1)
             StatisticType.MONTH -> currentTime.add(Calendar.MONTH, -1)
             StatisticType.YEAR -> currentTime.add(Calendar.YEAR, -1)
-            else -> throw IllegalArgumentException("Wrong statistic type")
         }
 
         val timeInMillis = currentTime.timeInMillis

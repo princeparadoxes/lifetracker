@@ -308,7 +308,7 @@ public class MainActivity extends BaseActivity {
 
     private void addStatisticScreen() {
         FragmentSwitcherCompat.start(getSupportFragmentManager())
-                .fragment(StatisticFragment.newInstance())
+                .fragment(StatisticFragment.Companion.newInstance())
                 .containerId(R.id.main_statistic_fragment_container)
                 .add();
     }

@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.princeparadoxes.watertracker.R;
+import com.princeparadoxes.watertracker.domain.entity.StatisticModel;
 
 import java.util.ArrayList;
 
@@ -72,7 +73,7 @@ public class StatisticItemViewHolder extends BindableViewHolder<StatisticModel,
         super.bindView(position, item, actionListener);
         mTextView.setText(item.getStatisticType().getText());
         setChartData(item);
-        mLogo.setImageResource(item.getIcon());
+        mLogo.setImageResource(item.getStatisticType().getIcon());
     }
 
     private void setChartData(StatisticModel statisticModel) {

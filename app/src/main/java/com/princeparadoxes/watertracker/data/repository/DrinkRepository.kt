@@ -7,7 +7,7 @@ import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
 import com.princeparadoxes.watertracker.domain.interactor.DrinkInputGateway
-import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticModel
+import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import io.reactivex.Observable
 
 class DrinkRepository(
