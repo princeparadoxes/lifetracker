@@ -4,6 +4,7 @@ import com.princeparadoxes.watertracker.data.source.db.model.DrinkSchema
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
 import io.reactivex.Observable
 import io.realm.Realm
+import io.realm.RealmResults
 import java.util.*
 
 class DrinkDatabaseService {
@@ -22,7 +23,12 @@ class DrinkDatabaseService {
         return drinkSchema
     }
 
-    fun getAllByPeriod(statisticType: StatisticType): Observable<Int> {
+    fun getStatisticByPeriod(statisticType: StatisticType): Observable<Int> {
+        return getDrinksByPeriod(statisticType)
+                .map { it.map { it.size }.sum() }
+    }
+
+    fun getDrinksByPeriod(statisticType: StatisticType): Observable<RealmResults<DrinkSchema>> {
         val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         currentTime.timeZone = TimeZone.getDefault()
         currentTime.set(Calendar.HOUR, 0)
@@ -45,7 +51,7 @@ class DrinkDatabaseService {
                 .greaterThan("timestamp", timeInMillis)
                 .findAll()
                 .asFlowable()
-                .map { it.map { it.size }.sum() }
+                .map { it!! }
                 .toObservable()
     }
 

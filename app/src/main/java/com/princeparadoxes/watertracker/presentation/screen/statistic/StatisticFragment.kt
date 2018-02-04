@@ -161,7 +161,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         super.onStart()
         unsubscribeOnStop(
                 statisticViewModel.getStatistic().subscribe({ this.handleLoadAllStatistic(it) }, { Timber.e(it) }),
-                statisticViewModel.getDayNorm().subscribe({ this.handleLoadDaySum(it) }, { Timber.e(it) }),
+                statisticViewModel.getDaySum().subscribe({ this.handleLoadDaySum(it) }, { Timber.e(it) }),
                 statisticViewModel.getLast().subscribe({ this.handleLoadLastDrink(it) }, { Timber.e(it) })
         )
     }

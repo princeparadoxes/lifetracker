@@ -16,26 +16,31 @@ class DrinkRepository(
 ) : DrinkInputGateway {
 
     override fun getDaySum(): Observable<Int> {
-        return mDrinkDatabaseService.getAllByPeriod(StatisticType.DAY)
+        return mDrinkDatabaseService.getStatisticByPeriod(StatisticType.DAY)
     }
 
     override fun addWater(ml: Int): Observable<Drink> {
         return Observable.just(DrinkSchema(ml, System.currentTimeMillis()))
                 .map({ mDrinkDatabaseService.add(it) })
-                .map({ DrinkMapper.mapFromDBDrink(it) })
+                .map({ DrinkMapper.mapFromDrinkSchema(it) })
     }
 
     override fun getLast(): Observable<Drink> {
         return mDrinkDatabaseService.getLast()
-                .map { DrinkMapper.mapFromDBDrink(it) }
+                .map { DrinkMapper.mapFromDrinkSchema(it) }
     }
 
     override fun getStatisticByPeriod(statisticType: StatisticType): Observable<StatisticModel> {
-        return mDrinkDatabaseService.getAllByPeriod(statisticType)
+        return mDrinkDatabaseService.getStatisticByPeriod(statisticType)
                 .map { result ->
                     val normValue = statisticType.countDays * mProjectPreferences.currentDayNorm
                     StatisticModel(statisticType, result.toFloat(), normValue.toFloat())
                 }
+    }
+
+    override fun getDrinksByPeriod(statisticType: StatisticType): Observable<List<Drink>> {
+        return mDrinkDatabaseService.getDrinksByPeriod(statisticType)
+                .map { it.map { DrinkMapper.mapFromDrinkSchema(it) } }
     }
 
     fun del(timestamp: Long): Observable<Boolean> {

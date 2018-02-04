@@ -11,5 +11,6 @@ interface DrinkInputGateway {
     fun getDaySum(): Observable<Int>
     fun getLast(): Observable<Drink>
     fun getStatisticByPeriod(statisticType: StatisticType): Observable<StatisticModel>
+    fun getDrinksByPeriod(statisticType: StatisticType): Observable<List<Drink>>
 
 }

@@ -8,7 +8,7 @@ import io.reactivex.Observable
 
 class StatisticViewModel(private val drinkOutputGateway: DrinkOutputGateway) : ViewModel() {
 
-    fun getDayNorm(): Observable<Int> {
+    fun getDaySum(): Observable<Int> {
         return drinkOutputGateway.getDaySum()
                 .onErrorReturn { 0 }
     }

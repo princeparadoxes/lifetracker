@@ -5,11 +5,11 @@ import com.princeparadoxes.watertracker.domain.entity.Drink
 
 object DrinkMapper {
 
-    fun mapFromDrink(drink: Drink): DrinkSchema {
+    fun mapToDrinkSchema(drink: Drink): DrinkSchema {
         return DrinkSchema(drink.size, drink.timestamp)
     }
 
-    fun mapFromDBDrink(drinkSchema: DrinkSchema): Drink {
+    fun mapFromDrinkSchema(drinkSchema: DrinkSchema): Drink {
         return Drink(drinkSchema.size, drinkSchema.timestamp)
     }
 }
