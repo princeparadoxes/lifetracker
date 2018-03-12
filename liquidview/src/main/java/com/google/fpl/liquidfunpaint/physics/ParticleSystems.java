@@ -16,7 +16,7 @@ public class ParticleSystems extends HashMap<String, DrawableParticleSystem> {
     public static final String DEFAULT_PARTICLE_SYSTEM = "default_particle_system";
 
     public static final int MAX_PARTICLE_COUNT = 10000;
-    public static final float PARTICLE_RADIUS = 0.16f;
+    public static final float PARTICLE_RADIUS = 0.05f;
     public static final float PARTICLE_REPULSIVE_STRENGTH = 0.5f;
 
     private static ParticleSystems sInstance = new ParticleSystems();

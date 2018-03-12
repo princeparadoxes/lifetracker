@@ -17,6 +17,7 @@ import com.daimajia.swipe.SwipeLayout
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.base.BaseFragment
+import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.utils.AnimatorUtils
 import com.princeparadoxes.watertracker.utils.DimenTools
@@ -70,7 +71,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
                 .inject(this)
     }
 
-    override fun layoutId(): Int  = R.layout.fragment_statistic
+    override fun layoutId(): Int = R.layout.fragment_statistic
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -160,17 +161,25 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     override fun onStart() {
         super.onStart()
         unsubscribeOnStop(
-                statisticViewModel.getStatistic().subscribe({ this.handleLoadAllStatistic(it) }, { Timber.e(it) }),
-                statisticViewModel.getDaySum().subscribe({ this.handleLoadDaySum(it) }, { Timber.e(it) }),
-                statisticViewModel.getLast().subscribe({ this.handleLoadLastDrink(it) }, { Timber.e(it) })
+                statisticViewModel.observeStatistic().subscribe({ this.handleStatistic(it) }, { Timber.e(it) }),
+                statisticViewModel.observeDaySum().subscribe({ this.handleDaySum(it) }, { Timber.e(it) }),
+                statisticViewModel.observeLastDrink().subscribe({ this.handleLastDrink(it) }, { Timber.e(it) }),
+                statisticViewModel.observeDrinksByPeriod().subscribe({ this.handleDrinksByPeriod(it) }, { Timber.e(it) }),
+                statisticViewModel.observeDetailStatistic().subscribe({ this.handleAverage(it) }, { Timber.e(it) })
         )
     }
 
-    private fun handleLoadAllStatistic(statisticModels: List<StatisticModel>) {
+    private fun handleAverage(it: List<Int>) {
+        chartView.bindView(
+                it.mapIndexed { index, _ -> index.toFloat() }.toFloatArray(),
+                it.map { it.toFloat() }.toFloatArray())
+    }
+
+    private fun handleStatistic(statisticModels: List<StatisticModel>) {
         statisticAdapter.setData(statisticModels)
     }
 
-    private fun handleLoadDaySum(daySum: Int) {
+    private fun handleDaySum(daySum: Int) {
         val builder = SpannableStringBuilder()
         builder.append(SpannableUtils.getAbsoluteSizeSpan(context, "Day", 12))
                 .append("\n")
@@ -179,7 +188,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         headerStartText.text = builder
     }
 
-    private fun handleLoadLastDrink(lastByDay: Int) {
+    private fun handleLastDrink(lastByDay: Int) {
         val builder = SpannableStringBuilder()
         builder.append(SpannableUtils.getAbsoluteSizeSpan(context, "Last", 12))
                 .append("\n")
@@ -187,14 +196,22 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         headerEndText.text = builder
     }
 
+    private fun handleDrinksByPeriod(drinks: List<Drink>) {
+        if (drinks.isEmpty()) return
+//        chartView.bindView(
+//                drinks.mapIndexed { index, drink -> index.toFloat() }.toFloatArray(),
+//                drinks.map { it.size.toFloat() }.toFloatArray())
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // TYPE PICKER
     ///////////////////////////////////////////////////////////////////////////
 
     override fun onCurrentItemChanged(viewHolder: StatisticItemViewHolder, adapterPosition: Int) {
-        chartView.bindView(
-                floatArrayOf(0f, 2f, 1.4f, 4f, 3.5f, 4.3f, 2f, 4f, 6f),
-                floatArrayOf(0f, 2f, 1.4f, 4f, 3.5f, 4.3f, 2f, 4f, 6f))
+//        chartView.bindView(
+//                floatArrayOf(0f, 2f, 1.4f, 4f, 3.5f, 4.3f, 2f, 4f, 6f),
+//                floatArrayOf(0f, 2f, 1.4f, 4f, 3.5f, 4.3f, 2f, 4f, 6f))
+        statisticViewModel.changeDrinkPeriod(statisticAdapter.getItem(adapterPosition).statisticType)
         viewHolder.onChanged()
     }
 

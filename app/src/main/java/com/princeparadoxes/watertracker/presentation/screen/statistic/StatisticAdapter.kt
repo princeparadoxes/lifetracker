@@ -7,6 +7,7 @@ import android.view.ViewGroup
 
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
+import com.princeparadoxes.watertracker.utils.toCalendar
 
 import java.util.ArrayList
 
@@ -22,10 +23,14 @@ class StatisticAdapter : RecyclerView.Adapter<StatisticItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: StatisticItemViewHolder, position: Int) {
+        val w = 3L;
+        w.toCalendar()
         holder.bindView(position, data[position], null)
     }
 
     override fun getItemCount(): Int = data.size
+
+    fun getItem(position: Int) = data[position]
 
     fun setData(data: List<StatisticModel>): StatisticAdapter {
         this.data.clear()
