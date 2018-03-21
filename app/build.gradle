@@ -144,6 +144,13 @@ dependencies {
     implementation deps.support.support_annotations
     implementation deps.support.cardview
 
+    // RxBinding
+    implementation deps.rxbinding.core
+    implementation deps.rxbinding.supportV4
+    implementation deps.rxbinding.appcompatV7
+    implementation deps.rxbinding.design
+    implementation deps.rxbinding.recycler
+
     // DI
     implementation deps.dagger.runtime
     kapt deps.dagger.compiler
