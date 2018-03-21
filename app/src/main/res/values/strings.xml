@@ -21,6 +21,9 @@
 
     <string name="statistic_header_open">Stats</string>
     <string name="statistic_header_closed">Stats</string>
+    <string name="statistic_header_settings">Setting</string>
+    <string name="statistic_header_report">Report</string>
+    <string name="statistic_header_revert">Revert</string>
 
     <string name="statistic_type_day">Day</string>
     <string name="statistic_type_week">Week</string>

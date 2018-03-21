@@ -1,8 +1,7 @@
 package com.princeparadoxes.watertracker.presentation.screen.statistic
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -10,8 +9,9 @@ import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
+import android.widget.ImageView
 import android.widget.TextView
 import com.daimajia.swipe.SwipeLayout
 import com.princeparadoxes.watertracker.ProjectApplication
@@ -19,12 +19,11 @@ import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.base.BaseFragment
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
-import com.princeparadoxes.watertracker.utils.AnimatorUtils
 import com.princeparadoxes.watertracker.utils.DimenTools
 import com.princeparadoxes.watertracker.utils.SpannableUtils
+import com.princeparadoxes.watertracker.utils.safeSubscribe
 import com.yarolegovich.discretescrollview.DiscreteScrollView
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer
-import timber.log.Timber
 import javax.inject.Inject
 
 class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListener<StatisticItemViewHolder>, DiscreteScrollView.ScrollStateChangeListener<StatisticItemViewHolder> {
@@ -43,6 +42,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     private val headerView by lazy { view!!.findViewById(R.id.statistic_header) as SwipeLayout }
     private val headerStartText by lazy { view!!.findViewById(R.id.statistic_header_start) as TextView }
     private val headerCenterText by lazy { view!!.findViewById(R.id.statistic_header_center) as TextView }
+    private val headerCenterTextImage by lazy { view!!.findViewById(R.id.statistic_header_center_image) as ImageView }
     private val headerEndText by lazy { view!!.findViewById(R.id.statistic_header_end) as TextView }
     private val typePicker by lazy { view!!.findViewById(R.id.statistic_type_view) as DiscreteScrollView }
     private val chartView by lazy { view!!.findViewById(R.id.statistic_forecast_view) as StatisticChartView }
@@ -118,19 +118,14 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         createHeaderAnimator(R.string.statistic_header_closed, chevronDownDrawable).start()
     }
 
-    private fun createHeaderAnimator(text: Int, drawable: Drawable?): AnimatorSet {
-        val set = AnimatorSet()
-        val out = AnimatorUtils.alphaAnimator(1, 0, headerCenterText, 200, object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                headerCenterText.setText(text)
-                headerCenterText.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
-            }
-        })
-        out.interpolator = AccelerateInterpolator()
-        val `in` = AnimatorUtils.alphaAnimator(0, 1, headerCenterText, 200)
-        `in`.interpolator = DecelerateInterpolator()
-        set.playSequentially(out, `in`)
-        return set
+    private fun createHeaderAnimator(text: Int, drawable: Drawable?): Animator {
+        return when (Math.round(headerCenterTextImage.rotation) == 180) {
+            true -> ObjectAnimator.ofFloat(headerCenterTextImage, View.ROTATION, 180F, 0F)
+            false -> ObjectAnimator.ofFloat(headerCenterTextImage, View.ROTATION, 0F, 180F)
+        }.apply {
+            duration = 600
+            interpolator = BounceInterpolator()
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -161,11 +156,11 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     override fun onStart() {
         super.onStart()
         unsubscribeOnStop(
-                statisticViewModel.observeStatistic().subscribe({ this.handleStatistic(it) }, { Timber.e(it) }),
-                statisticViewModel.observeDaySum().subscribe({ this.handleDaySum(it) }, { Timber.e(it) }),
-                statisticViewModel.observeLastDrink().subscribe({ this.handleLastDrink(it) }, { Timber.e(it) }),
-                statisticViewModel.observeDrinksByPeriod().subscribe({ this.handleDrinksByPeriod(it) }, { Timber.e(it) }),
-                statisticViewModel.observeDetailStatistic().subscribe({ this.handleAverage(it) }, { Timber.e(it) })
+                statisticViewModel.observeStatistic().safeSubscribe({ this.handleStatistic(it) }),
+                statisticViewModel.observeDaySum().safeSubscribe({ this.handleDaySum(it) }),
+                statisticViewModel.observeLastDrink().safeSubscribe({ this.handleLastDrink(it) }),
+                statisticViewModel.observeDrinksByPeriod().safeSubscribe({ this.handleDrinksByPeriod(it) }),
+                statisticViewModel.observeDetailStatistic().safeSubscribe({ this.handleAverage(it) })
         )
     }
 

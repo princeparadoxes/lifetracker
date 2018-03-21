@@ -2,6 +2,8 @@ package com.princeparadoxes.watertracker.utils
 
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
+import io.reactivex.disposables.Disposable
+import timber.log.Timber
 import java.util.*
 
 
@@ -15,4 +17,8 @@ fun Long.toCalendar() : Calendar {
 
 fun Observable<Any>.toTransformer() : ObservableTransformer<Any, Any> {
     return ObservableTransformer { this }
+}
+
+fun <T> Observable<T>.safeSubscribe(action: (T) -> Unit): Disposable {
+    return this.subscribe({ action.invoke(it) }, { Timber.e(it) })
 }

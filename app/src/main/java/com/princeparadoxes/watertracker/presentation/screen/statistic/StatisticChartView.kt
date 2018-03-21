@@ -6,7 +6,9 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -21,24 +23,28 @@ class StatisticChartView(context: Context, attrs: AttributeSet) : LinearLayout(c
 
     init {
         LayoutInflater.from(context).inflate(R.layout.statistic_chart_view, this)
-        chartView.description = null
-        chartView.legend.isEnabled = false
+        chartView.apply {
+            description = null
+            legend.isEnabled = false
+            isDoubleTapToZoomEnabled = false
+        }
         chartView.xAxis.apply {
             setDrawGridLines(false)
             textColor = Color.TRANSPARENT
-            axisLineColor = Color.TRANSPARENT
+            axisLineColor = Color.WHITE
+            position = XAxis.XAxisPosition.BOTTOM
         }
         chartView.axisLeft.apply {
             setDrawGridLines(false)
             textColor = Color.WHITE
-            axisMaximum = 2000F
+            axisMaximum = 2200F
             axisMinimum = 0F
-            axisLineColor = Color.TRANSPARENT
+            axisLineColor = Color.WHITE
         }
         chartView.axisRight.apply {
             setDrawGridLines(false)
             textColor = Color.TRANSPARENT
-            axisMaximum = 2000F
+            axisMaximum = 2200F
             axisMinimum = 0F
             axisLineColor = Color.TRANSPARENT
         }
@@ -49,15 +55,17 @@ class StatisticChartView(context: Context, attrs: AttributeSet) : LinearLayout(c
             throw IllegalArgumentException("xValues length must be equals yValues length")
         }
         val entries = xValues.indices.map { BarEntry(xValues[it], yValues[it]) }
-        val dataSet = BarDataSet(entries, "")
-        dataSet.setDrawIcons(false)
-        dataSet.valueTextColor = Color.TRANSPARENT
-        dataSet.color = Color.WHITE
+        val dataSet = BarDataSet(entries, "").apply {
+            setDrawIcons(false)
+            valueTextColor = Color.TRANSPARENT
+            color = Color.WHITE
+        }
 
         val data = BarData(dataSet)
         data.isHighlightEnabled = false
         chartView.data = data
         chartView.invalidate()
+        chartView.animateY(300)
     }
 
 }

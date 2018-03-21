@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_statistic"
     android:layout_width="match_parent"
@@ -14,17 +13,12 @@
         android:id="@+id/statistic_top_border"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/white"/>
+        android:background="@android:color/white" />
 
     <com.daimajia.swipe.SwipeLayout
         android:id="@+id/statistic_header"
         android:layout_width="match_parent"
         android:layout_height="64dp">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/holo_red_dark"/>
 
 
         <LinearLayout
@@ -32,7 +26,73 @@
             android:layout_height="64dp"
             android:baselineAligned="false"
             android:orientation="horizontal"
+            android:weightSum="3">
 
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:drawableTint="@android:color/white"
+                    android:drawableTop="@drawable/ic_settings_black_24dp"
+                    android:text="@string/statistic_header_settings"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:drawableTint="@android:color/white"
+                    android:drawableTop="@drawable/ic_email_black_24dp"
+                    android:text="@string/statistic_header_report"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:drawableTint="@android:color/white"
+                    android:drawableTop="@drawable/ic_replay_black_24dp"
+                    android:text="@string/statistic_header_revert"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
             android:weightSum="3">
 
             <FrameLayout
@@ -49,26 +109,33 @@
                     android:gravity="center_horizontal"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
-                    tools:text="Day norm"/>
+                    tools:text="Day norm" />
 
             </FrameLayout>
 
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/statistic_header_center_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_up"/>
 
                 <TextView
                     android:id="@+id/statistic_header_center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawableTop="@drawable/ic_chevron_up"
                     android:text="@string/statistic_header_open"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"/>
-            </FrameLayout>
+                    android:textSize="20sp" />
+            </LinearLayout>
 
 
             <FrameLayout
@@ -85,7 +152,7 @@
                     android:gravity="center_horizontal"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
-                    tools:text="Last"/>
+                    tools:text="Last" />
             </FrameLayout>
 
         </LinearLayout>
@@ -99,12 +166,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="24dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <com.yarolegovich.discretescrollview.DiscreteScrollView
         android:id="@+id/statistic_type_view"
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom" />
 
 </LinearLayout>
