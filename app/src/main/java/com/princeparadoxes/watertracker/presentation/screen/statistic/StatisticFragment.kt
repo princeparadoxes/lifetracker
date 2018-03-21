@@ -14,6 +14,8 @@ import android.view.animation.Interpolator
 import android.widget.ImageView
 import android.widget.TextView
 import com.daimajia.swipe.SwipeLayout
+import com.jakewharton.rxbinding2.support.design.widget.RxSwipeDismissBehavior
+import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.base.BaseFragment
@@ -215,7 +217,6 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     }
 
     override fun onScrollEnd(currentItemHolder: StatisticItemViewHolder, adapterPosition: Int) {
-
     }
 
     override fun onScroll(scrollPosition: Float,

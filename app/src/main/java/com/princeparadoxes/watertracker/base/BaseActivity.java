@@ -35,7 +35,6 @@ public abstract class BaseActivity extends DebugBaseActivity {
 
         onViewSetup();
 
-        ButterKnife.bind(this);
     }
 
     protected void onExtractParams(Bundle params) {
