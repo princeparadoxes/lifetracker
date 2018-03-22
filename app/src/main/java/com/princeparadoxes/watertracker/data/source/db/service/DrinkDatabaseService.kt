@@ -68,8 +68,16 @@ class DrinkDatabaseService {
 
     fun removeLast(): Int {
         var lastDrinkSize = 0
+        val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        currentTime.timeZone = TimeZone.getDefault()
+        currentTime.set(Calendar.HOUR, 0)
+        currentTime.set(Calendar.MINUTE, 0)
+        currentTime.set(Calendar.SECOND, 0)
+        currentTime.set(Calendar.MILLISECOND, 0)
+
         Realm.getDefaultInstance().executeTransaction {
             it.where(DrinkSchema::class.java)
+                    .greaterThan("timestamp", currentTime.timeInMillis)
                     .findAllSorted("timestamp")
                     .last()?.run {
                         lastDrinkSize = size

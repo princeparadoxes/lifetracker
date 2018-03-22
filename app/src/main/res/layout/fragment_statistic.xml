@@ -128,7 +128,7 @@
                     android:id="@+id/statistic_header_center_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_chevron_up"/>
+                    android:src="@drawable/ic_chevron_down"/>
 
                 <TextView
                     android:id="@+id/statistic_header_center"
