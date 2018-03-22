@@ -48,7 +48,16 @@ class StatisticViewModel(private val drinkOutputGateway: DrinkOutputGateway) : B
         return clickObservable
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .switchMap { drinkOutputGateway.removeLastDrink() }
-                .subscribeOn(Schedulers.io())
+    }
+
+    fun observeReport(clickObservable: Observable<Any>): Observable<Any> {
+        return clickObservable
+                .throttleFirst(1, TimeUnit.SECONDS)
+    }
+
+    fun observeSetting(clickObservable: Observable<Any>): Observable<Any> {
+        return clickObservable
+                .throttleFirst(1, TimeUnit.SECONDS)
     }
 
     fun observeDetailStatistic(): Observable<List<Int>> {

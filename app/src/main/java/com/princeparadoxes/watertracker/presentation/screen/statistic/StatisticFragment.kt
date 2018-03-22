@@ -22,6 +22,7 @@ import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.base.BaseFragment
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
+import com.princeparadoxes.watertracker.utils.ApplicationSwitcher
 import com.princeparadoxes.watertracker.utils.DimenTools
 import com.princeparadoxes.watertracker.utils.SpannableUtils
 import com.princeparadoxes.watertracker.utils.safeSubscribe
@@ -165,12 +166,18 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         super.onStart()
         unsubscribeOnStop(
                 statisticViewModel.observeDeleteWater(RxView.clicks(headerRevert)).safeSubscribe { handleDeleteWater(it) },
+                statisticViewModel.observeReport(RxView.clicks(headerReport)).safeSubscribe { handleReport() },
+                statisticViewModel.observeSetting(RxView.clicks(headerSettings)).safeSubscribe {  },
                 statisticViewModel.observeStatistic().safeSubscribe({ this.handleStatistic(it) }),
                 statisticViewModel.observeDaySum().safeSubscribe({ this.handleDaySum(it) }),
                 statisticViewModel.observeLastDrink().safeSubscribe({ this.handleLastDrink(it) }),
                 statisticViewModel.observeDrinksByPeriod().safeSubscribe({ this.handleDrinksByPeriod(it) }),
                 statisticViewModel.observeDetailStatistic().safeSubscribe({ this.handleAverage(it) })
         )
+    }
+
+    private fun handleReport() {
+        ApplicationSwitcher.start(context).openEmailApplication("", "I have a problem")
     }
 
     private fun handleDeleteWater(it: Int) {
