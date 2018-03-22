@@ -45,7 +45,9 @@ class DrinkRepository(
                 .map { it.map { DrinkMapper.mapFromDrinkSchema(it) } }
     }
 
-
+    override fun removeLastDrink(): Observable<Int> {
+        return Observable.just(drinkDatabaseService.removeLast())
+    }
 
     fun del(timestamp: Long): Observable<Boolean> {
         return Observable.just(drinkDatabaseService.deleteAllWithTimestamp(timestamp)!!)

@@ -6,9 +6,11 @@ import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class StatisticViewModel(private val drinkOutputGateway: DrinkOutputGateway) : BaseViewModel() {
 
@@ -42,7 +44,14 @@ class StatisticViewModel(private val drinkOutputGateway: DrinkOutputGateway) : B
                 .map { it.toList() }
     }
 
-    fun observeDetailStatistic() : Observable<List<Int>>{
+    fun observeDeleteWater(clickObservable: Observable<Any>): Observable<Int> {
+        return clickObservable
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .switchMap { drinkOutputGateway.removeLastDrink() }
+                .subscribeOn(Schedulers.io())
+    }
+
+    fun observeDetailStatistic(): Observable<List<Int>> {
         return viewState.changeDrinksPeriodSubject
                 .switchMap { drinkOutputGateway.observeDetailStatistic(it) }
     }

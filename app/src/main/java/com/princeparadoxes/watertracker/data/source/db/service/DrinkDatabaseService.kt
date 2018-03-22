@@ -65,4 +65,18 @@ class DrinkDatabaseService {
         Realm.getDefaultInstance().commitTransaction()
         return result
     }
+
+    fun removeLast(): Int {
+        var lastDrinkSize = 0
+        Realm.getDefaultInstance().executeTransaction {
+            it.where(DrinkSchema::class.java)
+                    .findAllSorted("timestamp")
+                    .last()?.run {
+                        lastDrinkSize = size
+                        deleteFromRealm()
+                    }
+
+        }
+        return lastDrinkSize
+    }
 }

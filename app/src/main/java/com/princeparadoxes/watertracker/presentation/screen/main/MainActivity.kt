@@ -14,6 +14,7 @@ import android.view.animation.BounceInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.fpl.liquidfunpaint.physics.WorldLock
+import com.google.fpl.liquidfunpaint.physics.actions.ParticleEraser
 import com.google.fpl.liquidfunpaint.physics.actions.ParticleGroup
 import com.google.fpl.liquidfunpaint.util.MathHelper
 import com.google.fpl.liquidfunpaint.util.Vector2f
@@ -202,6 +203,15 @@ class MainActivity : BaseActivity() {
 
     private fun loadDaySum() {
         disposable.add(drinkOutputGateway.getDaySum().firstOrError().safeSubscribe({ drawWater(it) }))
+        disposable.add(drinkOutputGateway.observeRemoveDrinks().safeSubscribe({ redrawWater(it) }))
+    }
+
+    private fun redrawWater(it: Int) {
+        val size = Point().also { windowManager.defaultDisplay.getSize(it) }
+        val center = Vector2f((size.x / 2).toFloat(), (size.y / 2).toFloat())
+        val shape = MathHelper.createBox(center, size.x.toFloat(), size.y.toFloat())
+        waterView.eraseParticles(ParticleEraser(shape))
+        drawWater(it)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

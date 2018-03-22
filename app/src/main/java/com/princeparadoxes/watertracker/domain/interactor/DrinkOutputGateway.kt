@@ -13,6 +13,7 @@ interface DrinkOutputGateway {
     fun observeStatistic(statisticType: StatisticType): Observable<StatisticModel>
     fun observeDetailStatistic(statisticType: StatisticType): Observable<List<Int>>
     fun getDrinksByPeriod(statisticType: StatisticType): Observable<List<Drink>>
-
+    fun removeLastDrink(): Observable<Int>
+    fun observeRemoveDrinks(): Observable<Int>
 
 }

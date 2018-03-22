@@ -7,10 +7,14 @@ import com.princeparadoxes.watertracker.utils.toCalendar
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.PublishSubject
 
 class DrinkInteractor(
         private val drinkInputGateway: DrinkInputGateway
 ) : DrinkOutputGateway {
+
+    val removeDrinkSubject = PublishSubject.create<Any>()
 
     override fun addWater(ml: Int): Observable<Drink> {
         return drinkInputGateway.addWater(ml)
@@ -22,6 +26,17 @@ class DrinkInteractor(
 
     override fun getLast(): Observable<Drink> {
         return drinkInputGateway.getLast();
+    }
+
+    override fun removeLastDrink(): Observable<Int> {
+        return drinkInputGateway.removeLastDrink()
+                .doOnNext { if (it > 0) removeDrinkSubject.onNext(Any()) }
+    }
+
+    override fun observeRemoveDrinks(): Observable<Int> {
+        return removeDrinkSubject
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapSingle { drinkInputGateway.getDaySum().firstOrError() }
     }
 
     override fun observeStatistic(statisticType: StatisticType): Observable<StatisticModel> {

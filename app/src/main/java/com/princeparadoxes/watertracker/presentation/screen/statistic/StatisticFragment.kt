@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.daimajia.swipe.SwipeLayout
 import com.jakewharton.rxbinding2.support.design.widget.RxSwipeDismissBehavior
 import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView
+import com.jakewharton.rxbinding2.view.RxView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.base.BaseFragment
@@ -42,6 +43,9 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     ///////////////////////////////////////////////////////////////////////////
 
     private val headerView by lazy { view!!.findViewById(R.id.statistic_header) as SwipeLayout }
+    private val headerSettings by lazy { view!!.findViewById(R.id.statistic_header_settings) as TextView }
+    private val headerReport by lazy { view!!.findViewById(R.id.statistic_header_report) as TextView }
+    private val headerRevert by lazy { view!!.findViewById(R.id.statistic_header_revert) as TextView }
     private val headerStartText by lazy { view!!.findViewById(R.id.statistic_header_start) as TextView }
     private val headerCenterText by lazy { view!!.findViewById(R.id.statistic_header_center) as TextView }
     private val headerCenterTextImage by lazy { view!!.findViewById(R.id.statistic_header_center_image) as ImageView }
@@ -84,14 +88,14 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     }
 
     private fun initTypePicker() {
-        typePicker.adapter = statisticAdapter
-        typePicker.setOnItemChangedListener(this)
-        typePicker.setScrollStateChangeListener(this)
-        typePicker.scrollToPosition(0)
-        typePicker.setItemTransitionTimeMillis(150)
-        typePicker.setItemTransformer(ScaleTransformer.Builder()
-                .setMinScale(0.8f)
-                .build())
+        typePicker.apply {
+            adapter = statisticAdapter
+            setOnItemChangedListener(this@StatisticFragment)
+            setScrollStateChangeListener(this@StatisticFragment)
+            scrollToPosition(0)
+            setItemTransitionTimeMillis(150)
+            setItemTransformer(ScaleTransformer.Builder().setMinScale(0.8f).build())
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -99,8 +103,10 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     ///////////////////////////////////////////////////////////////////////////
 
     private fun initHeader() {
-        headerView.isLeftSwipeEnabled = true
-        headerView.isRightSwipeEnabled = true
+        headerView.apply {
+            isLeftSwipeEnabled = true
+            isRightSwipeEnabled = true
+        }
     }
 
     private fun changeHeaderState(newState: Int) {
@@ -158,12 +164,16 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     override fun onStart() {
         super.onStart()
         unsubscribeOnStop(
+                statisticViewModel.observeDeleteWater(RxView.clicks(headerRevert)).safeSubscribe { handleDeleteWater(it) },
                 statisticViewModel.observeStatistic().safeSubscribe({ this.handleStatistic(it) }),
                 statisticViewModel.observeDaySum().safeSubscribe({ this.handleDaySum(it) }),
                 statisticViewModel.observeLastDrink().safeSubscribe({ this.handleLastDrink(it) }),
                 statisticViewModel.observeDrinksByPeriod().safeSubscribe({ this.handleDrinksByPeriod(it) }),
                 statisticViewModel.observeDetailStatistic().safeSubscribe({ this.handleAverage(it) })
         )
+    }
+
+    private fun handleDeleteWater(it: Int) {
     }
 
     private fun handleAverage(it: List<Int>) {
@@ -205,9 +215,6 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     ///////////////////////////////////////////////////////////////////////////
 
     override fun onCurrentItemChanged(viewHolder: StatisticItemViewHolder, adapterPosition: Int) {
-//        chartView.bindView(
-//                floatArrayOf(0f, 2f, 1.4f, 4f, 3.5f, 4.3f, 2f, 4f, 6f),
-//                floatArrayOf(0f, 2f, 1.4f, 4f, 3.5f, 4.3f, 2f, 4f, 6f))
         statisticViewModel.changeDrinkPeriod(statisticAdapter.getItem(adapterPosition).statisticType)
         viewHolder.onChanged()
     }
