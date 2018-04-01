@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.base;
+package com.princeparadoxes.watertracker.presentation.base;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -11,8 +11,6 @@ import com.princeparadoxes.watertracker.ProjectComponent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends DebugBaseActivity {
 

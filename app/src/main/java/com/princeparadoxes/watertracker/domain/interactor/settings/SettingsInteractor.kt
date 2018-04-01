@@ -1,7 +1,7 @@
 package com.princeparadoxes.watertracker.domain.interactor.settings
 
 import com.princeparadoxes.watertracker.domain.entity.Gender
-import com.princeparadoxes.watertracker.utils.safeSubscribe
+import com.princeparadoxes.watertracker.safeSubscribe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers

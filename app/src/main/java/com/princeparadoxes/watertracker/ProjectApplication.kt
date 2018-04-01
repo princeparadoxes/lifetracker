@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate
 
-import com.princeparadoxes.watertracker.base.lifecycle.Foreground
+import com.princeparadoxes.watertracker.presentation.base.lifecycle.Foreground
 import com.squareup.leakcanary.LeakCanary
 
 import io.realm.Realm

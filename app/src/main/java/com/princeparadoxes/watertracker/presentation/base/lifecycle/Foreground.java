@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.base.lifecycle;
+package com.princeparadoxes.watertracker.presentation.base.lifecycle;
 
 import android.app.Activity;
 import android.app.Application;

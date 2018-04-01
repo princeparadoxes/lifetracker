@@ -2,7 +2,7 @@ package com.princeparadoxes.watertracker;
 
 import android.app.Application;
 
-import com.princeparadoxes.watertracker.base.lifecycle.Foreground;
+import com.princeparadoxes.watertracker.presentation.base.lifecycle.Foreground;
 import com.princeparadoxes.watertracker.domain.DomainModule;
 
 import dagger.Module;

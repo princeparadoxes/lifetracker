@@ -4,7 +4,7 @@ import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
 import com.princeparadoxes.watertracker.domain.entity.Gender
-import com.princeparadoxes.watertracker.utils.toCalendar
+import com.princeparadoxes.watertracker.toCalendar
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single

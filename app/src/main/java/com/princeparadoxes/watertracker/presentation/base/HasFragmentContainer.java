@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.base;
+package com.princeparadoxes.watertracker.presentation.base;
 
 public interface HasFragmentContainer {
     int fragmentsContainerId();

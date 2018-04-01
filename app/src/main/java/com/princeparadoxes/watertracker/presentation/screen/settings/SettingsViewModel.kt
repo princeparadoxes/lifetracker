@@ -3,11 +3,11 @@ package com.princeparadoxes.watertracker.presentation.screen.settings
 import com.jakewharton.rxbinding2.InitialValueObservable
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
 import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.base.BaseViewModel
-import com.princeparadoxes.watertracker.base.BaseViewModelFactory
+import com.princeparadoxes.watertracker.presentation.base.BaseViewModel
+import com.princeparadoxes.watertracker.presentation.base.BaseViewModelFactory
 import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
-import com.princeparadoxes.watertracker.utils.zipToPair
+import com.princeparadoxes.watertracker.zipToPair
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 

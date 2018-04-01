@@ -2,12 +2,11 @@ package com.princeparadoxes.watertracker.presentation.screen.statistic
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
-import com.princeparadoxes.watertracker.utils.toCalendar
+import com.princeparadoxes.watertracker.toCalendar
 
 import java.util.ArrayList
 

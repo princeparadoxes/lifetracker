@@ -1,6 +1,6 @@
 package com.princeparadoxes.watertracker.presentation.screen.statistic
 
-import com.princeparadoxes.watertracker.base.BaseViewModel
+import com.princeparadoxes.watertracker.presentation.base.BaseViewModel
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType

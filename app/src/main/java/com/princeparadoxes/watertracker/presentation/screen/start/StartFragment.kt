@@ -7,10 +7,10 @@ import android.transition.Fade
 import android.widget.TextView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.base.BaseFragment
-import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat
+import com.princeparadoxes.watertracker.presentation.base.BaseFragment
+import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.settings.SettingsFragment
-import com.princeparadoxes.watertracker.utils.AnimatorUtils
+import com.princeparadoxes.watertracker.presentation.utils.AnimatorUtils
 
 class StartFragment : BaseFragment() {
 

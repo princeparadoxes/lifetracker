@@ -21,17 +21,18 @@ import com.google.fpl.liquidfunpaint.util.Vector2f
 import com.mycardboarddreams.liquidsurface.LiquidSurfaceView
 import com.princeparadoxes.watertracker.ProjectComponent
 import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.base.BaseActivity
-import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat
+import com.princeparadoxes.watertracker.presentation.base.BaseActivity
+import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
 import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
 import com.princeparadoxes.watertracker.presentation.view.RulerView
-import com.princeparadoxes.watertracker.utils.rx.SchedulerTransformer
-import com.princeparadoxes.watertracker.utils.safeSubscribe
-import com.princeparadoxes.watertracker.utils.toColorInt
+import com.princeparadoxes.watertracker.safeSubscribe
+import com.princeparadoxes.watertracker.toColorInt
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
@@ -188,7 +189,8 @@ class MainActivity : BaseActivity() {
     private fun addWater(ml: Int) {
         if (ml == 0) return
         drinkOutputPort.addWater(ml)
-                .compose(SchedulerTransformer.getInstance())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .safeSubscribe({ drawWater(ml) })
     }
 

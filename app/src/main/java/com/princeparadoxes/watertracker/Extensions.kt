@@ -1,7 +1,6 @@
-package com.princeparadoxes.watertracker.utils
+package com.princeparadoxes.watertracker
 
 import android.support.v4.content.ContextCompat
-import com.princeparadoxes.watertracker.ProjectApplication
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single

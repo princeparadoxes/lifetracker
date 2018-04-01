@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.base;
+package com.princeparadoxes.watertracker.presentation.base;
 
 import android.annotation.TargetApi;
 import android.os.Build;

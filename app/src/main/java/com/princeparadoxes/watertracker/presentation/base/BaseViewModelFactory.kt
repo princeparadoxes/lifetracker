@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.base
+package com.princeparadoxes.watertracker.presentation.base
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider

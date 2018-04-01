@@ -1,4 +1,4 @@
-package com.princeparadoxes.watertracker.base;
+package com.princeparadoxes.watertracker.presentation.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.princeparadoxes.watertracker.utils.KeyboardUtils;
+import com.princeparadoxes.watertracker.presentation.utils.KeyboardUtils;
 
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;

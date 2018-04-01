@@ -9,8 +9,8 @@ import com.jakewharton.rxbinding2.widget.RxRadioGroup
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.base.BaseFragment
-import com.princeparadoxes.watertracker.utils.safeSubscribe
+import com.princeparadoxes.watertracker.presentation.base.BaseFragment
+import com.princeparadoxes.watertracker.safeSubscribe
 import javax.inject.Inject
 
 class SettingsFragment : BaseFragment() {
