@@ -10,13 +10,11 @@ import javax.inject.Inject
 class ProjectPreferences @Inject
 constructor(private val mSharedPreferences: SharedPreferences) {
 
-    val currentDayNorm: Int
+    var currentDayNorm: Int
         get() = mSharedPreferences.getInt(CURRENT_DAY_NORM, 2000)
+        set(dayNorm) = mSharedPreferences.edit().putInt(CURRENT_DAY_NORM, dayNorm).apply()
 
-    fun setCurrentDayNorm(currentDayNorm: Int): Int {
-        mSharedPreferences.edit().putInt(CURRENT_DAY_NORM, currentDayNorm).apply()
-        return currentDayNorm
-    }
+
 
     companion object {
 

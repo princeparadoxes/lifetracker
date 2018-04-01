@@ -13,6 +13,6 @@ public class DebugProjectApplication extends ProjectApplication {
     @Override
     public void buildComponentAndInject() {
         super.buildComponentAndInject();
-        component().inject(this);
+        Companion.component().inject(this);
     }
 }

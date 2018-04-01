@@ -3,52 +3,58 @@ package com.princeparadoxes.watertracker.domain.interactor
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
+import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.utils.toCalendar
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
+import kotlin.math.roundToInt
 
 class DrinkInteractor(
-        private val drinkInputGateway: DrinkInputGateway
-) : DrinkOutputGateway {
+        private val drinkInputPort: DrinkInputPort
+) : DrinkOutputPort {
 
     val removeDrinkSubject = PublishSubject.create<Any>()
 
     override fun addWater(ml: Int): Observable<Drink> {
-        return drinkInputGateway.addWater(ml)
+        return drinkInputPort.addWater(ml)
     }
 
     override fun getDaySum(): Observable<Int> {
-        return drinkInputGateway.getDaySum()
+        return drinkInputPort.getDaySum()
     }
 
     override fun getLast(): Observable<Drink> {
-        return drinkInputGateway.getLast();
+        return drinkInputPort.getLast();
     }
 
     override fun removeLastDrink(): Observable<Int> {
-        return drinkInputGateway.removeLastDrink()
+        return drinkInputPort.removeLastDrink()
                 .doOnNext { if (it > 0) removeDrinkSubject.onNext(Any()) }
+    }
+
+    override fun calcDatNorm(gender: Gender, weightInKg: Float) : Int {
+        return (gender.mlByKg * weightInKg).roundToInt()
     }
 
     override fun observeRemoveDrinks(): Observable<Int> {
         return removeDrinkSubject
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMapSingle { drinkInputGateway.getDaySum().firstOrError() }
+                .flatMapSingle { drinkInputPort.getDaySum().firstOrError() }
     }
 
     override fun observeStatistic(statisticType: StatisticType): Observable<StatisticModel> {
-        return drinkInputGateway.getStatisticByPeriod(statisticType)
+        return drinkInputPort.getStatisticByPeriod(statisticType)
     }
 
     override fun getDrinksByPeriod(statisticType: StatisticType): Observable<List<Drink>> {
-        return drinkInputGateway.getDrinksByPeriod(statisticType)
+        return drinkInputPort.getDrinksByPeriod(statisticType)
     }
 
     override fun observeDetailStatistic(statisticType: StatisticType): Observable<List<Int>> {
-        return drinkInputGateway.getDrinksByPeriod(statisticType).compose({ detailBy(it, statisticType) })
+        return drinkInputPort.getDrinksByPeriod(statisticType).compose({ detailBy(it, statisticType) })
     }
 
     private fun detailBy(upstream: Observable<List<Drink>>, statisticType: StatisticType): Observable<List<Int>> {

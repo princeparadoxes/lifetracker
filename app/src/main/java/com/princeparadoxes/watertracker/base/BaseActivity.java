@@ -28,7 +28,7 @@ public abstract class BaseActivity extends DebugBaseActivity {
             onExtractParams(params);
         }
 
-        onCreateComponent(ProjectApplication.get(this).component());
+        onCreateComponent(ProjectApplication.Companion.component());
         if (layoutId() != null) {
             setContentView(layoutId());
         }

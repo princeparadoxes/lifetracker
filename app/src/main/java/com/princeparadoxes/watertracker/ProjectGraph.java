@@ -10,8 +10,6 @@ public interface ProjectGraph extends DomainDependencies {
 
     DrinkDatabaseService provideDrinkDatabaseService();
 
-    DrinkRepository provideDrinkRepository();
-
     ProjectPreferences provideProjectPreferences();
 
 }

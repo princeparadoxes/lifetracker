@@ -23,8 +23,9 @@ import com.princeparadoxes.watertracker.ProjectComponent
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.base.BaseActivity
 import com.princeparadoxes.watertracker.base.FragmentSwitcherCompat
-import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences
-import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway
+import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
+import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
+import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
 import com.princeparadoxes.watertracker.presentation.view.RulerView
 import com.princeparadoxes.watertracker.utils.rx.SchedulerTransformer
@@ -40,9 +41,9 @@ class MainActivity : BaseActivity() {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Inject
-    lateinit var drinkOutputGateway: DrinkOutputGateway
+    lateinit var drinkOutputPort: DrinkOutputPort
     @Inject
-    lateinit var projectPreferences: ProjectPreferences
+    lateinit var dayNormUseCase: DayNormUseCase
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -115,16 +116,19 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initDayNorm() {
-        val dayNorm = projectPreferences.currentDayNorm
-        dayNormValue.text = dayNorm.toString() + "ml"
-        waterView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                waterView.viewTreeObserver.removeOnPreDrawListener(this)
-                val translationY = waterView.height.toFloat() / 10 - dayNormContainer.height
-                dayNormContainer.translationY = translationY
-                return false
-            }
-        })
+        dayNormUseCase.observeDayNorm()
+                .safeSubscribe {
+                    dayNormValue.text = it.toString() + "ml"
+                    waterView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+                        override fun onPreDraw(): Boolean {
+                            waterView.viewTreeObserver.removeOnPreDrawListener(this)
+                            val translationY = waterView.height.toFloat() / 10 - dayNormContainer.height
+                            dayNormContainer.translationY = translationY
+                            return false
+                        }
+                    })
+                }
+
 
     }
 
@@ -183,7 +187,7 @@ class MainActivity : BaseActivity() {
 
     private fun addWater(ml: Int) {
         if (ml == 0) return
-        drinkOutputGateway.addWater(ml)
+        drinkOutputPort.addWater(ml)
                 .compose(SchedulerTransformer.getInstance())
                 .safeSubscribe({ drawWater(ml) })
     }
@@ -191,7 +195,7 @@ class MainActivity : BaseActivity() {
     private fun drawWater(ml: Int) {
         if (ml == 0) return
         val size = Point().also { windowManager.defaultDisplay.getSize(it) }
-        val aspect = ml.toFloat() / projectPreferences.currentDayNorm
+        val aspect = ml.toFloat() / dayNormUseCase.observeDayNorm().first(0).blockingGet()
         val center = Vector2f((size.x / 2).toFloat(), (size.y / 2).toFloat())
         val shape = MathHelper.createBox(center, size.x.toFloat(), size.y * aspect)
         waterView.createParticles(ParticleGroup(shape))
@@ -202,8 +206,8 @@ class MainActivity : BaseActivity() {
     ///////////////////////////////////////////////////////////////////////////
 
     private fun loadDaySum() {
-        disposable.add(drinkOutputGateway.getDaySum().firstOrError().safeSubscribe({ drawWater(it) }))
-        disposable.add(drinkOutputGateway.observeRemoveDrinks().safeSubscribe({ redrawWater(it) }))
+        disposable.add(drinkOutputPort.getDaySum().firstOrError().safeSubscribe({ drawWater(it) }))
+        disposable.add(drinkOutputPort.observeRemoveDrinks().safeSubscribe({ redrawWater(it) }))
     }
 
     private fun redrawWater(it: Int) {
@@ -233,10 +237,10 @@ class MainActivity : BaseActivity() {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private fun addStartScreen() {
-        //        FragmentSwitcherCompat.start(getSupportFragmentManager())
-        //                .fragment(StartFragment.newInstance())
-        //                .containerId(R.id.main_start_fragment_container)
-        //                .add();
+        FragmentSwitcherCompat.start(supportFragmentManager)
+                .fragment(StartFragment.newInstance())
+                .containerId(R.id.main_start_fragment_container)
+                .add();
     }
 
     private fun addStatisticScreen() {

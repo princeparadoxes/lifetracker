@@ -1,9 +1,10 @@
 package com.princeparadoxes.watertracker.domain
 
-import com.princeparadoxes.watertracker.domain.interactor.DrinkInputGateway
-import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway
+import com.princeparadoxes.watertracker.domain.interactor.DrinkInputPort
+import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
+import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
 
 interface DomainDependencies {
-    fun provideDrinkInputGateway(): DrinkInputGateway
-    fun provideDrinkOutputGateway(): DrinkOutputGateway
+    fun provideDrinkOutputGateway(): DrinkOutputPort
+    fun provideDayNormUseCase(): DayNormUseCase
 }

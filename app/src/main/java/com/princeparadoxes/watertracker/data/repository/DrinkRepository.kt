@@ -7,15 +7,13 @@ import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
-import com.princeparadoxes.watertracker.domain.interactor.DrinkInputGateway
+import com.princeparadoxes.watertracker.domain.interactor.DrinkInputPort
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
-import java.util.*
 
 class DrinkRepository(
         private val drinkDatabaseService: DrinkDatabaseService,
         private val preferences: ProjectPreferences
-) : DrinkInputGateway {
+) : DrinkInputPort {
 
     override fun getDaySum(): Observable<Int> {
         return drinkDatabaseService.getStatisticByPeriod(StatisticType.DAY)

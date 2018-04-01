@@ -3,9 +3,12 @@ package com.princeparadoxes.watertracker.domain
 import com.princeparadoxes.watertracker.ApplicationScope
 import com.princeparadoxes.watertracker.data.source.db.DatabaseModule
 import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferenceModule
-import com.princeparadoxes.watertracker.domain.interactor.DrinkInputGateway
+import com.princeparadoxes.watertracker.domain.interactor.DrinkInputPort
 import com.princeparadoxes.watertracker.domain.interactor.DrinkInteractor
-import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway
+import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
+import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
+import com.princeparadoxes.watertracker.domain.interactor.settings.SettingsInputPort
+import com.princeparadoxes.watertracker.domain.interactor.settings.SettingsInteractor
 import dagger.Module
 import dagger.Provides
 
@@ -14,8 +17,14 @@ class DomainModule {
 
     @ApplicationScope
     @Provides
-    internal fun provideDrinkOutputGateway(drinkInputGateway: DrinkInputGateway): DrinkOutputGateway {
-        return DrinkInteractor(drinkInputGateway)
+    internal fun provideDrinkOutputGateway(drinkInputPort: DrinkInputPort): DrinkOutputPort {
+        return DrinkInteractor(drinkInputPort)
+    }
+
+    @ApplicationScope
+    @Provides
+    internal fun provideDayNormUseCase(settingsInputPort: SettingsInputPort): DayNormUseCase {
+        return SettingsInteractor(settingsInputPort)
     }
 
 }

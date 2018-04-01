@@ -3,14 +3,13 @@ package com.princeparadoxes.watertracker.presentation.screen.statistic;
 import android.arch.lifecycle.ViewModelProviders;
 
 import com.princeparadoxes.watertracker.ProjectComponent;
-import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputGateway;
+import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Scope;
 
-import dagger.Module;
 import dagger.Provides;
 
 @Scope
@@ -34,8 +33,8 @@ public @interface StatisticScope {
 
         @StatisticScope
         @Provides
-        StatisticViewModel provideStatisticViewModel(DrinkOutputGateway drinkOutputGateway) {
-            ViewModelFactory factory = new ViewModelFactory(drinkOutputGateway);
+        StatisticViewModel provideStatisticViewModel(DrinkOutputPort drinkOutputPort) {
+            StatisticViewModelFactory factory = new StatisticViewModelFactory(drinkOutputPort);
             return ViewModelProviders.of(statisticFragment, factory).get(StatisticViewModel.class);
         }
     }

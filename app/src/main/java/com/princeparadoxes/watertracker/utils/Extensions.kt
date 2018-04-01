@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import timber.log.Timber
 import java.util.*
 
@@ -32,4 +33,8 @@ fun <T> Single<T>.safeSubscribe(action: (T) -> Unit): Disposable {
 
 fun Int.toColorInt(): Int {
     return ContextCompat.getColor(ProjectApplication.instance, this)
+}
+
+fun <T, R> Observable<T>.zipToPair(another: Observable<R>): Observable<Pair<T, R>> {
+    return this.zipWith(another, BiFunction<T, R, Pair<T, R>> { t1, t2 -> t1 to t2 })
 }
