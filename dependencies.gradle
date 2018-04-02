@@ -1,10 +1,10 @@
 ext.versions = [
-            appname             : 'Water Tracker',
+            appname             : 'LifeTracker',
             apkname             : 'water-tracker-android',
             packagename         : 'com.princeparadoxes.water.tracker',
 
             versionMajor        : 0,
-            versionMinor        : 0,
+            versionMinor        : 8,
             versionPatch        : 0,
             versionBuild        : 0, // bump for dogfood builds, public betas, etc.
 

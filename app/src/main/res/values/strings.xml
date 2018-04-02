@@ -13,7 +13,7 @@
     <string name="start_thanks">Thanks for install!</string>
     <string name="start_you_are_beautiful">You\'re beautiful!</string>
     <string name="start_day_norm">Please, enter your day norm</string>
-    <string name="start_empty">Please, enter your day norm</string>
+    <string name="start_empty"></string>
     <string name="start_close">Slide down to skip</string>
 
     <!--========================================================================================-->
