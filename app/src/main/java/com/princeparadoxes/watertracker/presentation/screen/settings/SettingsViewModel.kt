@@ -1,12 +1,11 @@
 package com.princeparadoxes.watertracker.presentation.screen.settings
 
-import com.jakewharton.rxbinding2.InitialValueObservable
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
 import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.presentation.base.BaseViewModel
-import com.princeparadoxes.watertracker.presentation.base.BaseViewModelFactory
 import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
+import com.princeparadoxes.watertracker.presentation.base.BaseViewModel
+import com.princeparadoxes.watertracker.presentation.base.BaseViewModelFactory
 import com.princeparadoxes.watertracker.zipToPair
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -19,14 +18,13 @@ class SettingsViewModel(private val dayNormUseCase: DayNormUseCase) : BaseViewMo
 
 
     fun observeCalculate(clicks: Observable<Any>,
-                         checkedChanges: InitialValueObservable<Int>,
+                         checkedChanges: Observable<Int>,
                          texts: Observable<TextViewAfterTextChangeEvent>): Observable<Int> {
-        return clicks.throttleFirst(1, TimeUnit.SECONDS)
+        return clicks
+                .throttleFirst(1, TimeUnit.SECONDS)
                 .switchMap {
                     checkGender(checkedChanges).zipToPair(checkWeight(texts))
                             .flatMapSingle { dayNormUseCase.calcDayNorm(it.first, it.second) }
-                            .first(0)
-                            .toObservable()
                 }
     }
 
@@ -42,7 +40,7 @@ class SettingsViewModel(private val dayNormUseCase: DayNormUseCase) : BaseViewMo
 
     }
 
-    private fun checkGender(checkedChanges: InitialValueObservable<Int>): Observable<Gender> {
+    private fun checkGender(checkedChanges: Observable<Int>): Observable<Gender> {
         return checkedChanges
                 .map {
                     when (it) {
