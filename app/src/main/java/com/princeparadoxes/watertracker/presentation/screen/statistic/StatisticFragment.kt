@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
+import android.transition.Fade
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.BounceInterpolator
@@ -19,6 +20,8 @@ import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.presentation.base.BaseFragment
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
+import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
+import com.princeparadoxes.watertracker.presentation.screen.settings.SettingsFragment
 import com.princeparadoxes.watertracker.presentation.utils.ApplicationSwitcher
 import com.princeparadoxes.watertracker.presentation.utils.DimenTools
 import com.princeparadoxes.watertracker.presentation.utils.SpannableUtils
@@ -164,7 +167,13 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         unsubscribeOnStop(
                 statisticViewModel.observeDeleteWater(RxView.clicks(headerRevert)).safeSubscribe { handleDeleteWater(it) },
                 statisticViewModel.observeReport(RxView.clicks(headerReport)).safeSubscribe { handleReport() },
-                statisticViewModel.observeSetting(RxView.clicks(headerSettings)).safeSubscribe {  },
+                statisticViewModel.observeSetting(RxView.clicks(headerSettings)).safeSubscribe {
+                    FragmentSwitcherCompat.start(fragmentManager)
+                            .fragment(SettingsFragment.newInstance())
+                            .containerId(R.id.main_start_fragment_container)
+                            .replace();
+                    BottomSheetBehavior.from<View>(activity!!.findViewById(R.id.main_start_fragment_container)).state = BottomSheetBehavior.STATE_EXPANDED
+                },
                 statisticViewModel.observeStatistic().safeSubscribe({ this.handleStatistic(it) }),
                 statisticViewModel.observeDaySum().safeSubscribe({ this.handleDaySum(it) }),
                 statisticViewModel.observeLastDrink().safeSubscribe({ this.handleLastDrink(it) }),

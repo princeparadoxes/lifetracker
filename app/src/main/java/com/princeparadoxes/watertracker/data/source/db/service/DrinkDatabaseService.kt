@@ -14,7 +14,7 @@ class DrinkDatabaseService {
                 .where(DrinkSchema::class.java)
                 .findAll()
                 .asFlowable()
-                .map { it.last()!! }
+                .map { it.last(DrinkSchema(0,0))!! }
                 .toObservable()
     }
 

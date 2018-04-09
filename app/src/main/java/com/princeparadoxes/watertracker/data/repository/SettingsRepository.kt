@@ -15,4 +15,12 @@ class SettingsRepository(
     override fun updateDayNorm(dayNorm: Int): Single<Int> {
         return Single.fromCallable { dayNorm.also { preferences.currentDayNorm = it } }
     }
+
+    override fun isNeedShowStartPromo(): Single<Boolean> {
+        return Single.fromCallable { !preferences.isStartPromoShowed }
+    }
+
+    override fun onStartPromoShowed(): Single<Any> {
+        return Single.fromCallable { Any().also {  preferences.isStartPromoShowed = true} }
+    }
 }

@@ -14,19 +14,15 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [(ProjectPreferenceModule::class), (DatabaseModule::class), (DomainBinderModule::class)])
-class DomainModule {
+@Module(includes = [(ProjectPreferenceModule::class), (DatabaseModule::class)])
+abstract class DomainBinderModule {
 
     @ApplicationScope
-    @Provides
-    fun provideDrinkOutputGateway(drinkInputPort: DrinkInputPort): DrinkOutputPort {
-        return DrinkInteractor(drinkInputPort)
-    }
+    @Binds
+    abstract fun provideDayNormUseCase(settingsInteractor: SettingsInteractor) : DayNormUseCase
 
     @ApplicationScope
-    @Provides
-    fun provideSettingsInteractor(settingsInputPort: SettingsInputPort): SettingsInteractor {
-        return SettingsInteractor(settingsInputPort)
-    }
+    @Binds
+    abstract fun providePromotionUseCase(settingsInteractor: SettingsInteractor) : PromotionUseCase
 
 }

@@ -15,12 +15,16 @@ constructor(private val mSharedPreferences: SharedPreferences) {
         set(dayNorm) = mSharedPreferences.edit().putInt(CURRENT_DAY_NORM, dayNorm).apply()
 
 
+    var isStartPromoShowed: Boolean
+        get() = mSharedPreferences.getBoolean(START_PROMO_SHOWED, false)
+        set(value) = mSharedPreferences.edit().putBoolean(START_PROMO_SHOWED, value).apply()
 
     companion object {
 
         private val PREFIX = ProjectPreferences::class.java.name
 
         private val CURRENT_DAY_NORM = PREFIX + "current.day.norm"
+        private val START_PROMO_SHOWED = PREFIX + "start.promo.showed"
     }
 
 }

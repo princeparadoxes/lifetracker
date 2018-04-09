@@ -1,6 +1,7 @@
 package com.princeparadoxes.watertracker
 
 import android.support.v4.content.ContextCompat
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
@@ -27,6 +28,10 @@ fun <T> Observable<T>.safeSubscribe(action: (T) -> Unit): Disposable {
 }
 
 fun <T> Single<T>.safeSubscribe(action: (T) -> Unit): Disposable {
+    return this.subscribe({ action.invoke(it) }, { Timber.e(it) })
+}
+
+fun <T> Maybe<T>.safeSubscribe(action: (T) -> Unit): Disposable {
     return this.subscribe({ action.invoke(it) }, { Timber.e(it) })
 }
 

@@ -27,13 +27,11 @@ class StatisticViewModel(private val drinkOutputPort: DrinkOutputPort) : BaseVie
 
     fun observeDaySum(): Observable<Int> {
         return drinkOutputPort.getDaySum()
-                .onErrorReturn { 0 }
     }
 
     fun observeLastDrink(): Observable<Int> {
         return drinkOutputPort.getLast()
                 .map { it.size }
-                .onErrorReturn { 0 }
     }
 
     fun observeStatistic(): Observable<List<StatisticModel>> {

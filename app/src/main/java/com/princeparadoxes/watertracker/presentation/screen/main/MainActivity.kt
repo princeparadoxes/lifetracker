@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.view.ViewCompat
+import android.transition.Fade
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -19,17 +20,15 @@ import com.google.fpl.liquidfunpaint.physics.actions.ParticleGroup
 import com.google.fpl.liquidfunpaint.util.MathHelper
 import com.google.fpl.liquidfunpaint.util.Vector2f
 import com.mycardboarddreams.liquidsurface.LiquidSurfaceView
-import com.princeparadoxes.watertracker.ProjectComponent
-import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.presentation.base.BaseActivity
-import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
+import com.princeparadoxes.watertracker.*
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
+import com.princeparadoxes.watertracker.domain.interactor.settings.PromotionUseCase
+import com.princeparadoxes.watertracker.presentation.base.BaseActivity
+import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
 import com.princeparadoxes.watertracker.presentation.view.RulerView
-import com.princeparadoxes.watertracker.safeSubscribe
-import com.princeparadoxes.watertracker.toColorInt
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -45,6 +44,8 @@ class MainActivity : BaseActivity() {
     lateinit var drinkOutputPort: DrinkOutputPort
     @Inject
     lateinit var dayNormUseCase: DayNormUseCase
+    @Inject
+    lateinit var promotionUseCase: PromotionUseCase
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  VIEWS  //////////////////////////////////////////////////
@@ -90,7 +91,9 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            addStartScreen()
+            promotionUseCase.isNeedShowStartPromo()
+                    .filter { it }
+                    .safeSubscribe { addStartScreen() }
             addStatisticScreen()
         }
         window.apply {
@@ -241,8 +244,11 @@ class MainActivity : BaseActivity() {
     private fun addStartScreen() {
         FragmentSwitcherCompat.start(supportFragmentManager)
                 .fragment(StartFragment.newInstance())
+                .exitTransition(Fade(Fade.OUT))
                 .containerId(R.id.main_start_fragment_container)
-                .add();
+                .add()
+        promotionUseCase.onStartPromoShowed()
+                .safeSubscribe { }
     }
 
     private fun addStatisticScreen() {

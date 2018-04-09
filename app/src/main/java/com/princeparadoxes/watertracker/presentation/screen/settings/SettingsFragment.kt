@@ -1,7 +1,9 @@
 package com.princeparadoxes.watertracker.presentation.screen.settings
 
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioGroup
 import com.jakewharton.rxbinding2.view.RxView
@@ -10,6 +12,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.presentation.base.BaseFragment
+import com.princeparadoxes.watertracker.presentation.utils.KeyboardUtils
 import com.princeparadoxes.watertracker.safeSubscribe
 import javax.inject.Inject
 
@@ -32,6 +35,8 @@ class SettingsFragment : BaseFragment() {
     private val dayNormView by lazy { view!!.findViewById(R.id.settings_day_norm) as EditText }
     private val saveButton by lazy { view!!.findViewById(R.id.settings_save) as View }
 
+    private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(view!!.parent as ViewGroup)!! }
+
     ///////////////////////////////////////////////////////////////////////////
     // INIT SCREEN
     ///////////////////////////////////////////////////////////////////////////
@@ -53,14 +58,19 @@ class SettingsFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
+
         unsubscribeOnStop(
                 settingsViewModel.observeCalculate(RxView.clicks(calculateButton),
                         RxRadioGroup.checkedChanges(genderGroup),
                         RxTextView.afterTextChangeEvents(weightView))
-                        .safeSubscribe { dayNormView.setText(it.toString()) },
+                        .safeSubscribe {
+                            dayNormView.setText(it.toString())
+                            KeyboardUtils.hideSoftKeyboard(activity)
+                            dayNormView.requestFocus()
+                        },
                 settingsViewModel.observeSave(RxView.clicks(saveButton),
                         RxTextView.afterTextChangeEvents(dayNormView))
-                        .safeSubscribe {  }
+                        .safeSubscribe { bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED }
         )
     }
 

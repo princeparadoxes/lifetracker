@@ -43,6 +43,7 @@ class StartFragment : BaseFragment() {
                 FragmentSwitcherCompat.start(fragmentManager)
                         .fragment(SettingsFragment.newInstance())
                         .containerId(R.id.main_start_fragment_container)
+                        .setAllowEnterTransitionOverlap(true)
                         .enterTransition(Fade(Fade.IN))
                         .replace();
             }

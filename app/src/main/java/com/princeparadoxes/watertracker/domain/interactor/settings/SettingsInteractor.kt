@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 
 class SettingsInteractor(
         private val settingsInputPort: SettingsInputPort
-) : DayNormUseCase {
+) : DayNormUseCase, PromotionUseCase {
 
     private val dayNormSubject = BehaviorSubject.create<Int>()
 
@@ -34,5 +34,11 @@ class SettingsInteractor(
                 .doOnSuccess { dayNormSubject.onNext(it) }
     }
 
+    override fun isNeedShowStartPromo(): Single<Boolean> {
+        return settingsInputPort.isNeedShowStartPromo()
+    }
 
+    override fun onStartPromoShowed(): Single<Any> {
+        return settingsInputPort.onStartPromoShowed()
+    }
 }
