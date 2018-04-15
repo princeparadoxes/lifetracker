@@ -19,6 +19,7 @@ versions.rx_android = "2.0.1"
 versions.hamcrest = "1.3"
 versions.kotlin = "1.2.20"
 versions.rxbinding = "2.1.1"
+versions.anko = "0.10.4"
 def deps = [:]
 
 def support = [:]
@@ -49,8 +50,20 @@ dagger.android = "com.google.dagger:dagger-android:$versions.dagger"
 dagger.android_support = "com.google.dagger:dagger-android-support:$versions.dagger"
 dagger.compiler = "com.google.dagger:dagger-compiler:$versions.dagger"
 dagger.android_support_compiler = "com.google.dagger:dagger-android-processor:$versions.dagger"
-
 deps.dagger = dagger
+
+def anko = [:]
+anko.commons = "org.jetbrains.anko:anko-commons:$versions.anko"
+anko.sdk25 = "org.jetbrains.anko:anko-sdk25:$versions.anko"
+anko.appcompat_v7 = "org.jetbrains.anko:anko-appcompat-v7:$versions.anko"
+anko.appcompat_v7_commons = "org.jetbrains.anko:anko-appcompat-v7-commons:$versions.anko"
+anko.cardview_v7 = "org.jetbrains.anko:anko-cardview-v7:$versions.anko"
+anko.design = "org.jetbrains.anko:anko-design:$versions.anko"
+anko.recyclerview_v7 = "org.jetbrains.anko:anko-recyclerview-v7:$versions.anko"
+anko.support_v4 = "org.jetbrains.anko:anko-support-v4:$versions.anko"
+anko.support_v4_commons = "org.jetbrains.anko:anko-support-v4-commons:$versions.anko"
+deps.anko = anko
+
 
 def espresso = [:]
 espresso.core = "com.android.support.test.espresso:espresso-core:$versions.espresso"

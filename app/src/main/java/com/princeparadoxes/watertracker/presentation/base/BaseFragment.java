@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.princeparadoxes.watertracker.presentation.utils.KeyboardUtils;
 
-import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -21,7 +20,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(layoutId(), container, false);
-        ButterKnife.bind(this, fragmentView);
         return fragmentView;
     }
 
@@ -42,11 +40,11 @@ public abstract class BaseFragment extends Fragment {
         compositeDisposable.clear();
     }
 
-    public void unsubscribeOnStop(Disposable disposable){
+    public void unsubscribeOnStop(Disposable disposable) {
         compositeDisposable.add(disposable);
     }
 
-    public void unsubscribeOnStop(Disposable... disposable){
+    public void unsubscribeOnStop(Disposable... disposable) {
         compositeDisposable.addAll(disposable);
     }
 
