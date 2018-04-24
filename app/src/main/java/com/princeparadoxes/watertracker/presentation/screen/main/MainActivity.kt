@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.view.ViewCompat
+import android.support.v7.app.AlertDialog
 import android.transition.Fade
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -20,7 +21,8 @@ import com.google.fpl.liquidfunpaint.physics.actions.ParticleGroup
 import com.google.fpl.liquidfunpaint.util.MathHelper
 import com.google.fpl.liquidfunpaint.util.Vector2f
 import com.mycardboarddreams.liquidsurface.LiquidSurfaceView
-import com.princeparadoxes.watertracker.*
+import com.princeparadoxes.watertracker.ProjectComponent
+import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
 import com.princeparadoxes.watertracker.domain.interactor.settings.PromotionUseCase
@@ -29,6 +31,8 @@ import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
 import com.princeparadoxes.watertracker.presentation.view.RulerView
+import com.princeparadoxes.watertracker.safeSubscribe
+import com.princeparadoxes.watertracker.toColorInt
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -191,10 +195,18 @@ class MainActivity : BaseActivity() {
 
     private fun addWater(ml: Int) {
         if (ml == 0) return
-        drinkOutputPort.addWater(ml)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .safeSubscribe({ drawWater(ml) })
+        val addWaterObservable = drinkOutputPort.addWater(ml)
+                .flatMap { dayNormUseCase.observeDayNorm().take(1) }
+                .flatMap { dayNorm -> drinkOutputPort.getDaySum().take(1).map { it to dayNorm } }
+                .share()
+
+        disposable.add(addWaterObservable
+                .filter { it.first / 2 < it.second }
+                .safeSubscribe({ drawWater(ml) }))
+
+        disposable.add(addWaterObservable
+                .filter { it.first / 2 >= it.second }
+                .safeSubscribe({ onMoreWater() }))
     }
 
     private fun drawWater(ml: Int) {
@@ -204,6 +216,14 @@ class MainActivity : BaseActivity() {
         val center = Vector2f((size.x / 2).toFloat(), (size.y / 2).toFloat())
         val shape = MathHelper.createBox(center, size.x.toFloat(), size.y * aspect)
         waterView.createParticles(ParticleGroup(shape))
+    }
+
+    private fun onMoreWater() {
+        AlertDialog.Builder(this)
+                .setTitle("You drank too much!")
+                .setMessage("Maybe you should stop?")
+                .setPositiveButton("ok") { _, _ -> }
+                .show()
     }
 
     ///////////////////////////////////////////////////////////////////////////
