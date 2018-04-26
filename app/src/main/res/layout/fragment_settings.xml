@@ -37,34 +37,79 @@
             android:textColor="@android:color/white"
             android:textSize="18dp" />
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
-            android:background="@android:color/white" />
+            android:layout_height="160dp"
+            android:gravity="center_horizontal">
 
-        <RadioGroup
-            android:id="@+id/settings_gender_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            <RelativeLayout
+                android:id="@+id/settings_gender_female"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:background="?selectableItemBackgroundBorderless">
 
-            <RadioButton
-                android:id="@+id/settings_gender_group_female"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Female"
-                android:textColor="@android:color/white" />
+                <ImageView
+                    android:id="@+id/settings_gender_female_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_beenhere"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
-            <RadioButton
-                android:id="@+id/settings_gender_group_male"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Male"
-                android:textColor="@android:color/white" />
+                <ImageView
+                    android:layout_width="112dp"
+                    android:layout_height="112dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_female" />
 
-        </RadioGroup>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:text="Female"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/settings_gender_male"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:background="?selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:id="@+id/settings_gender_male_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_beenhere"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <ImageView
+                    android:layout_width="112dp"
+                    android:layout_height="112dp"
+                    android:paddingStart="12dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_male" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:text="Male"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,8 +119,8 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Weight"
                 android:layout_marginTop="8dp"
+                android:hint="Weight"
                 android:textColorHint="@android:color/white">
 
                 <android.support.design.widget.TextInputEditText

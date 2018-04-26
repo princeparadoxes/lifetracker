@@ -10,8 +10,9 @@ import kotlin.math.roundToInt
 
 class SettingsInteractor(
         private val settingsInputPort: SettingsInputPort
-) : DayNormUseCase, PromotionUseCase {
+) : DayNormUseCase, PromotionUseCase, UserUseCase {
 
+    //TODO перенести в Repository
     private val dayNormSubject = BehaviorSubject.create<Int>()
 
     init {
@@ -40,5 +41,13 @@ class SettingsInteractor(
 
     override fun onStartPromoShowed(): Single<Any> {
         return settingsInputPort.onStartPromoShowed()
+    }
+
+    override fun updateGender(gender: Gender): Single<Gender> {
+        throw IllegalStateException()
+    }
+
+    override fun updateWeight(weight: Int): Single<Int> {
+        throw IllegalStateException()
     }
 }

@@ -5,12 +5,11 @@ import android.support.design.widget.BottomSheetBehavior
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.RadioGroup
 import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxRadioGroup
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
+import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.presentation.base.BaseFragment
 import com.princeparadoxes.watertracker.presentation.utils.KeyboardUtils
 import com.princeparadoxes.watertracker.safeSubscribe
@@ -29,7 +28,10 @@ class SettingsFragment : BaseFragment() {
     // RESOURCES
     ///////////////////////////////////////////////////////////////////////////
 
-    private val genderGroup by lazy { view!!.findViewById(R.id.settings_gender_group) as RadioGroup }
+    private val genderMaleCheck by lazy { view!!.findViewById(R.id.settings_gender_male_check) as View }
+    private val genderMale by lazy { view!!.findViewById(R.id.settings_gender_male) as View }
+    private val genderFemaleCheck by lazy { view!!.findViewById(R.id.settings_gender_female_check) as View }
+    private val genderFemale by lazy { view!!.findViewById(R.id.settings_gender_female) as View }
     private val weightView by lazy { view!!.findViewById(R.id.settings_weight) as EditText }
     private val calculateButton by lazy { view!!.findViewById(R.id.settings_calculate) as View }
     private val dayNormView by lazy { view!!.findViewById(R.id.settings_day_norm) as EditText }
@@ -60,8 +62,24 @@ class SettingsFragment : BaseFragment() {
         super.onStart()
 
         unsubscribeOnStop(
+                settingsViewModel.observeChangeGender(RxView.clicks(genderFemale), RxView.clicks(genderMale))
+                        .safeSubscribe {
+                            when(it){
+                                Gender.MALE -> {
+                                    genderMaleCheck.visibility = View.VISIBLE
+                                    genderFemaleCheck.visibility = View.GONE
+                                }
+                                Gender.FEMALE -> {
+                                    genderMaleCheck.visibility = View.GONE
+                                    genderFemaleCheck.visibility = View.VISIBLE
+                                }
+                                Gender.NOT_SPECIFIED ->{
+                                    genderMaleCheck.visibility = View.GONE
+                                    genderFemaleCheck.visibility = View.GONE
+                                }
+                            }
+                        },
                 settingsViewModel.observeCalculate(RxView.clicks(calculateButton),
-                        RxRadioGroup.checkedChanges(genderGroup),
                         RxTextView.afterTextChangeEvents(weightView))
                         .safeSubscribe {
                             dayNormView.setText(it.toString())

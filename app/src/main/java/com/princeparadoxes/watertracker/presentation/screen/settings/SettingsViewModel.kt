@@ -1,5 +1,7 @@
 package com.princeparadoxes.watertracker.presentation.screen.settings
 
+import android.view.View
+import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
 import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.domain.entity.Gender
@@ -12,18 +14,19 @@ import java.util.concurrent.TimeUnit
 
 class SettingsViewModel(private val dayNormUseCase: DayNormUseCase) : BaseViewModel() {
 
+    private var gender: Gender = Gender.NOT_SPECIFIED
+
 
     init {
     }
 
 
     fun observeCalculate(clicks: Observable<Any>,
-                         checkedChanges: Observable<Int>,
                          texts: Observable<TextViewAfterTextChangeEvent>): Observable<Int> {
         return clicks
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .switchMap {
-                    checkGender(checkedChanges).zipToPair(checkWeight(texts))
+                    Observable.just(gender).zipToPair(checkWeight(texts))
                             .flatMapSingle { dayNormUseCase.calcDayNorm(it.first, it.second) }
                 }
     }
@@ -40,15 +43,13 @@ class SettingsViewModel(private val dayNormUseCase: DayNormUseCase) : BaseViewMo
 
     }
 
-    private fun checkGender(checkedChanges: Observable<Int>): Observable<Gender> {
-        return checkedChanges
-                .map {
-                    when (it) {
-                        R.id.settings_gender_group_female -> Gender.FEMALE
-                        R.id.settings_gender_group_male -> Gender.MALE
-                        else -> Gender.NOT_SPECIFIED
-                    }
-                }
+    fun observeChangeGender(femaleClickObservable: Observable<Any>,
+                            maleClickObservable: Observable<Any>): Observable<Gender> {
+        val femaleObservable = femaleClickObservable.map { Gender.FEMALE }
+        val maleObservable = maleClickObservable.map { Gender.MALE }
+
+        return femaleObservable.mergeWith(maleObservable)
+                .doOnNext { gender = it }
     }
 
     private fun checkWeight(texts: Observable<TextViewAfterTextChangeEvent>): Observable<Float> {
