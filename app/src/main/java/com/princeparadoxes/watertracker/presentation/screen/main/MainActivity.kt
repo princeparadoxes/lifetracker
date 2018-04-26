@@ -21,8 +21,7 @@ import com.google.fpl.liquidfunpaint.physics.actions.ParticleGroup
 import com.google.fpl.liquidfunpaint.util.MathHelper
 import com.google.fpl.liquidfunpaint.util.Vector2f
 import com.mycardboarddreams.liquidsurface.LiquidSurfaceView
-import com.princeparadoxes.watertracker.ProjectComponent
-import com.princeparadoxes.watertracker.R
+import com.princeparadoxes.watertracker.*
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
 import com.princeparadoxes.watertracker.domain.interactor.settings.PromotionUseCase
@@ -31,11 +30,9 @@ import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
 import com.princeparadoxes.watertracker.presentation.view.RulerView
-import com.princeparadoxes.watertracker.safeSubscribe
-import com.princeparadoxes.watertracker.toColorInt
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
@@ -70,7 +67,8 @@ class MainActivity : BaseActivity() {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private var startBottomSheetBehavior: BottomSheetBehavior<*>? = null
-    private val disposable: CompositeDisposable = CompositeDisposable()
+    private val disposable = CompositeDisposable()
+    private val addWaterSubject = PublishSubject.create<Int>()
     private var downY: Float = 0.toFloat()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +119,7 @@ class MainActivity : BaseActivity() {
         super.onStart()
         initDayNorm()
         initTouchFrame()
+        observeAddWater()
     }
 
     private fun initDayNorm() {
@@ -195,14 +194,23 @@ class MainActivity : BaseActivity() {
 
     private fun addWater(ml: Int) {
         if (ml == 0) return
-        val addWaterObservable = drinkOutputPort.addWater(ml)
-                .flatMap { dayNormUseCase.observeDayNorm().take(1) }
-                .flatMap { dayNorm -> drinkOutputPort.getDaySum().take(1).map { it to dayNorm } }
+        addWaterSubject.onNext(ml)
+    }
+
+    private fun observeAddWater() {
+        val addWaterObservable = addWaterSubject
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .switchMap { addedWater ->
+                    drinkOutputPort.addWater(addedWater)
+                            .flatMap { drinkOutputPort.getDaySum().zipToPair(dayNormUseCase.observeDayNorm()) }
+                            .take(1)
+                            .map { Triple(it.first, it.second, addedWater) }
+                }
                 .share()
 
         disposable.add(addWaterObservable
                 .filter { it.first / 2 < it.second }
-                .safeSubscribe({ drawWater(ml) }))
+                .safeSubscribe({ drawWater(it.third) }))
 
         disposable.add(addWaterObservable
                 .filter { it.first / 2 >= it.second }
