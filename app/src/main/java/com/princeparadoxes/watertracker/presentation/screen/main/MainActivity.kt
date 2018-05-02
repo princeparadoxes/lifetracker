@@ -239,7 +239,11 @@ class MainActivity : BaseActivity() {
     ///////////////////////////////////////////////////////////////////////////
 
     private fun loadDaySum() {
-        disposable.add(drinkOutputPort.getDaySum().firstOrError().safeSubscribe({ drawWater(it) }))
+        disposable.add(drinkOutputPort.getDaySum()
+                .flatMap { drinkOutputPort.getDaySum().zipToPair(dayNormUseCase.observeDayNorm()) }
+                .take(1)
+                .map { Math.min(it.first * 2, it.second) }
+                .safeSubscribe({ drawWater(it) }))
         disposable.add(drinkOutputPort.observeRemoveDrinks().safeSubscribe({ redrawWater(it) }))
     }
 
