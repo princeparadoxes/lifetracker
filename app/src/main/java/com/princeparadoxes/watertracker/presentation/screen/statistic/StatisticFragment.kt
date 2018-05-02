@@ -120,15 +120,17 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
 
     private fun onCollapsed() {
         topBorderView.visibility = View.VISIBLE
-        createHeaderAnimator(R.string.statistic_header_open, chevronUpDrawable).start()
+        createHeaderAnimator().start()
+        headerView.close(true)
     }
 
     private fun onExpanded() {
         topBorderView.visibility = View.INVISIBLE
-        createHeaderAnimator(R.string.statistic_header_closed, chevronDownDrawable).start()
+        createHeaderAnimator().start()
+        headerView.open(true)
     }
 
-    private fun createHeaderAnimator(text: Int, drawable: Drawable?): Animator {
+    private fun createHeaderAnimator(): Animator {
         return when (Math.round(headerCenterTextImage.rotation) == 180) {
             true -> ObjectAnimator.ofFloat(headerCenterTextImage, View.ROTATION, 180F, 0F)
             false -> ObjectAnimator.ofFloat(headerCenterTextImage, View.ROTATION, 0F, 180F)
