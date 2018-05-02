@@ -6,10 +6,7 @@ import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferenceModule
 import com.princeparadoxes.watertracker.domain.interactor.DrinkInputPort
 import com.princeparadoxes.watertracker.domain.interactor.DrinkInteractor
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort
-import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
-import com.princeparadoxes.watertracker.domain.interactor.settings.PromotionUseCase
-import com.princeparadoxes.watertracker.domain.interactor.settings.SettingsInputPort
-import com.princeparadoxes.watertracker.domain.interactor.settings.SettingsInteractor
+import com.princeparadoxes.watertracker.domain.interactor.settings.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -20,6 +17,10 @@ abstract class DomainBinderModule {
     @ApplicationScope
     @Binds
     abstract fun provideDayNormUseCase(settingsInteractor: SettingsInteractor) : DayNormUseCase
+
+    @ApplicationScope
+    @Binds
+    abstract fun provideUserUseCase(settingsInteractor: SettingsInteractor) : UserUseCase
 
     @ApplicationScope
     @Binds

@@ -1,67 +1,75 @@
 package com.princeparadoxes.watertracker.presentation.screen.settings
 
-import android.view.View
-import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
-import com.princeparadoxes.watertracker.R
 import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase
+import com.princeparadoxes.watertracker.domain.interactor.settings.UserUseCase
 import com.princeparadoxes.watertracker.presentation.base.BaseViewModel
 import com.princeparadoxes.watertracker.presentation.base.BaseViewModelFactory
-import com.princeparadoxes.watertracker.zipToPair
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
-class SettingsViewModel(private val dayNormUseCase: DayNormUseCase) : BaseViewModel() {
+class SettingsViewModel(private val dayNormUseCase: DayNormUseCase,
+                        private val userUseCase: UserUseCase) : BaseViewModel() {
 
-    private var gender: Gender = Gender.NOT_SPECIFIED
-
+    private val viewState = ViewState()
 
     init {
     }
 
-
-    fun observeCalculate(clicks: Observable<Any>,
-                         texts: Observable<TextViewAfterTextChangeEvent>): Observable<Int> {
+    fun observeCalculate(clicks: Observable<Any>): Observable<Int> {
         return clicks
                 .throttleFirst(1, TimeUnit.SECONDS)
-                .switchMap {
-                    Observable.just(gender).zipToPair(checkWeight(texts))
-                            .flatMapSingle { dayNormUseCase.calcDayNorm(it.first, it.second) }
-                }
+                .switchMap { dayNormUseCase.calcDayNorm(viewState.gender, viewState.weight).toObservable() }
     }
 
-    fun observeSave(clicks: Observable<Any>,
-                    texts: Observable<TextViewAfterTextChangeEvent>): Observable<Any> {
-        return clicks.throttleFirst(1, TimeUnit.SECONDS)
-                .switchMap {
-                    texts.map { it.editable().toString().toIntOrNull() ?: 0 }
-                            .first(0)
-                            .flatMap { dayNormUseCase.updateDayNorm(it) }
-                            .toObservable()
-                }
-
+    fun observeSave(clicks: Observable<Any>): Observable<Any> {
+        return clicks
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .switchMap { dayNormUseCase.updateDayNorm(viewState.dayNorm).toObservable() }
+                .switchMap { userUseCase.updateWeight(viewState.weight).toObservable() }
+                .switchMap { userUseCase.updateGender(viewState.gender).toObservable() }
     }
 
-    fun observeChangeGender(femaleClickObservable: Observable<Any>,
-                            maleClickObservable: Observable<Any>): Observable<Gender> {
-        val femaleObservable = femaleClickObservable.map { Gender.FEMALE }
-        val maleObservable = maleClickObservable.map { Gender.MALE }
+    fun observeView(weightTextObservable: Observable<TextViewAfterTextChangeEvent>,
+                    dayNormTextObservable: Observable<TextViewAfterTextChangeEvent>,
+                    femaleClickObservable: Observable<Any>,
+                    maleClickObservable: Observable<Any>): Observable<ViewState> {
 
-        return femaleObservable.mergeWith(maleObservable)
-                .doOnNext { gender = it }
+        val genderObservable = femaleClickObservable.map { Gender.FEMALE }
+                .mergeWith(maleClickObservable.map { Gender.MALE })
+                .mergeWith(userUseCase.observeGender())
+                .distinctUntilChanged()
+                .doOnNext { viewState.gender = it }
+
+        val weightObservable = weightTextObservable
+                .map { it.editable()?.toString()?.toFloatOrNull() ?: 0F }
+                .mergeWith(userUseCase.observeWeight())
+                .distinctUntilChanged()
+                .doOnNext { viewState.weight = it }
+
+        val dayNormObservable = dayNormTextObservable
+                .map { it.editable()?.toString()?.toIntOrNull() ?: 0 }
+                .mergeWith(dayNormUseCase.observeDayNorm())
+                .distinctUntilChanged()
+                .doOnNext { viewState.dayNorm = it }
+
+        return Observable.merge(weightObservable, dayNormObservable, genderObservable)
+                .map { viewState }
     }
 
-    private fun checkWeight(texts: Observable<TextViewAfterTextChangeEvent>): Observable<Float> {
-        return texts.map { it.editable()?.toString()?.toFloatOrNull() ?: 0F }
-    }
-
-
-    class Factory(private val dayNormUseCase: DayNormUseCase) : BaseViewModelFactory<SettingsViewModel>() {
+    class Factory(private val dayNormUseCase: DayNormUseCase,
+                  private val userUseCase: UserUseCase) : BaseViewModelFactory<SettingsViewModel>() {
 
         override fun clazz() = SettingsViewModel::class.java
-        override fun viewModel() = SettingsViewModel(dayNormUseCase)
+        override fun viewModel() = SettingsViewModel(dayNormUseCase, userUseCase)
 
+    }
+
+    class ViewState {
+        var gender: Gender = Gender.NOT_SPECIFIED
+        var weight: Float = 0F
+        var dayNorm: Int = 0
     }
 
 }

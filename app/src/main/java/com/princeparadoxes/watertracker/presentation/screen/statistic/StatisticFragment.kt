@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
-import android.transition.Fade
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.BounceInterpolator
@@ -42,6 +41,8 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     ///////////////////////////////////////////////////////////////////////////
     // RESOURCES
     ///////////////////////////////////////////////////////////////////////////
+
+    private val settingsContainer by lazy { activity!!.findViewById(R.id.main_start_fragment_container) as View }
 
     private val headerView by lazy { view!!.findViewById(R.id.statistic_header) as SwipeLayout }
     private val headerSettings by lazy { view!!.findViewById(R.id.statistic_header_settings) as TextView }
@@ -171,8 +172,9 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
                     FragmentSwitcherCompat.start(fragmentManager)
                             .fragment(SettingsFragment.newInstance())
                             .containerId(R.id.main_start_fragment_container)
-                            .replace();
-                    BottomSheetBehavior.from<View>(activity!!.findViewById(R.id.main_start_fragment_container)).state = BottomSheetBehavior.STATE_EXPANDED
+                            .replace()
+
+                    BottomSheetBehavior.from<View>(settingsContainer).state = BottomSheetBehavior.STATE_EXPANDED
                 },
                 statisticViewModel.observeStatistic().safeSubscribe({ this.handleStatistic(it) }),
                 statisticViewModel.observeDaySum().safeSubscribe({ this.handleDaySum(it) }),

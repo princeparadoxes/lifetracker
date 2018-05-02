@@ -6,8 +6,12 @@ import io.reactivex.Single
 
 interface UserUseCase {
 
+    fun observeGender(): Observable<Gender>
+
+    fun observeWeight(): Observable<Float>
+
     fun updateGender(gender: Gender): Single<Gender>
 
-    fun updateWeight(weight: Int): Single<Int>
+    fun updateWeight(weight: Float): Single<Float>
 
 }

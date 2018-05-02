@@ -61,35 +61,41 @@ class SettingsFragment : BaseFragment() {
     override fun onStart() {
         super.onStart()
 
-        unsubscribeOnStop(
-                settingsViewModel.observeChangeGender(RxView.clicks(genderFemale), RxView.clicks(genderMale))
-                        .safeSubscribe {
-                            when(it){
-                                Gender.MALE -> {
-                                    genderMaleCheck.visibility = View.VISIBLE
-                                    genderFemaleCheck.visibility = View.GONE
-                                }
-                                Gender.FEMALE -> {
-                                    genderMaleCheck.visibility = View.GONE
-                                    genderFemaleCheck.visibility = View.VISIBLE
-                                }
-                                Gender.NOT_SPECIFIED ->{
-                                    genderMaleCheck.visibility = View.GONE
-                                    genderFemaleCheck.visibility = View.GONE
-                                }
-                            }
-                        },
-                settingsViewModel.observeCalculate(RxView.clicks(calculateButton),
-                        RxTextView.afterTextChangeEvents(weightView))
-                        .safeSubscribe {
-                            dayNormView.setText(it.toString())
-                            KeyboardUtils.hideSoftKeyboard(activity)
-                            dayNormView.requestFocus()
-                        },
-                settingsViewModel.observeSave(RxView.clicks(saveButton),
-                        RxTextView.afterTextChangeEvents(dayNormView))
-                        .safeSubscribe { bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED }
+        unsubscribeOnStop(settingsViewModel.observeView(
+                RxTextView.afterTextChangeEvents(weightView),
+                RxTextView.afterTextChangeEvents(dayNormView),
+                RxView.clicks(genderFemale),
+                RxView.clicks(genderMale))
+                .safeSubscribe {
+                    weightView.setText(it.weight.toString())
+                    dayNormView.setText(it.dayNorm.toString())
+                    when (it.gender) {
+                        Gender.MALE -> {
+                            genderMaleCheck.visibility = View.VISIBLE
+                            genderFemaleCheck.visibility = View.GONE
+                        }
+                        Gender.FEMALE -> {
+                            genderMaleCheck.visibility = View.GONE
+                            genderFemaleCheck.visibility = View.VISIBLE
+                        }
+                        Gender.NOT_SPECIFIED -> {
+                            genderMaleCheck.visibility = View.GONE
+                            genderFemaleCheck.visibility = View.GONE
+                        }
+                    }
+                }
         )
+
+        unsubscribeOnStop(settingsViewModel.observeCalculate(RxView.clicks(calculateButton))
+                .safeSubscribe {
+                    dayNormView.setText(it.toString())
+                    KeyboardUtils.hideSoftKeyboard(activity)
+                    dayNormView.requestFocus()
+                })
+
+        unsubscribeOnStop(settingsViewModel.observeSave(RxView.clicks(saveButton))
+                .safeSubscribe { bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED })
+
     }
 
     companion object {

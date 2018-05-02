@@ -25,21 +25,10 @@
             android:textColor="@android:color/white"
             android:textSize="28sp" />
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="36dp"
-            android:text="Gender"
-            android:textColor="@android:color/white"
-            android:textSize="18dp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
+            android:layout_marginTop="36dp"
             android:gravity="center_horizontal">
 
             <RelativeLayout
@@ -47,8 +36,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:background="?selectableItemBackgroundBorderless">
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true">
 
                 <ImageView
                     android:id="@+id/settings_gender_female_check"
@@ -80,8 +69,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:background="?selectableItemBackgroundBorderless">
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true">
 
                 <ImageView
                     android:id="@+id/settings_gender_male_check"
@@ -94,8 +83,8 @@
                 <ImageView
                     android:layout_width="112dp"
                     android:layout_height="112dp"
-                    android:paddingStart="12dp"
                     android:layout_centerInParent="true"
+                    android:paddingStart="12dp"
                     android:src="@drawable/ic_male" />
 
                 <TextView
@@ -114,6 +103,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
             <android.support.design.widget.TextInputLayout
@@ -153,16 +143,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/settings_calculate"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:text="Calculate"
-            android:textColor="@color/accent" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -207,15 +187,33 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/settings_save"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:text="Save"
-            android:textColor="@color/accent" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/settings_calculate"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="Calculate"/>
+
+            <TextView
+                android:id="@+id/settings_save"
+                style="@style/Base.Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="Save"
+                android:textColor="@color/accent" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

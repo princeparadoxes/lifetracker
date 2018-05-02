@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import com.princeparadoxes.watertracker.ProjectComponent;
 import com.princeparadoxes.watertracker.domain.interactor.DrinkOutputPort;
 import com.princeparadoxes.watertracker.domain.interactor.settings.DayNormUseCase;
+import com.princeparadoxes.watertracker.domain.interactor.settings.UserUseCase;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -34,8 +35,11 @@ public @interface SettingsScope {
 
         @SettingsScope
         @Provides
-        SettingsViewModel provideSettingsViewModel(DayNormUseCase dayNormUseCase) {
-            SettingsViewModel.Factory factory = new SettingsViewModel.Factory(dayNormUseCase);
+        SettingsViewModel provideSettingsViewModel(DayNormUseCase dayNormUseCase,
+                                                   UserUseCase userUseCase) {
+            SettingsViewModel.Factory factory = new SettingsViewModel.Factory(
+                    dayNormUseCase,
+                    userUseCase);
             return ViewModelProviders.of(fragment, factory).get(factory.clazz());
         }
     }

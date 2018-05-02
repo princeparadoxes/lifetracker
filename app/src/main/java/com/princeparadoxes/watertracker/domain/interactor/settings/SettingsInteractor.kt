@@ -43,11 +43,19 @@ class SettingsInteractor(
         return settingsInputPort.onStartPromoShowed()
     }
 
-    override fun updateGender(gender: Gender): Single<Gender> {
-        throw IllegalStateException()
+    override fun observeGender(): Observable<Gender> {
+       return settingsInputPort.getGender().toObservable()
     }
 
-    override fun updateWeight(weight: Int): Single<Int> {
-        throw IllegalStateException()
+    override fun observeWeight(): Observable<Float> {
+        return settingsInputPort.getWeight().toObservable()
+    }
+
+    override fun updateGender(gender: Gender): Single<Gender> {
+        return settingsInputPort.updateGender(gender)
+    }
+
+    override fun updateWeight(weight: Float): Single<Float> {
+        return settingsInputPort.updateWeight(weight)
     }
 }
