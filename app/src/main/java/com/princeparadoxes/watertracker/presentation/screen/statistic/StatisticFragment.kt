@@ -2,9 +2,9 @@ package com.princeparadoxes.watertracker.presentation.screen.statistic
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetBehavior.*
 import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
 import android.view.View
@@ -16,9 +16,9 @@ import com.daimajia.swipe.SwipeLayout
 import com.jakewharton.rxbinding2.view.RxView
 import com.princeparadoxes.watertracker.ProjectApplication
 import com.princeparadoxes.watertracker.R
-import com.princeparadoxes.watertracker.presentation.base.BaseFragment
 import com.princeparadoxes.watertracker.domain.entity.Drink
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
+import com.princeparadoxes.watertracker.presentation.base.BaseFragment
 import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.settings.SettingsFragment
 import com.princeparadoxes.watertracker.presentation.utils.ApplicationSwitcher
@@ -49,7 +49,8 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     private val headerReport by lazy { view!!.findViewById(R.id.statistic_header_report) as TextView }
     private val headerRevert by lazy { view!!.findViewById(R.id.statistic_header_revert) as TextView }
     private val headerStartText by lazy { view!!.findViewById(R.id.statistic_header_start) as TextView }
-    private val headerCenterText by lazy { view!!.findViewById(R.id.statistic_header_center) as TextView }
+    private val headerCenter by lazy { view!!.findViewById(R.id.statistic_header_center) as View }
+    private val headerCenterText by lazy { view!!.findViewById(R.id.statistic_header_center_text) as TextView }
     private val headerCenterTextImage by lazy { view!!.findViewById(R.id.statistic_header_center_image) as ImageView }
     private val headerEndText by lazy { view!!.findViewById(R.id.statistic_header_end) as TextView }
     private val typePicker by lazy { view!!.findViewById(R.id.statistic_type_view) as DiscreteScrollView }
@@ -63,7 +64,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     // FIELDS
     ///////////////////////////////////////////////////////////////////////////
 
-    private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(view!!.parent as ViewGroup)!! }
+    private val bottomSheetBehavior by lazy { from(view!!.parent as ViewGroup)!! }
     private val statisticAdapter by lazy { StatisticAdapter() }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -87,6 +88,13 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         initBehavior(view.parent as ViewGroup)
         onCollapsed()
         initTypePicker()
+        headerCenter.setOnClickListener {
+            bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
+                STATE_COLLAPSED -> STATE_EXPANDED
+                STATE_EXPANDED -> STATE_COLLAPSED
+                else -> STATE_COLLAPSED
+            }
+        }
     }
 
     private fun initTypePicker() {
@@ -113,8 +121,8 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
 
     private fun changeHeaderState(newState: Int) {
         when (newState) {
-            BottomSheetBehavior.STATE_COLLAPSED -> onCollapsed()
-            BottomSheetBehavior.STATE_EXPANDED -> onExpanded()
+            STATE_COLLAPSED -> onCollapsed()
+            STATE_EXPANDED -> onExpanded()
         }
     }
 
@@ -155,7 +163,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
             }
         })
         bottomSheetBehavior.apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
+            state = STATE_COLLAPSED
             isHideable = false
             peekHeight = DimenTools.pxFromDp(context, 64f).toInt()
         }
@@ -176,7 +184,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
                             .containerId(R.id.main_start_fragment_container)
                             .replace()
 
-                    BottomSheetBehavior.from<View>(settingsContainer).state = BottomSheetBehavior.STATE_EXPANDED
+                    from<View>(settingsContainer).state = STATE_EXPANDED
                 },
                 statisticViewModel.observeStatistic().safeSubscribe({ this.handleStatistic(it) }),
                 statisticViewModel.observeDaySum().safeSubscribe({ this.handleDaySum(it) }),
