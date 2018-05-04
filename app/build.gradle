@@ -14,6 +14,7 @@ apply plugin: 'com.ofg.uptodate'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 //apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'realm-android'
 apply from: "$rootDir/dependencies.gradle"
@@ -53,7 +54,7 @@ android {
         testApplicationId "${versions.packagename}.tests"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-//        multiDexEnabled true
+        multiDexEnabled true
 
         ndk {
             abiFilters "armeabi-v7a", "x86", "x86_64"
@@ -68,7 +69,7 @@ android {
 //            }
 //        }
 
-        resConfigs "en","ru"
+        resConfigs "en", "ru"
 
         // Enabling vector drawables support.
         vectorDrawables.useSupportLibrary = true
@@ -130,6 +131,8 @@ dependencies {
     implementation project(':liquidview')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
+    implementation 'com.google.firebase:firebase-core:15.0.2'
 
     // Support libraries
     implementation deps.support.app_compat
@@ -221,3 +224,5 @@ gradle.buildFinished { buildResult ->
     def formattedDate = buildFinishDate.format('yyyy-MM-dd HH:mm:ss')
     println "Build finished: ${formattedDate}"
 }
+
+apply plugin: 'com.google.gms.google-services'
