@@ -8,9 +8,11 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.BounceInterpolator
 import android.widget.FrameLayout
@@ -61,6 +63,7 @@ class MainActivity : BaseActivity() {
     private val waterContainer by lazy { findViewById(R.id.main_water_container) as FrameLayout }
     private val waterView by lazy { findViewById(R.id.water_gl_view) as LiquidSurfaceView }
     private val touchFrame by lazy { findViewById(R.id.main_water_touch_frame) as View }
+    private val scrollTutorial by lazy { findViewById(R.id.main_scroll_tutorial) as View }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
@@ -109,6 +112,12 @@ class MainActivity : BaseActivity() {
         }
 
         loadDaySum()
+        disposable.add(
+                drinkOutputPort.getDaySum()
+                        .safeSubscribe {
+                            scrollTutorial.visibility = if (it > 0) View.GONE else View.VISIBLE
+                        }
+        )
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

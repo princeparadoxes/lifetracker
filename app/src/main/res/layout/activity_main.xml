@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,7 +9,7 @@
     <com.princeparadoxes.watertracker.presentation.view.RulerView
         android:id="@+id/main_ruler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/main_value"
@@ -19,7 +18,7 @@
         android:layout_above="@+id/water_gl_view"
         android:layout_gravity="top|end"
         android:layout_margin="16dp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white" />
 
     <FrameLayout
         android:id="@+id/main_water_container"
@@ -29,8 +28,8 @@
 
         <com.mycardboarddreams.liquidsurface.LiquidSurfaceView
             android:id="@+id/water_gl_view"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <FrameLayout
             android:id="@+id/day_norm_container"
@@ -40,25 +39,35 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="Day norm"/>
+                android:layout_marginStart="16dp"
+                android:text="Day norm" />
 
             <TextView
                 android:id="@+id/day_norm_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="2000ml"/>
+                android:layout_marginEnd="16dp"
+                android:text="2000ml" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_gravity="bottom"
-                android:background="@android:color/black"/>
+                android:background="@android:color/black" />
         </FrameLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/main_scroll_tutorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="scroll.json"
+            app:lottie_scale="2"
+            app:lottie_loop="true" />
 
     </FrameLayout>
 
@@ -66,21 +75,21 @@
         android:id="@+id/main_water_touch_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true" />
 
     <FrameLayout
         android:id="@+id/main_statistic_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior" />
 
     <FrameLayout
         android:id="@+id/main_start_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior" />
 
 
 </android.support.design.widget.CoordinatorLayout>
