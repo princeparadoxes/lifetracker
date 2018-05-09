@@ -1,9 +1,9 @@
 package com.princeparadoxes.watertracker.domain.interactor
 
 import com.princeparadoxes.watertracker.domain.entity.Drink
+import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.domain.entity.StatisticModel
 import com.princeparadoxes.watertracker.domain.entity.StatisticType
-import com.princeparadoxes.watertracker.domain.entity.Gender
 import com.princeparadoxes.watertracker.toCalendar
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
@@ -35,7 +35,7 @@ class DrinkInteractor(
                 .doOnNext { if (it > 0) removeDrinkSubject.onNext(Any()) }
     }
 
-    override fun calcDatNorm(gender: Gender, weightInKg: Float) : Int {
+    override fun calcDatNorm(gender: Gender, weightInKg: Float): Int {
         return (gender.mlByKg * weightInKg).roundToInt()
     }
 
@@ -60,7 +60,7 @@ class DrinkInteractor(
     private fun detailBy(upstream: Observable<List<Drink>>, statisticType: StatisticType): Observable<List<Int>> {
         return upstream.flatMapSingle { collect(it, statisticType) }
                 .map { IntArray(statisticType.countDays).apply { fill(0) } to it }
-                .map { it.first.mapIndexed { index, i -> i + it.second.getOrDefault(index, 0) } }
+                .map { it.first.mapIndexed { index, i -> i + (it.second[index] ?: 0) } }
     }
 
     private fun collect(drinks: List<Drink>, statisticType: StatisticType): Single<Map<Int, Int>> {
