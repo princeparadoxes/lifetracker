@@ -71,7 +71,7 @@
 
     </FrameLayout>
 
-    <FrameLayout
+    <com.princeparadoxes.watertracker.presentation.view.TouchView
         android:id="@+id/main_water_touch_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
