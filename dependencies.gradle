@@ -5,7 +5,7 @@ ext.versions = [
 
             versionMajor        : 0,
             versionMinor        : 8,
-            versionPatch        : 3,
+            versionPatch        : 4,
             versionBuild        : 0, // bump for dogfood builds, public betas, etc.
 
             minSdk              : 21,
