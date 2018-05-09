@@ -31,9 +31,9 @@ public class FragmentSwitcherCompat {
     }
 
     public static class FragmentSwitcherBuilder {
-        private WeakReference<FragmentManager> mManagerReference;
-        private WeakReference<Fragment> mFragmentReference;
-        private WeakReference<FragmentTransaction> mTransactionReference;
+        private FragmentManager mManager;
+        private Fragment mFragment;
+        private FragmentTransaction mTransaction;
         private String mTag;
         private int mContainerId;
 
@@ -42,16 +42,16 @@ public class FragmentSwitcherCompat {
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         public FragmentSwitcherBuilder(FragmentManager manager) {
-            mManagerReference = new WeakReference<>(manager);
+            mManager = manager;
         }
 
         public FragmentSwitcherBuilder fragment(Fragment fragment) {
             checkFragmentManager();
-            mFragmentReference = new WeakReference<>(fragment);
-            FragmentManager manager = mManagerReference.get(); // TODO check on null. The check above is not enough;
+            mFragment = fragment;
+            FragmentManager manager = mManager; // TODO check on null. The check above is not enough;
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.setAllowOptimization(true);
-            mTransactionReference = new WeakReference<>(transaction);
+            mTransaction = transaction;
             return this;
         }
 
@@ -79,10 +79,10 @@ public class FragmentSwitcherCompat {
             checkFragmentManager();
             checkContainerID();
             checkTransaction();
-            FragmentManager fragmentManager = mManagerReference.get();
+            FragmentManager fragmentManager = mManager;
             if (fragmentManager.findFragmentByTag(mTag) != null) return;
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.add(mContainerId, fragment, mTag);
             fragmentTransaction.commitAllowingStateLoss();
         }
@@ -91,8 +91,8 @@ public class FragmentSwitcherCompat {
             checkFragment();
             checkContainerID();
             checkTransaction();
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.add(mContainerId, fragment, mTag);
             fragmentTransaction.commitAllowingStateLoss();
             return this;
@@ -102,8 +102,8 @@ public class FragmentSwitcherCompat {
             checkFragment();
             checkContainerID();
             checkTransaction();
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.add(mContainerId, fragment, mTag);
             fragmentTransaction.addToBackStack(mTag);
             fragmentTransaction.commitAllowingStateLoss();
@@ -114,8 +114,8 @@ public class FragmentSwitcherCompat {
             checkFragment();
             checkContainerID();
             checkTransaction();
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.replace(mContainerId, fragment, mTag);
             fragmentTransaction.commitAllowingStateLoss();
             return this;
@@ -129,8 +129,8 @@ public class FragmentSwitcherCompat {
             checkFragment();
             checkContainerID();
             checkTransaction();
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.replace(mContainerId, fragment, tag);
             fragmentTransaction.addToBackStack(mTag);
             fragmentTransaction.commitAllowingStateLoss();
@@ -141,8 +141,8 @@ public class FragmentSwitcherCompat {
             checkFragment();
             checkDialogFragment();
             checkTransaction();
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.addToBackStack(mTag);
             ((DialogFragment) fragment).show(fragmentTransaction, mTag);
             return this;
@@ -150,42 +150,42 @@ public class FragmentSwitcherCompat {
 
         public FragmentSwitcherBuilder popBackStack() {
             checkFragmentManager();
-            FragmentManager manager = mManagerReference.get();
+            FragmentManager manager = mManager;
             manager.popBackStack();
             return this;
         }
 
         public FragmentSwitcherBuilder popBackStackImmediate() {
             checkFragmentManager();
-            FragmentManager manager = mManagerReference.get();
+            FragmentManager manager = mManager;
             manager.popBackStackImmediate();
             return this;
         }
 
         public FragmentSwitcherBuilder clearStackImmediate() {
             checkFragmentManager();
-            FragmentManager manager = mManagerReference.get();
+            FragmentManager manager = mManager;
             manager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return this;
         }
 
         public FragmentSwitcherBuilder clearStack() {
             checkFragmentManager();
-            FragmentManager manager = mManagerReference.get();
+            FragmentManager manager = mManager;
             manager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return this;
         }
 
         public FragmentSwitcherBuilder clearStackTo(int numberFragmentInStack) {
             checkFragmentManager();
-            FragmentManager manager = mManagerReference.get();
+            FragmentManager manager = mManager;
             manager.popBackStack(numberFragmentInStack, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return this;
         }
 
         public FragmentSwitcherBuilder clearStackTo(Fragment fragment) {
             checkFragmentManager();
-            FragmentManager manager = mManagerReference.get();
+            FragmentManager manager = mManager;
             int index = getIndex(fragment.getTag(), manager);
             manager.popBackStack(index, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return this;
@@ -203,8 +203,8 @@ public class FragmentSwitcherCompat {
         public FragmentSwitcherBuilder remove() {
             checkFragment();
             checkTransaction();
-            Fragment fragment = mFragmentReference.get();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            Fragment fragment = mFragment;
+            FragmentTransaction fragmentTransaction = mTransaction;
             fragmentTransaction.remove(fragment);
             fragmentTransaction.commitAllowingStateLoss();
             return this;
@@ -212,7 +212,7 @@ public class FragmentSwitcherCompat {
 
         public FragmentSwitcherBuilder setTargetFragment(Fragment targetFragment, int code) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setTargetFragment(targetFragment, code);
             return this;
         }
@@ -224,7 +224,7 @@ public class FragmentSwitcherCompat {
         public FragmentSwitcherBuilder slideToLeftAndScaleOut() {
             checkFragment();
             checkTransaction();
-            FragmentTransaction fragmentTransaction = mTransactionReference.get();
+            FragmentTransaction fragmentTransaction = mTransaction;
 //            fragmentTransaction.setCustomAnimations(
 //                    R.anim.ui_window_slide_in_left,
 //                    R.anim.ui_window_scale_out,
@@ -258,7 +258,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder addSharedElement(View sharedElement, String name) {
             checkTransaction();
-            FragmentTransaction transaction = mTransactionReference.get();
+            FragmentTransaction transaction = mTransaction;
             transaction.addSharedElement(sharedElement, name);
             return this;
         }
@@ -266,7 +266,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder slideAnimation() {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setAllowEnterTransitionOverlap(false);
             fragment.setAllowReturnTransitionOverlap(false);
             return enterTransition(new Slide(Gravity.RIGHT))
@@ -278,7 +278,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder fadeAnimation() {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setAllowEnterTransitionOverlap(true);
             fragment.setAllowReturnTransitionOverlap(true);
             return enterTransition(new Fade())
@@ -290,7 +290,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder slideWithFadeAnimation() {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setAllowEnterTransitionOverlap(false);
             fragment.setAllowReturnTransitionOverlap(false);
             TransitionSet enter = new TransitionSet();
@@ -314,7 +314,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder enterTransition(Transition transition) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setEnterTransition(transition);
             return this;
         }
@@ -322,7 +322,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder exitTransition(Transition transition) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setExitTransition(transition);
             return this;
         }
@@ -330,7 +330,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder returnTransition(Transition transition) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setReturnTransition(transition);
             return this;
         }
@@ -338,7 +338,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder reenterTransition(Transition transition) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setReenterTransition(transition);
             return this;
         }
@@ -346,7 +346,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder setAllowEnterTransitionOverlap(boolean overlap) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setAllowEnterTransitionOverlap(overlap);
             return this;
         }
@@ -354,7 +354,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder setAllowReturnTransitionOverlap(boolean overlap) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setAllowReturnTransitionOverlap(overlap);
             return this;
         }
@@ -362,7 +362,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder sharedElementEnter(Transition transition) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setSharedElementEnterTransition(transition);
             return this;
         }
@@ -370,7 +370,7 @@ public class FragmentSwitcherCompat {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         public FragmentSwitcherBuilder sharedElementReturn(Transition transition) {
             checkFragment();
-            Fragment fragment = mFragmentReference.get();
+            Fragment fragment = mFragment;
             fragment.setSharedElementReturnTransition(transition);
             return this;
         }
@@ -379,19 +379,19 @@ public class FragmentSwitcherCompat {
         //////////////////////////////////////  ERRORS  ////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////
         private void checkFragmentManager() {
-            if (mManagerReference.get() == null) {
+            if (mManager == null) {
                 throw new RuntimeException("Fragment manager must be not null");
             }
         }
 
         private void checkFragment() {
-            if (mFragmentReference.get() == null) {
+            if (mFragment == null) {
                 throw new RuntimeException("Fragment must be not null");
             }
         }
 
         private void checkDialogFragment() {
-            if (!(mFragmentReference.get() instanceof DialogFragment)) {
+            if (!(mFragment instanceof DialogFragment)) {
                 throw new RuntimeException("Fragment must be instance of DialogFragment");
             }
         }
@@ -403,7 +403,7 @@ public class FragmentSwitcherCompat {
         }
 
         private void checkTransaction() {
-            if (mTransactionReference.get() == null) {
+            if (mTransaction == null) {
                 throw new RuntimeException("Transaction must be not null");
             }
         }
