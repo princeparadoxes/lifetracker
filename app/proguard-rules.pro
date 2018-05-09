@@ -162,7 +162,10 @@
 
 -dontwarn java.nio.file.**
 
-
+-dontwarn com.github.mikephil.**
+-keep public class com.github.mikephil.** {
+     public protected *;
+}
 
 -keep class com.google.fpl.liquidfun.** { *; }
 
