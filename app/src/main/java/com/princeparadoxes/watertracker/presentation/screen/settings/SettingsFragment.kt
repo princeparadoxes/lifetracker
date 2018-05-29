@@ -67,8 +67,14 @@ class SettingsFragment : BaseFragment() {
                 RxView.clicks(genderFemale),
                 RxView.clicks(genderMale))
                 .safeSubscribe {
-                    weightView.setText(it.weight.toString())
-                    dayNormView.setText(it.dayNorm.toString())
+                    if (weightView.text.isEmpty() && it.weight > 0F) {
+                        weightView.setText(it.weight.toString())
+                        weightView.setSelection(weightView.length())
+                    }
+                    if (dayNormView.text.isEmpty() && it.dayNorm > 0) {
+                        dayNormView.setText(it.dayNorm.toString())
+                        dayNormView.setSelection(dayNormView.length())
+                    }
                     when (it.gender) {
                         Gender.MALE -> {
                             genderMaleCheck.visibility = View.VISIBLE
@@ -88,9 +94,14 @@ class SettingsFragment : BaseFragment() {
 
         unsubscribeOnStop(settingsViewModel.observeCalculate(RxView.clicks(calculateButton))
                 .safeSubscribe {
-                    dayNormView.setText(it.toString())
-                    KeyboardUtils.hideSoftKeyboard(activity)
-                    dayNormView.requestFocus()
+                    if (it > 0) {
+                        dayNormView.setText(it.toString())
+                        KeyboardUtils.hideSoftKeyboard(activity)
+                        dayNormView.requestFocus()
+                    } else {
+                        weightView.requestFocus()
+                        Snackbar.make(view!!, "Please fill weight field", Snackbar.LENGTH_SHORT).show()
+                    }
                 })
 
         unsubscribeOnStop(settingsViewModel.observeSave(RxView.clicks(saveButton))
