@@ -2,6 +2,7 @@ package com.princeparadoxes.watertracker.presentation.screen.settings
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.Snackbar
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -106,6 +107,18 @@ class SettingsFragment : BaseFragment() {
 
         unsubscribeOnStop(settingsViewModel.observeSave(RxView.clicks(saveButton))
                 .safeSubscribe { bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED })
+
+        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    KeyboardUtils.hideSoftKeyboard(activity)
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+        })
 
     }
 
