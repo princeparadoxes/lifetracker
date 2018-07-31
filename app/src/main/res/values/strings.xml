@@ -31,5 +31,6 @@
     <string name="statistic_type_month">Month</string>
     <string name="statistic_type_year">Year</string>
 
+    <string name="settings_close">Slide down to close</string>
 
 </resources>
