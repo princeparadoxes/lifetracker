@@ -141,6 +141,7 @@ dependencies {
     implementation deps.support.recyclerview
     implementation deps.support.support_annotations
     implementation deps.support.cardview
+    implementation deps.support.tabs
 
     // RxBinding
     implementation deps.rxbinding.core

@@ -1,5 +1,6 @@
 package com.princeparadoxes.watertracker.presentation.screen.settings
 
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
@@ -15,6 +16,9 @@ import com.princeparadoxes.watertracker.presentation.base.BaseFragment
 import com.princeparadoxes.watertracker.presentation.utils.KeyboardUtils
 import com.princeparadoxes.watertracker.safeSubscribe
 import javax.inject.Inject
+import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.ContextCompat
+
 
 class SettingsFragment : BaseFragment() {
 
@@ -37,6 +41,7 @@ class SettingsFragment : BaseFragment() {
     private val calculateButton by lazy { view!!.findViewById(R.id.settings_calculate) as View }
     private val dayNormView by lazy { view!!.findViewById(R.id.settings_day_norm) as EditText }
     private val saveButton by lazy { view!!.findViewById(R.id.settings_save) as View }
+    private val policy by lazy { view!!.findViewById(R.id.fragment_settings_policy) as View }
 
     private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(view!!.parent as ViewGroup)!! }
 
@@ -61,6 +66,9 @@ class SettingsFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
+        policy.setOnClickListener {
+            openPrivacyPolicy()
+        }
 
         unsubscribeOnStop(settingsViewModel.observeView(
                 RxTextView.afterTextChangeEvents(weightView),
@@ -120,6 +128,15 @@ class SettingsFragment : BaseFragment() {
             }
         })
 
+    }
+
+    private fun openPrivacyPolicy() {
+        val customTabsIntent = CustomTabsIntent.Builder()
+                .addDefaultShareMenuItem()
+                .setToolbarColor(ContextCompat.getColor(context!!, R.color.accent))
+                .setShowTitle(true)
+                .build()
+        customTabsIntent.launchUrl(context!!, Uri.parse("https://www.iubenda.com/privacy-policy/39232739"))
     }
 
     companion object {

@@ -227,6 +227,19 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/fragment_settings_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="@string/settings_policy"
+            android:drawablePadding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@android:color/white"
+            android:background="?selectableItemBackground"
+            android:layout_marginTop="16dp"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 

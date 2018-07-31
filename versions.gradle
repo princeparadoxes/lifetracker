@@ -31,6 +31,7 @@ support.design = "com.android.support:design:$versions.support"
 support.v4 = "com.android.support:support-v4:$versions.support"
 support.core_utils = "com.android.support:support-core-utils:$versions.support"
 support.support_annotations = "com.android.support:support-annotations:$versions.support"
+support.tabs = "com.android.support:customtabs:$versions.support"
 deps.support = support
 
 def lifecycle = [:]
