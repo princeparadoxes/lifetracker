@@ -26,6 +26,14 @@ class SettingsRepository(
         return Single.fromCallable { Any().also {  preferences.isStartPromoShowed = true} }
     }
 
+    override fun isNeedShowReportPromo(): Single<Boolean> {
+        return Single.fromCallable { !preferences.isReportPromoShowed }
+    }
+
+    override fun onReportPromoShowed(): Single<Any> {
+        return Single.fromCallable { Any().also {  preferences.isReportPromoShowed = true} }
+    }
+
     override fun getGender(): Single<Gender> {
         return Single.fromCallable { preferences.gender }
     }

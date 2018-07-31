@@ -43,6 +43,14 @@ class SettingsInteractor(
         return settingsInputPort.onStartPromoShowed()
     }
 
+    override fun isNeedShowReportPromo(): Single<Boolean> {
+        return settingsInputPort.isNeedShowReportPromo()
+    }
+
+    override fun onReportPromoShowed(): Single<Any> {
+        return settingsInputPort.onReportPromoShowed()
+    }
+
     override fun observeGender(): Observable<Gender> {
        return settingsInputPort.getGender().toObservable()
     }

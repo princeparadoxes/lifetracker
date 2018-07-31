@@ -19,6 +19,10 @@ constructor(private val mSharedPreferences: SharedPreferences) {
         get() = mSharedPreferences.getBoolean(START_PROMO_SHOWED, false)
         set(value) = mSharedPreferences.edit().putBoolean(START_PROMO_SHOWED, value).apply()
 
+    var isReportPromoShowed: Boolean
+        get() = mSharedPreferences.getBoolean(REPORT_PROMO_SHOWED, false)
+        set(value) = mSharedPreferences.edit().putBoolean(REPORT_PROMO_SHOWED, value).apply()
+
     var gender: Gender
         get() = Gender.values()[mSharedPreferences.getInt(GENDER, Gender.NOT_SPECIFIED.ordinal)]
         set(value) = mSharedPreferences.edit().putInt(GENDER, value.ordinal).apply()
@@ -33,6 +37,7 @@ constructor(private val mSharedPreferences: SharedPreferences) {
 
         private val CURRENT_DAY_NORM = PREFIX + "current.day.norm"
         private val START_PROMO_SHOWED = PREFIX + "start.promo.showed"
+        private val REPORT_PROMO_SHOWED = PREFIX + "report.promo.showed"
         private val GENDER = PREFIX + "gender"
         private val WEIGHT = PREFIX + "weight"
     }

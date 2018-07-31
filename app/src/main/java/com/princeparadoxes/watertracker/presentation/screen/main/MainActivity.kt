@@ -1,6 +1,7 @@
 package com.princeparadoxes.watertracker.presentation.screen.main
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
@@ -32,6 +33,7 @@ import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
 import com.princeparadoxes.watertracker.presentation.view.RulerView
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -112,10 +114,21 @@ class MainActivity : BaseActivity() {
         }
 
         loadDaySum()
-        disposable.add(
+        disposable.addAll(
                 drinkOutputPort.getDaySum()
                         .safeSubscribe {
                             scrollTutorial.visibility = if (it > 0) View.GONE else View.VISIBLE
+                        },
+                drinkOutputPort.getDaySum()
+                        .filter { it > 0 }
+                        .flatMapSingle { promotionUseCase.isNeedShowReportPromo() }
+                        .filter { it }
+                        .flatMapSingle { promotionUseCase.onReportPromoShowed() }
+                        .safeSubscribe {
+                            AlertDialog.Builder(this)
+                                    .setMessage("This application is in early access. If you find a bug or want to have a new function, please let us know. To do this, click Report on the statistics screen")
+                                    .setPositiveButton(android.R.string.ok, { dialogInterface: DialogInterface, i: Int -> })
+                                    .create().show()
                         }
         )
     }
