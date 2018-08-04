@@ -28,15 +28,19 @@ class StartFragment : BaseFragment() {
         return R.layout.fragment_start
     }
 
-    override fun onResume() {
-        super.onResume()
-        mCenterText.setText(R.string.start_thanks)
-        val animator = AnimatorUtils.createChangeTextAnimatorSet(
+    private val animator by lazy {
+        AnimatorUtils.createChangeTextAnimatorSet(
                 mCenterText,
                 true,
                 R.string.start_you_are_beautiful,
                 R.string.start_day_norm,
                 R.string.start_empty)
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        mCenterText.setText(R.string.start_thanks)
         animator.startDelay = 1000
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
@@ -49,7 +53,16 @@ class StartFragment : BaseFragment() {
             }
         })
         animator.start()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        animator.resume()
+    }
+
+    override fun onPause() {
+        animator.pause()
+        super.onPause()
     }
 
     companion object {
