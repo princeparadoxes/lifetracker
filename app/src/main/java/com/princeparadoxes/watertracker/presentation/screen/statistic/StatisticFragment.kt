@@ -195,7 +195,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     }
 
     private fun handleReport() {
-        ApplicationSwitcher.start(context).openEmailApplication("", "I have a problem")
+        ApplicationSwitcher.start(context).openEmailApplication("tzarsuperman@gmail.com", "I have a problem/idea")
     }
 
     private fun handleDeleteWater(it: Int) {
