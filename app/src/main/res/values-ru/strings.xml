@@ -1,0 +1,58 @@
+<resources>
+
+
+    <!--========================================================================================-->
+    <!--===============================  START  ================================================-->
+    <!--========================================================================================-->
+
+    <string name="start_thanks">Спасибо за установку!</string>
+    <string name="start_you_are_beautiful">Вы прекрасны!</string>
+    <string name="start_day_norm">Пожалуйста укажите вашу дневную норму</string>
+    <string name="start_empty"></string>
+    <string name="start_close">Сдвиньте вниз чтобы пропустить</string>
+
+    <!--========================================================================================-->
+    <!--===============================  STATISTICS  ===========================================-->
+    <!--========================================================================================-->
+
+    <string name="statistic_header_open">Статистика</string>
+    <string name="statistic_header_settings">Настройки</string>
+    <string name="statistic_header_report">Написать нам</string>
+    <string name="statistic_header_revert">Отменить</string>
+
+    <string name="statistic_type_day">День</string>
+    <string name="statistic_type_week">Неделя</string>
+    <string name="statistic_type_month">Месяц</string>
+    <string name="statistic_type_year">Год</string>
+    <string name="statistic_last">Последнее</string>
+
+    <string name="settings_close">Сдвиньте вниз чтобы закрыть</string>
+
+    <string name="settings_policy">Политика конфиденциальности</string>
+    <string name="none">нет</string>
+    <string name="ml">мл</string>
+    <string name="value_ml">%dмл</string>
+
+    <string name="early_access_message">Это приложение еще только в начале своего пути.
+        Если вы нашли баг или у вас есть хорошая идея сообщите нам.
+        Чтобы сделать это, нажмите на \"Написать нам\" на экране статистики</string>
+    <string name="early_access_positive">Ок</string>
+
+    <string name="more_title">Вы выпили слишком много!</string>
+    <string name="more_message">Может пора остановиться?</string>
+    <string name="more_positive">Ок</string>
+
+    <string name="settings_weight_error">Пожалуста заполните поле \"Вес\" </string>
+
+    <string name="report_subject">У меня есть идея / Я нашел баг</string>
+    <string name="day_norm">Дневная норма</string>
+    <string name="calculate_day_norm">Расчитайте дневную норму</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
+    <string name="weight">Вес</string>
+    <string name="kg">кг</string>
+    <string name="calculate">Расчитать</string>
+    <string name="save">Сохранить</string>
+
+
+</resources>

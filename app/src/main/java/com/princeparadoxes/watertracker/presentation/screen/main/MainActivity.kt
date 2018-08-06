@@ -126,8 +126,8 @@ class MainActivity : BaseActivity() {
                         .flatMapSingle { promotionUseCase.onReportPromoShowed() }
                         .safeSubscribe {
                             AlertDialog.Builder(this)
-                                    .setMessage("This application is in early access. If you find a bug or want to have a new function, please let us know. To do this, click Report on the statistics screen")
-                                    .setPositiveButton(android.R.string.ok, { dialogInterface: DialogInterface, i: Int -> })
+                                    .setMessage(R.string.early_access_message)
+                                    .setPositiveButton(R.string.early_access_positive, { dialogInterface: DialogInterface, i: Int -> })
                                     .create().show()
                         }
         )
@@ -147,7 +147,7 @@ class MainActivity : BaseActivity() {
     private fun initDayNorm() {
         dayNormUseCase.observeDayNorm()
                 .safeSubscribe {
-                    dayNormValue.text = it.toString() + "ml"
+                    dayNormValue.text = getString(R.string.value_ml, it)
                     waterView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                         override fun onPreDraw(): Boolean {
                             waterView.viewTreeObserver.removeOnPreDrawListener(this)
@@ -207,7 +207,7 @@ class MainActivity : BaseActivity() {
                 i += 2
             }
         }
-        valueView.text = value.toString() + "ml" + s
+        valueView.text = getString(R.string.value_ml, value) + s
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -250,9 +250,9 @@ class MainActivity : BaseActivity() {
 
     private fun onMoreWater() {
         AlertDialog.Builder(this)
-                .setTitle("You drank too much!")
-                .setMessage("Maybe you should stop?")
-                .setPositiveButton("ok") { _, _ -> }
+                .setTitle(R.string.more_title)
+                .setMessage(R.string.more_message)
+                .setPositiveButton(R.string.more_positive) { _, _ -> }
                 .show()
     }
 

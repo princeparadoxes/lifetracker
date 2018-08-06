@@ -109,7 +109,7 @@ class SettingsFragment : BaseFragment() {
                         dayNormView.requestFocus()
                     } else {
                         weightView.requestFocus()
-                        Snackbar.make(view!!, "Please fill weight field", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(view!!, R.string.settings_weight_error, Snackbar.LENGTH_SHORT).show()
                     }
                 })
 

@@ -41,7 +41,7 @@ public class RulerView extends FrameLayout {
             View line = view.findViewById(R.id.ruler_item_line);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) line.getLayoutParams();
             if (i % 100 == 0) {
-                ((TextView) view.findViewById(R.id.ruler_item_text)).setText(i + " ml");
+                ((TextView) view.findViewById(R.id.ruler_item_text)).setText(getContext().getString(R.string.value_ml, i));
                 params.width = getContext().getResources().getDimensionPixelOffset(R.dimen.ruler_long_line);
 //                params.height = (int) DimenTools.pxFromDp(getContext(), 2);
             } else {

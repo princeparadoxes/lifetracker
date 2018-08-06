@@ -195,7 +195,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     }
 
     private fun handleReport() {
-        ApplicationSwitcher.start(context).openEmailApplication("tzarsuperman@gmail.com", "I have a problem/idea")
+        ApplicationSwitcher.start(context).openEmailApplication("tzarsuperman@gmail.com", getString(R.string.report_subject))
     }
 
     private fun handleDeleteWater(it: Int) {
@@ -213,18 +213,18 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
 
     private fun handleDaySum(daySum: Int) {
         val builder = SpannableStringBuilder()
-        builder.append(SpannableUtils.getAbsoluteSizeSpan(context, "Day", 12))
+        builder.append(SpannableUtils.getAbsoluteSizeSpan(context, getString(R.string.statistic_type_day), 12))
                 .append("\n")
                 .append(daySum.toString())
-                .append("ml")
+                .append(getString(R.string.ml))
         headerStartText.text = builder
     }
 
     private fun handleLastDrink(lastByDay: Int) {
         val builder = SpannableStringBuilder()
-        builder.append(SpannableUtils.getAbsoluteSizeSpan(context, "Last", 12))
+        builder.append(SpannableUtils.getAbsoluteSizeSpan(context, getString(R.string.statistic_last), 12))
                 .append("\n")
-                .append(if (lastByDay != 0) lastByDay.toString() + "ml" else "none")
+                .append(if (lastByDay != 0) lastByDay.toString() + getString(R.string.ml) else getString(R.string.none))
         headerEndText.text = builder
     }
 

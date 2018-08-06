@@ -1,11 +1,5 @@
 <resources>
 
-
-    <!--========================================================================================-->
-    <!--==================================== WATER =============================================-->
-    <!--========================================================================================-->
-    <string name="water_fragment_title">Water Fragment</string>
-
     <!--========================================================================================-->
     <!--===============================  START  ================================================-->
     <!--========================================================================================-->
@@ -21,7 +15,6 @@
     <!--========================================================================================-->
 
     <string name="statistic_header_open">Stats</string>
-    <string name="statistic_header_closed">Stats</string>
     <string name="statistic_header_settings">Setting</string>
     <string name="statistic_header_report">Report</string>
     <string name="statistic_header_revert">Revert</string>
@@ -30,11 +23,33 @@
     <string name="statistic_type_week">Week</string>
     <string name="statistic_type_month">Month</string>
     <string name="statistic_type_year">Year</string>
+    <string name="statistic_last">Last</string>
 
     <string name="settings_close">Slide down to close</string>
 
     <string name="settings_policy">Privacy policy</string>
+    <string name="none">none</string>
+    <string name="ml">ml</string>
+    <string name="value_ml">%dml</string>
 
+    <string name="early_access_message">This application is in early access. If you find a bug or want to have a new function, please let us know. To do this, click Report on the statistics screen</string>
+    <string name="early_access_positive">Ok</string>
+
+    <string name="more_title">You drank too much!</string>
+    <string name="more_message">Maybe you should stop?</string>
+    <string name="more_positive">Ok</string>
+
+    <string name="settings_weight_error">Please fill weight field</string>
+
+    <string name="report_subject">I have a problem/idea</string>
+    <string name="day_norm">Day norm</string>
+    <string name="calculate_day_norm">Calculate day norm</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="weight">Weight</string>
+    <string name="kg">kg</string>
+    <string name="calculate">Calculate</string>
+    <string name="save">Save</string>
 
 
 </resources>
