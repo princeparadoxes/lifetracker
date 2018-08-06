@@ -88,6 +88,10 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
         initBehavior(view.parent as ViewGroup)
         onCollapsed()
         initTypePicker()
+        if (DimenTools.isTabletLandscape(context)) {
+            headerView.visibility = View.GONE
+            topBorderView.visibility = View.INVISIBLE
+        }
         headerCenter.setOnClickListener {
             bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
                 STATE_COLLAPSED -> STATE_EXPANDED
@@ -155,6 +159,9 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
     private fun initBehavior(container: ViewGroup?) {
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (DimenTools.isTabletLandscape(context)) {
+                    bottomSheetBehavior.state = STATE_EXPANDED
+                }
                 changeHeaderState(newState)
             }
 
@@ -163,7 +170,7 @@ class StatisticFragment : BaseFragment(), DiscreteScrollView.OnItemChangedListen
             }
         })
         bottomSheetBehavior.apply {
-            state = STATE_COLLAPSED
+            state = if (DimenTools.isTabletLandscape(context)) STATE_EXPANDED else STATE_COLLAPSED
             isHideable = false
             peekHeight = DimenTools.pxFromDp(context, 64f).toInt()
         }

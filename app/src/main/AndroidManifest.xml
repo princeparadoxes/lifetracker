@@ -4,86 +4,6 @@
           package="com.princeparadoxes.watertracker"
           android:installLocation="auto">
 
-    <!--
-    Official guide https://developer.android.com/guide/practices/screens-distribution.html doesn't work
-    There's better solution on stackoverflow:
-    http://stackoverflow.com/a/34353887/5451527
-    -->
-    <compatible-screens>
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="420"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="480"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="560"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="640"
-            android:screenSize="small"/>
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="420"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="480"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="560"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="640"
-            android:screenSize="normal"/>
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="420"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="480"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="560"
-            android:screenSize="large"/>
-        <screen
-            android:screenDensity="640"
-            android:screenSize="large"/>
-    </compatible-screens>
-
     <application
         android:name="com.princeparadoxes.watertracker.ProjectApplication"
         android:allowBackup="false"
@@ -93,8 +13,6 @@
         tools:replace="android:allowBackup">
         <activity
             android:name=".presentation.screen.main.MainActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

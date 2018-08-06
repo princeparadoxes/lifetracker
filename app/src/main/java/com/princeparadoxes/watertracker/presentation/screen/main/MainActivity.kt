@@ -3,17 +3,16 @@ package com.princeparadoxes.watertracker.presentation.screen.main
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.transition.Fade
-import android.transition.TransitionManager
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.BounceInterpolator
 import android.widget.FrameLayout
@@ -32,8 +31,8 @@ import com.princeparadoxes.watertracker.presentation.base.BaseActivity
 import com.princeparadoxes.watertracker.presentation.base.FragmentSwitcherCompat
 import com.princeparadoxes.watertracker.presentation.screen.start.StartFragment
 import com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticFragment
+import com.princeparadoxes.watertracker.presentation.utils.DimenTools
 import com.princeparadoxes.watertracker.presentation.view.RulerView
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -97,6 +96,9 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!DimenTools.isTablet(this)) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        }
         if (savedInstanceState == null) {
             promotionUseCase.isNeedShowStartPromo()
                     .filter { it }

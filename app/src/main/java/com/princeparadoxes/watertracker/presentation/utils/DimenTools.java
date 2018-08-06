@@ -33,6 +33,10 @@ public class DimenTools {
                 Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
+    public static boolean isTabletLandscape(Context context) {
+        return isTablet(context) && context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
     public static Point displaySize(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
