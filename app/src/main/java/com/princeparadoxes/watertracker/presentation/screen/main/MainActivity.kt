@@ -70,7 +70,8 @@ class MainActivity : BaseActivity() {
     ////////////////////////////////////  FIELDS  /////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    private var startBottomSheetBehavior: BottomSheetBehavior<*>? = null
+    private val startBottomSheetBehavior by lazy { BottomSheetBehavior.from(startFragmentContainer) }
+    private val statisticBottomSheetBehavior by lazy { BottomSheetBehavior.from(statisticFragmentContainer) }
     private val disposable = CompositeDisposable()
     private val addWaterSubject = PublishSubject.create<Int>()
     private var downY: Float = 0.toFloat()
@@ -110,8 +111,8 @@ class MainActivity : BaseActivity() {
             navigationBarColor = R.color.accent.toColorInt()
         }
 
-        startBottomSheetBehavior = BottomSheetBehavior.from(startFragmentContainer).apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
+        startBottomSheetBehavior.apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
             peekHeight = 0
         }
 
@@ -298,6 +299,8 @@ class MainActivity : BaseActivity() {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private fun addStartScreen() {
+        startBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
         FragmentSwitcherCompat.start(supportFragmentManager)
                 .fragment(StartFragment.newInstance())
                 .exitTransition(Fade(Fade.OUT))
@@ -312,6 +315,20 @@ class MainActivity : BaseActivity() {
                 .fragment(StatisticFragment.newInstance())
                 .containerId(R.id.main_statistic_fragment_container)
                 .add()
+    }
+
+    override fun onBackPressed() {
+        if (startBottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            startBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            return
+        }
+        if (!DimenTools.isTabletLandscape(this)) {
+            if (statisticBottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                statisticBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                return
+            }
+        }
+        super.onBackPressed()
     }
 
     ///////////////////////////////////////////////////////////////////////////
