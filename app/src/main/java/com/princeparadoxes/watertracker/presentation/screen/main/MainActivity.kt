@@ -102,8 +102,11 @@ class MainActivity : BaseActivity() {
         }
         if (savedInstanceState == null) {
             promotionUseCase.isNeedShowStartPromo()
-                    .filter { it }
-                    .safeSubscribe { addStartScreen() }
+                    .safeSubscribe { if (it) {
+                        addStartScreen()
+                    } else {
+                        startBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    }}
             addStatisticScreen()
         }
         window.apply {
@@ -112,7 +115,6 @@ class MainActivity : BaseActivity() {
         }
 
         startBottomSheetBehavior.apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
             peekHeight = 0
         }
 
