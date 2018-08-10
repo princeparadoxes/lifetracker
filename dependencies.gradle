@@ -4,8 +4,8 @@ ext.versions = [
             packagename         : 'com.princeparadoxes.water.tracker',
 
             versionMajor        : 0,
-            versionMinor        : 9,
-            versionPatch        : 1,
+            versionMinor        : 10,
+            versionPatch        : 0,
             versionBuild        : 0, // bump for dogfood builds, public betas, etc.
 
             minSdk              : 21,
