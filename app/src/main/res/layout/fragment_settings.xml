@@ -22,9 +22,10 @@
             android:drawableLeft="@drawable/ic_chevron_down"
             android:text="@string/settings_close"
             android:drawablePadding="8dp"
+            android:gravity="center"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"
-            android:textSize="20sp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/textView"
