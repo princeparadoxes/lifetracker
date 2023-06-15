@@ -9,8 +9,22 @@
     android:background="@color/contentBackground"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.princeparadoxes.watertracker.ui.screen.main.MainActivity">
+    tools:context=".presentation.screen.main.MainActivity">
 
-    <include layout="@layout/toolbar"/>
+    <!--<include layout="@layout/toolbar"/>-->
+
+    <!--<com.princeparadoxes.watertracker.misc.AndroidFastRenderView-->
+    <!--android:id="@+id/water_fast_render_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
+    <android.opengl.GLSurfaceView
+        android:id="@+id/water_gl_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="65dp"
+        />
+
+    <View style="@style/HorizontalDivider.White"
+        android:layout_marginBottom="64dp"/>
 
 </LinearLayout>

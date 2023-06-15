@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 
-import com.bumptech.glide.Glide;
-import com.princeparadoxes.watertracker.data.DataService;
-import com.princeparadoxes.watertracker.data.sp.DebugSharedPreferences;
-import com.princeparadoxes.watertracker.data.sp.ProjectPreferences;
-import com.princeparadoxes.watertracker.ui.screen.main.MainActivity;
+import com.princeparadoxes.watertracker.data.source.sp.DebugSharedPreferences;
+import com.princeparadoxes.watertracker.data.source.sp.ProjectPreferences;
+import com.princeparadoxes.watertracker.presentation.screen.main.MainActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -18,22 +16,18 @@ import io.palaima.debugdrawer.actions.ButtonAction;
 import io.palaima.debugdrawer.commons.BuildModule;
 import io.palaima.debugdrawer.commons.DeviceModule;
 import io.palaima.debugdrawer.commons.SettingsModule;
-import io.palaima.debugdrawer.glide.GlideModule;
 
 public class DebugDrawerInitializer {
 
     private Application mApplication;
-    private DataService mDataService;
     private ProjectPreferences mPreferences;
     private DebugSharedPreferences mDebugSharedPreferences;
     private WeakReference<Activity> mActivityWeakReference;
 
     public DebugDrawerInitializer(Application application,
-                                  DataService dataService,
                                   ProjectPreferences preferences,
                                   DebugSharedPreferences debugSharedPreferences) {
         this.mApplication = application;
-        this.mDataService = dataService;
         this.mPreferences = preferences;
         this.mDebugSharedPreferences = debugSharedPreferences;
     }
@@ -48,7 +42,6 @@ public class DebugDrawerInitializer {
 
         builder.modules(
                 new ActionsModule(restartAppAction),
-                new GlideModule(Glide.get(activity)),
                 new DeviceModule(activity),
                 new BuildModule(activity),
                 new SettingsModule(activity));

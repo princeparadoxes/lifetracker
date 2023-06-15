@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_statistic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/accent"
+    android:clickable="true"
+    android:orientation="vertical"
+    tools:context=".presentation.screen.main.MainActivity">
+
+    <View
+        android:id="@+id/statistic_top_border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white" />
+
+    <com.daimajia.swipe.SwipeLayout
+        android:id="@+id/statistic_header"
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/statistic_header_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:drawableTint="@android:color/white"
+                    android:drawableTop="@drawable/ic_settings_black_24dp"
+                    android:text="@string/statistic_header_settings"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/statistic_header_report"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:drawableTint="@android:color/white"
+                    android:drawableTop="@drawable/ic_email_black_24dp"
+                    android:text="@string/statistic_header_report"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/statistic_header_revert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:drawableTint="@android:color/white"
+                    android:drawableTop="@drawable/ic_replay_black_24dp"
+                    android:text="@string/statistic_header_revert"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/statistic_header_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    tools:text="Day norm" />
+
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:id="@+id/statistic_header_center"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="?selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:id="@+id/statistic_header_center_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_down"/>
+
+                <TextView
+                    android:id="@+id/statistic_header_center_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/statistic_header_open"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/statistic_header_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    tools:text="Last" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+
+    </com.daimajia.swipe.SwipeLayout>
+
+
+    <com.princeparadoxes.watertracker.presentation.screen.statistic.StatisticChartView
+        android:id="@+id/statistic_forecast_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="24dp"
+        android:layout_weight="1" />
+
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/statistic_type_view"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_gravity="bottom" />
+
+</LinearLayout>

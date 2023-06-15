@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "306500045709",
+    "firebase_url": "https://lifetracker-15115.firebaseio.com",
+    "project_id": "lifetracker-15115",
+    "storage_bucket": "lifetracker-15115.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306500045709:android:2610bf930152e5a8",
+        "android_client_info": {
+          "package_name": "com.princeparadoxes.water.tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "306500045709-qp2a2tbudmv06tnc7cfm35gobjbve73c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6dVcngVW-JcOajjPkap91aZn8UZJQ328"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306500045709:android:fa1be49f8f280ab7",
+        "android_client_info": {
+          "package_name": "com.princeparadoxes.water.tracker.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "306500045709-qp2a2tbudmv06tnc7cfm35gobjbve73c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6dVcngVW-JcOajjPkap91aZn8UZJQ328"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

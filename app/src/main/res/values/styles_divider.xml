@@ -11,4 +11,8 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <style name="HorizontalDivider.White">
+        <item name="android:background">@android:color/white</item>
+    </style>
+
 </resources>

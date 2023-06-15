@@ -1,26 +1,19 @@
-
-// ======================================================================================================
-// A good sample of dependency gradle file:
-// https://github.com/artem-zinnatullin/qualitymatters/blob/master/dependencies.gradle
-// ======================================================================================================
-
-// Application Dependencies
 ext.versions = [
-            appname             : 'Water Tracker',
+            appname             : 'LifeTracker',
             apkname             : 'water-tracker-android',
             packagename         : 'com.princeparadoxes.water.tracker',
 
             versionMajor        : 0,
-            versionMinor        : 0,
+            versionMinor        : 10,
             versionPatch        : 0,
             versionBuild        : 0, // bump for dogfood builds, public betas, etc.
 
             minSdk              : 21,
-            targetSdk           : 24,
-            compileSdk          : 24,
-            buildTools          : '25.0.0',
+            targetSdk           : 27,
+            compileSdk          : 27,
+            buildTools          : '26.0.2',
 
-            supportLibrary      : '25.1.0',
+            supportLibrary      : '27.0.2',
 
             retrofit            : '2.1.0',
             dagger              : '2.8',

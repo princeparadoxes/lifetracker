@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="24dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/ruler_item_line"
+        android:layout_width="24dp"
+        android:layout_height="2dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/ruler_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        tools:text="50ml"/>
+
+</LinearLayout>

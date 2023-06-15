@@ -23,18 +23,20 @@
     <!--5% — 0D -->
     <!--0% — 00-->
 
-    <color name="primaryDark">#000000</color>
-    <color name="primary">#282b30</color>
-    <color name="primaryLight">#B3E5FC</color>
+    <color name="primaryDark">@android:color/holo_green_dark</color>
+    <color name="primary">@android:color/holo_green_dark</color>
+    <color name="primaryLight">@android:color/holo_green_dark</color>
     <color name="accent">#1a99e3</color>
     <color name="iconPrimary">#FFFFFF</color>
     <color name="iconSecondary">#757575</color>
     <color name="textPrimary">#ffffff</color>
     <color name="textSecondary">#757575</color>
     <color name="dividerPrimary">#BDBDBD</color>
-    <color name="contentBackground">#282B30</color>
+    <color name="contentBackground">#ffffff</color>
     <color name="contentBackgroundSecond">#495059</color>
     <color name="primaryItemSelector">#40ffffff</color>
+
+    <color name="accent_alpha">#661a99e3</color>
 
     <!--Toolbar-->
     <color name="toolbar_text_color">@color/iconPrimary</color>
